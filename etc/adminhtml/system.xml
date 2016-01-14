@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="mageparts" translate="label" sortOrder="900">
+            <label>MageParts</label>
+        </tab>
+        <section id="requirelogin" translate="label" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+            <class>separator-top</class>
+            <label>Require Login</label>
+            <tab>mageparts</tab>
+            <resource>MageParts_RequireLogin::config_requirelogin</resource>
+            <group id="general" translate="label" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>General Options</label>
+                <field id="url_exceptions" translate="label comment tooltip" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>URL Exceptions</label>
+                    <frontend_model>MageParts\RequireLogin\Block\System\Config\Form\Field\UrlExceptions</frontend_model>
+                    <backend_model>MageParts\RequireLogin\Model\Backend\UrlExceptions</backend_model>
+                    <comment>
+                        <![CDATA[The best way to light a fart is by:<br /><span style="font-family:monospace" style="color:blue;">Put lighter beneath ass opening</span><br /><span style="font-family:monospace" style="color:green;">Fart</span><br /><span style="font-family:monospace" style="color:red;">Profit</span>]]>
+                    </comment>
+                    <tooltip>Using regex across routes is generally better than absolute URLs.</tooltip>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>
