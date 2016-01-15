@@ -17,11 +17,11 @@ class UrlExceptions extends AbstractHelper
         return [
             [
                 'value' => 'regex',
-                'label' => __('Regex')
+                'label' => __('Regex (simplified)')
             ],
             [
-                'value' => 'absolute',
-                'label' => __('Absolute')
+                'value' => 'regex_pure',
+                'label' => __('Regex (advanced)')
             ]
         ];
     }

@@ -17,14 +17,18 @@
             <resource>MageParts_RequireLogin::config_requirelogin</resource>
             <group id="general" translate="label" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>General Options</label>
-                <field id="url_exceptions" translate="label comment tooltip" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="0">
+                <field id="enabled" translate="label" type="select" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enabled</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="url_exceptions" translate="label comment tooltip" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>URL Exceptions</label>
                     <frontend_model>MageParts\RequireLogin\Block\System\Config\Form\Field\UrlExceptions</frontend_model>
                     <backend_model>MageParts\RequireLogin\Model\Backend\UrlExceptions</backend_model>
                     <comment>
-                        <![CDATA[The best way to light a fart is by:<br /><span style="font-family:monospace" style="color:blue;">Put lighter beneath ass opening</span><br /><span style="font-family:monospace" style="color:green;">Fart</span><br /><span style="font-family:monospace" style="color:red;">Profit</span>]]>
+                        <![CDATA[This is the difference between a <b>simplified</b> and <b>advanced</b> regex:<br /><b>Regex (simplified)</b> let's you use <b>*</b> and <b>|</b> to specify dynamics URL's. For example, <b>*/catalog/product|category/view/*</b> would let a none logged in client access all product and category pages on your website, even if you later decide to change your base url since the initial <b>*</b> will match anything. The pipe (<b>|</b>) character means <b>or</b>, so in this example that means <b>product</b> or <b>category</b>.<br /><br /><b>Regex (advanced)</b> is used when you wish to write the regex entirely on your own, so if you are tech savvy and have the need for something very specific you can utilise this to get your exceptions <i>exactly</i> right. ]]>
                     </comment>
-                    <tooltip>Using regex across routes is generally better than absolute URLs.</tooltip>
+                    <tooltip>Simplified regex:es will work for most situations. * = anything, | = or. Example: */catalog/category|product/*</tooltip>
                 </field>
             </group>
         </section>
