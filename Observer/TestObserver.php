@@ -74,10 +74,10 @@ class TestObserver implements ObserverInterface
      */
     public function execute(\Magento\Framework\Event\Observer $observer)
     {
-        if ($this->request->getRouteName() !== 'customer' && !$this->session->isLoggedIn()) {
-            $this->context->getMessageManager()->addError(__('You must login before you can access this page.'));
-            $this->session->setAfterAuthUrl($this->request->getUriString());
-            $this->redirect->redirect($this->response, 'customer/account/login');
-        }
+//        if ($this->request->getRouteName() !== 'customer' && !$this->session->isLoggedIn()) {
+//            $this->context->getMessageManager()->addError(__('You must login before you can access this page.'));
+//            $this->session->setAfterAuthUrl($this->request->getUriString());
+//            $this->redirect->redirect($this->response, 'customer/account/login');
+//        }
     }
 }
