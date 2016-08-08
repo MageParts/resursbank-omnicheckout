@@ -12,7 +12,7 @@
         </tab>
         <section id="omnicheckout" translate="label" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
             <class>separator-top</class>
-            <label>Require Login</label>
+            <label>OmniCheckout</label>
             <tab>resursbank</tab>
             <resource>Resursbank_OmniCheckout::config_omnicheckout</resource>
             <group id="general" translate="label" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -20,15 +20,6 @@
                 <field id="enabled" translate="label" type="select" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Enabled</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                </field>
-                <field id="url_exceptions" translate="label comment tooltip" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="0">
-                    <label>URL Exceptions</label>
-                    <frontend_model>Resursbank\OmniCheckout\Block\System\Config\Form\Field\UrlExceptions</frontend_model>
-                    <backend_model>Resursbank\OmniCheckout\Model\Backend\UrlExceptions</backend_model>
-                    <comment>
-                        <![CDATA[This is the difference between a <b>simplified</b> and <b>advanced</b> regex:<br /><b>Regex (simplified)</b> let's you use <b>*</b> and <b>|</b> to specify dynamics URL's. For example, <b>*/catalog/product|category/view/*</b> would let a none logged in client access all product and category pages on your website, even if you later decide to change your base url since the initial <b>*</b> will match anything. The pipe (<b>|</b>) character means <b>or</b>, so in this example that means <b>product</b> or <b>category</b>.<br /><br /><b>Regex (advanced)</b> is used when you wish to write the regex entirely on your own, so if you are tech savvy and have the need for something very specific you can utilise this to get your exceptions <i>exactly</i> right. ]]>
-                    </comment>
-                    <tooltip>Simplified regex:es will work for most situations. * = anything, | = or. Example: */catalog/category|product/*</tooltip>
                 </field>
             </group>
         </section>
