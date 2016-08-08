@@ -4,7 +4,7 @@
  * See COPYING.txt for license details.
  */
 
-namespace MageParts\RequireLogin\Observer;
+namespace Resursbank\OmniCheckout\Observer;
 
 use Magento\Framework\Event\ObserverInterface;
 

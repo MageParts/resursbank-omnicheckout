@@ -4,7 +4,7 @@
  * See COPYING.txt for license details.
  */
 
-namespace MageParts\RequireLogin\Model\Backend;
+namespace Resursbank\OmniCheckout\Model\Backend;
 
 use Magento\Config\Model\Config\Backend\Serialized\ArraySerialized;
 use Magento\Framework\Exception\LocalizedException;

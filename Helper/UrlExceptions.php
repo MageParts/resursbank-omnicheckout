@@ -1,6 +1,6 @@
 <?php
 
-namespace MageParts\RequireLogin\Helper;
+namespace Resursbank\OmniCheckout\Helper;
 
 use Magento\Framework\App\Helper\AbstractHelper;
 

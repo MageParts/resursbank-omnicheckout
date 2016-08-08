@@ -7,14 +7,14 @@
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
     <system>
-        <tab id="mageparts" translate="label" sortOrder="900">
-            <label>MageParts</label>
+        <tab id="resursbank" translate="label" sortOrder="900">
+            <label>Resursbank</label>
         </tab>
-        <section id="requirelogin" translate="label" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+        <section id="omnicheckout" translate="label" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
             <class>separator-top</class>
             <label>Require Login</label>
-            <tab>mageparts</tab>
-            <resource>MageParts_RequireLogin::config_requirelogin</resource>
+            <tab>resursbank</tab>
+            <resource>Resursbank_OmniCheckout::config_omnicheckout</resource>
             <group id="general" translate="label" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>General Options</label>
                 <field id="enabled" translate="label" type="select" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -23,8 +23,8 @@
                 </field>
                 <field id="url_exceptions" translate="label comment tooltip" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>URL Exceptions</label>
-                    <frontend_model>MageParts\RequireLogin\Block\System\Config\Form\Field\UrlExceptions</frontend_model>
-                    <backend_model>MageParts\RequireLogin\Model\Backend\UrlExceptions</backend_model>
+                    <frontend_model>Resursbank\OmniCheckout\Block\System\Config\Form\Field\UrlExceptions</frontend_model>
+                    <backend_model>Resursbank\OmniCheckout\Model\Backend\UrlExceptions</backend_model>
                     <comment>
                         <![CDATA[This is the difference between a <b>simplified</b> and <b>advanced</b> regex:<br /><b>Regex (simplified)</b> let's you use <b>*</b> and <b>|</b> to specify dynamics URL's. For example, <b>*/catalog/product|category/view/*</b> would let a none logged in client access all product and category pages on your website, even if you later decide to change your base url since the initial <b>*</b> will match anything. The pipe (<b>|</b>) character means <b>or</b>, so in this example that means <b>product</b> or <b>category</b>.<br /><br /><b>Regex (advanced)</b> is used when you wish to write the regex entirely on your own, so if you are tech savvy and have the need for something very specific you can utilise this to get your exceptions <i>exactly</i> right. ]]>
                     </comment>

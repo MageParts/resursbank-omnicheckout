@@ -6,6 +6,6 @@
 
 \Magento\Framework\Component\ComponentRegistrar::register(
     \Magento\Framework\Component\ComponentRegistrar::MODULE,
-    'MageParts_RequireLogin',
+    'Resursbank_OmniCheckout',
     __DIR__
 );
