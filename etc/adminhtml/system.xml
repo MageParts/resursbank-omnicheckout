@@ -54,12 +54,12 @@
                 <field id="basic_password" translate="label" type="text" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Basic Auth Password</label>
                 </field>
-                <field id="url_registration" translate="label" type="text" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Callback Registration</label>
-                    <source_model>omnicheckout/adminhtml_system_config_callback_register</source_model>
-                </field>
-                <field id="url_list" translate="label" type="text" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <source_model>omnicheckout/adminhtml_system_config_callback_list</source_model>
+                <!--<field id="url_registration" translate="label" type="text" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">-->
+                    <!--<label>Callback Registration</label>-->
+                    <!--<source_model>omnicheckout/adminhtml_system_config_callback_register</source_model>-->
+                <!--</field>-->
+                <field id="url_list" translate="label" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <frontend_model>Resursbank\OmniCheckout\Block\Adminhtml\System\Config\Callback\Listing</frontend_model>
                 </field>
             </group>
         </section>

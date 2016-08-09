@@ -132,4 +132,27 @@ class Api extends \Magento\Framework\App\Helper\AbstractHelper
         return $this;
     }
 
+    /**
+     *
+     *
+     * @return array
+     * @todo Remember to write proper code!
+     */
+    public function getCallbacks()
+    {
+        return [
+            [
+                'eventType' => 'success',
+                'uriTemplate' => 'test1'
+            ],
+            [
+                'eventType' => 'failure',
+                'uriTemplate' => 'test2'
+            ],
+            [
+                'eventType' => 'pending',
+                'uriTemplate' => 'test3'
+            ]
+        ];
+    }
 }
