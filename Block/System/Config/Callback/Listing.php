@@ -1,29 +1,13 @@
 <?php
 
-namespace MageParts\RequireLogin\Block\System\Config\Form\Field;
+namespace Resursbank\OmniCheckout\Block\System\Config\Callback;
 
-use Magento\Config\Block\System\Config\Form\Field\FieldArray\AbstractFieldArray;
 
 /**
  * URL exceptions widget renderer.
  */
-class UrlExceptions extends AbstractFieldArray
+class Listing extends \Magento\Backend\Block\Template
 {
-    /**
-     * @var \Magento\Framework\Data\Form\Element\Factory
-     */
-    private $_elementFactory;
-
-    /**
-     * @var \Magento\Framework\View\Design\Theme\LabelFactory
-     */
-    private $_labelFactory;
-
-    /**
-     * @var \MageParts\RequireLogin\Helper\UrlExceptions
-     */
-    private $urlExceptionHelper;
-
     /**
      * @param \Magento\Backend\Block\Template\Context $context
      * @param \Magento\Framework\Data\Form\Element\Factory $elementFactory
@@ -33,15 +17,8 @@ class UrlExceptions extends AbstractFieldArray
      */
     public function __construct(
         \Magento\Backend\Block\Template\Context $context,
-        \Magento\Framework\Data\Form\Element\Factory $elementFactory,
-        \Magento\Framework\View\Design\Theme\LabelFactory $labelFactory,
-        \MageParts\RequireLogin\Helper\UrlExceptions $urlExceptionHelper,
         array $data = []
     ) {
-        $this->_elementFactory = $elementFactory;
-        $this->_labelFactory = $labelFactory;
-        $this->urlExceptionHelper = $urlExceptionHelper;
-
         parent::__construct($context, $data);
     }
 
