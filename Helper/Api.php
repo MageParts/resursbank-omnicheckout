@@ -100,4 +100,36 @@ class Api extends \Magento\Framework\App\Helper\AbstractHelper
         return $result;
     }
 
+    /**
+     * Clear payment session information from checkout session.
+     *
+     * @return $this
+     */
+    public function clearPaymentSession()
+    {
+        // Unset session data.
+        $this->checkoutSession
+            ->unsetData(\Resursbank\OmniCheckout\Model\Api::PAYMENT_SESSION_ID_KEY)
+            ->unsetData(\Resursbank\OmniCheckout\Model\Api::PAYMENT_SESSION_IFRAME_KEY);
+
+        // Reset rendered checkout blocks.
+        $this->resetCheckoutElements();
+
+        return $this;
+    }
+
+    /**
+     * Reset checkout elements.
+     *
+     * @return $this
+     */
+    public function resetCheckoutElements()
+    {
+        $this->checkoutSession->setData('omnicheckout_hash_header-cart', null);
+        $this->checkoutSession->setData('omnicheckout_hash_omnicheckout-shipping-methods-list', null);
+        $this->checkoutSession->setData('omnicheckout_hash_current-coupon-code', null);
+
+        return $this;
+    }
+
 }

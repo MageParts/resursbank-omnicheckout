@@ -129,10 +129,88 @@ class Api extends DataObject
             throw new Exception(__('Failed to create payment session, unexpected return value.'));
         }
 
-        $this->_getHelper()->getCheckoutSession()->setData(self::PAYMENT_SESSION_ID_KEY, $result->paymentSessionId);
-        $this->_getHelper()->getCheckoutSession()->setData(self::PAYMENT_SESSION_IFRAME_KEY, $result->html);
+        $this->checkoutSession->setData(self::PAYMENT_SESSION_ID_KEY, $result->paymentSessionId);
+        $this->checkoutSession->setData(self::PAYMENT_SESSION_IFRAME_KEY, $result->html);
 
         return $result;
+    }
+
+    /**
+     * Update existing payment session.
+     *
+     * @return Zend_Http_Response
+     * @throws Exception
+     */
+    public function updatePaymentSession()
+    {
+        if (!$this->paymentSessionInitialized()) {
+            throw new Exception("Please initialize your payment session before you updating it.");
+        }
+
+        $data = array(
+            'orderLines' => $this->getOrderLines()
+        );
+
+        // Allows observers to modify the data submitted to the API.
+        $this->eventManager->dispatch(
+            'omnicheckout_api_update_session_before',
+            array(
+                'data'  => $data,
+                'quote' => $this->getQuote()
+            )
+        );
+
+        // Perform API request.
+        $result = $this->call("checkout/payments/{$this->getQuoteToken()}", 'put', $data);
+
+        // Allows observers to perform actions based on API response.
+        $this->eventManager->dispatch(
+            'omnicheckout_api_update_session_after',
+            array(
+                'data'      => $data,
+                'response'  => $result,
+                'quote'     => $this->getQuote()
+            )
+        );
+
+        return $result;
+    }
+
+    /**
+     * Perform API call.
+     *
+     * If it's ever necessary to urlencode data sent to the API please refer to the urlencodeArray() method in
+     * Helper\Data.php
+     *
+     * @param string $action
+     * @param string $method (post|put|delete|get)
+     * @param string|array $data
+     * @return Zend_Http_Response
+     * @throws Exception
+     * @throws Zend_Http_Client_Exception
+     */
+    public function call($action, $method, $data = null)
+    {
+        $this->validateCallMethod($method);
+
+        /** @var Resursbank_Omnicheckout_Model_Rest_Client $client */
+        $client = $this->prepareClient();
+
+        try {
+            // Perform API call.
+            $response = $this->handleCall($client, $method, "/{$action}", $data);
+        } catch (Exception $e) {
+            // Clear the payment session, ensuring that a new session will be started once the API is reachable again.
+            $this->helper->clearPaymentSession();
+
+            // Throw the error forward.
+            throw $e;
+        }
+
+        // Handle potential errors.
+        $this->handleErrors($response);
+
+        return $response->getBody();
     }
 
     /**
@@ -158,8 +236,6 @@ class Api extends DataObject
         if (count($shipping)) {
             $data[] = $shipping;
         }
-
-        $test = $this->getQuoteToken();
 
         return $data;
     }
@@ -358,6 +434,36 @@ class Api extends DataObject
     }
 
     /**
+     * Prepare API client.
+     *
+     * @return Resursbank_Omnicheckout_Model_Rest_Client
+     * @throws Zend_Http_Client_Exception
+     */
+    public function prepareClient()
+    {
+        $client = new Resursbank_Omnicheckout_Model_Rest_Client($this->getApiUrl());
+        $client->getHttpClient()->setAuth($this->getUsername(), $this->getPassword());
+
+        return $client;
+    }
+
+    /**
+     * Validate API request method.
+     *
+     * @param string $method
+     * @return $this
+     * @throws Exception
+     */
+    public function validateCallMethod($method)
+    {
+        if ($method !== 'get' && $method !== 'put' && $method !== 'post' && $method !== 'delete') {
+            throw new Exception(__('Invalid API method requested.'));
+        }
+
+        return $this;
+    }
+
+    /**
      * Retrieve payment session id.
      *
      * @return string
@@ -392,6 +498,17 @@ class Api extends DataObject
     public function getQuote()
     {
         return $this->helper->getQuote();
+    }
+
+    /**
+     * Check if a payment session has been initialized.
+     *
+     * @return bool
+     * @throws Exception
+     */
+    public function paymentSessionInitialized()
+    {
+        return (bool) $this->getPaymentSessionId();
     }
 
 }
