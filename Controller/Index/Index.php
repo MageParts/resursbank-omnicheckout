@@ -31,7 +31,7 @@ class Index extends \Magento\Framework\App\Action\Action
      */
     public function execute()
     {
-        $result = $this->api->getOrderLines();
+        $result = $this->api->initPaymentSession();
 
         die(var_dump($result));
         // Do something.

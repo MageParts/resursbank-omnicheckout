@@ -5,7 +5,7 @@ namespace Resursbank\OmniCheckout\Block\Adminhtml\System\Config\Callback;
 /**
  * URL exceptions widget renderer.
  */
-class Listing extends \Magento\Backend\Block\Template implements \Magento\Framework\Data\Form\Element\Renderer\RendererInterface
+class Listing extends \Magento\Config\Block\System\Config\Form\Field
 {
 
 //    /**
@@ -16,7 +16,44 @@ class Listing extends \Magento\Backend\Block\Template implements \Magento\Framew
 //    /**
 //     * @var string
 //     */
-    protected $_template = 'Resursbank_OmniCheckout::system/config/callback/listing.phtml';
+
+    /**
+     * Set template to itself
+     *
+     * @return \Magento\Customer\Block\Adminhtml\System\Config\Validatevat
+     */
+    protected function _prepareLayout()
+    {
+        parent::_prepareLayout();
+        if (!$this->getTemplate()) {
+            $this->setTemplate('system/config/callback/listing.phtml');
+        }
+        return $this;
+    }
+
+    /**
+     * Unset some non-related element parameters
+     *
+     * @param \Magento\Framework\Data\Form\Element\AbstractElement $element
+     * @return string
+     */
+    public function render(\Magento\Framework\Data\Form\Element\AbstractElement $element)
+    {
+        $element->unsScope()->unsCanUseWebsiteValue()->unsCanUseDefaultValue();
+        return parent::render($element);
+    }
+
+    /**
+     * Get the button and scripts contents
+     *
+     * @param \Magento\Framework\Data\Form\Element\AbstractElement $element
+     * @return string
+     */
+    protected function _getElementHtml(\Magento\Framework\Data\Form\Element\AbstractElement $element)
+    {
+        return $this->_toHtml();
+    }
+
 //
 //    /**
 //     * @param \Magento\Backend\Block\Template\Context $context
@@ -42,8 +79,4 @@ class Listing extends \Magento\Backend\Block\Template implements \Magento\Framew
 //        return $this->callback->getCallbacks();
 //    }
 
-    public function render(\Magento\Framework\Data\Form\Element\AbstractElement $element)
-    {
-        return $this->toHtml();
-    }
 }

@@ -45,10 +45,6 @@ class Api extends DataObject
     private $customerSession;
 
     /**
-     * @var \Magento\Store\Model\StoreManagerInterface
-     */
-    private $storeManager;
-    /**
      * @var \Magento\Framework\Event\ManagerInterface
      */
     private $eventManager;
@@ -59,28 +55,67 @@ class Api extends DataObject
     private $checkoutSession;
 
     /**
+     * @var \Magento\Framework\App\Config\ScopeConfigInterface
+     */
+    private $scopeConfig;
+
+    /**
+     * @var \Magento\Framework\UrlInterface
+     */
+    private $url;
+
+    /**
+     * @var \Psr\Log\LoggerInterface
+     */
+    private $log;
+
+    /**
+     * @var \Magento\Framework\Message\ManagerInterface
+     */
+    private $messages;
+
+    /**
+     * @var \Zend\Http\Client
+     */
+    private $httpClient;
+
+    /**
      * @param \Magento\Customer\Model\Session $customerSession
      * @param \Resursbank\OmniCheckout\Helper\Api $helper
-     * @param \Magento\Store\Model\StoreManagerInterface $storeManager
      * @param \Magento\Framework\Event\ManagerInterface $eventManager
+     * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
+     * @param \Psr\Log\LoggerInterface $log
+     * @param \Magento\Framework\UrlInterface $url
+     * @param \Magento\Framework\Message\ManagerInterface $messages
      * @param \Magento\Checkout\Model\Session $checkoutSession
+     * @param \Zend\Http\Client $httpClient
      * @param array $data
      */
     public function __construct(
         \Magento\Customer\Model\Session $customerSession,
         \Resursbank\OmniCheckout\Helper\Api $helper,
-        \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Magento\Framework\Event\ManagerInterface $eventManager,
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
+        \Psr\Log\LoggerInterface $log,
+        \Magento\Framework\UrlInterface $url,
+        \Magento\Framework\Message\ManagerInterface $messages,
         \Magento\Checkout\Model\Session $checkoutSession,
+        \Zend\Http\Client $httpClient,
         array $data = []
     ) {
         parent::__construct($data);
 
         $this->helper = $helper;
         $this->customerSession = $customerSession;
-        $this->storeManager = $storeManager;
         $this->eventManager = $eventManager;
         $this->checkoutSession = $checkoutSession;
+        $this->scopeConfig = $scopeConfig;
+        $this->url = $url;
+        $this->log = $log;
+        $this->messages = $messages;
+        $this->httpClient = $httpClient;
+
+        $this->prepareHttpClient();
     }
 
     /**
@@ -138,7 +173,7 @@ class Api extends DataObject
     /**
      * Update existing payment session.
      *
-     * @return Zend_Http_Response
+     * @return \Zend\Http\Response
      * @throws Exception
      */
     public function updatePaymentSession()
@@ -177,6 +212,183 @@ class Api extends DataObject
     }
 
     /**
+     * Retrieve completed payment by quote id.
+     *
+     * @param $quoteToken
+     * @return stdClass
+     */
+    public function getPayment($quoteToken)
+    {
+        // Allows observers to take actions before performing the API request.
+        $this->eventManager->dispatch(
+            'omnicheckout_api_get_session_before',
+            array(
+                'quote_token' => $quoteToken
+            )
+        );
+
+        $result = $this->call("checkout/payments/{$quoteToken}", 'get');
+
+        // Allows observers to perform actions based on API response.
+        $this->eventManager->dispatch(
+            'omnicheckout_api_get_session_after',
+            array(
+                'response'    => $result,
+                'quote_token' => $quoteToken
+            )
+        );
+
+        if (!empty($result)) {
+            $result = @json_decode($result);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Delete active payment session.
+     *
+     * @return \Zend\Http\Response
+     */
+    public function deletePaymentSession()
+    {
+        // Allows observers to take actions before performing the API request.
+        $this->eventManager->dispatch(
+            'omnicheckout_api_delete_session_before',
+            array(
+                'quote' => $this->getQuote()
+            )
+        );
+
+        $result = $this->call("checkout/payments/{$this->getQuoteToken()}", 'delete');
+
+        // Allows observers to perform actions based on API response.
+        $this->eventManager->dispatch(
+            'omnicheckout_api_delete_session_after',
+            array(
+                'response'  => $result,
+                'quote'     => $this->getQuote()
+            )
+        );
+
+        return $result;
+    }
+
+    /**
+     * Register all callback methods.
+     *
+     * @return $this
+     */
+    public function registerCallbacks()
+    {
+        // Register all callbacks.
+        $this->registerTestCallback();
+        $this->registerCallback('unfreeze');
+        $this->registerCallback('automatic_fraud_control');
+        $this->registerCallback('annulment');
+        $this->registerCallback('finalization');
+//        $this->registerCallback('update');
+        $this->registerCallback('booked');
+
+        return $this;
+    }
+
+    /**
+     * Register callback configuration.
+     *
+     * Available callbacks:
+     *
+     *  UNFREEZE
+     *  AUTOMATIC_FRAUD_CONTROL
+     *  TEST
+     *  ANNULMENT
+     *  FINALIZATION
+     *  UPDATE
+     *  BOOKED
+     *
+     * @param string $type
+     * @return \Zend\Http\Response
+     * @todo basic_username and basic_password should be tested (.htpasswd)
+     */
+    public function registerCallback($type)
+    {
+        $type = strtolower((string) $type);
+
+        return $this->call($this->getCallbackTypePath($type), 'post', array(
+            'uriTemplate' => $this->url->getUrl("omnicheckout/callback/{$type}"),
+            'basicAuthUserName' => $this->getCallbackSetting('basic_username'),
+            'basicAuthPassword' => $this->getCallbackSetting('basic_password')
+        ));
+    }
+
+    /**
+     * Register test callback. This will only work while we are in test mode.
+     *
+     * @return $this
+     */
+    public function registerTestCallback()
+    {
+        // The test callback should only be registered when we are in test mode.
+        if ($this->isInTestMode()) {
+            $this->registerCallback('test');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Retrieve callback configuration.
+     *
+     * Available callbacks:
+     *
+     *  UNFREEZE
+     *  AUTOMATIC_FRAUD_CONTROL
+     *  TEST
+     *  ANNULMENT
+     *  FINALIZATION
+     *  UPDATE
+     *  BOOKED
+     *
+     * @param string $type
+     * @return \Zend\Http\Response
+     */
+    public function getCallback($type)
+    {
+        return $this->call($this->getCallbackTypePath($type), 'get');
+    }
+
+    /**
+     * Get list of all registered callbacks.
+     *
+     * @return array
+     */
+    public function getCallbacks()
+    {
+        $result = $this->call('callbacks', 'get');
+
+        if (is_string($result) && !empty($result)) {
+            $result = @json_decode($result);
+        }
+
+        if (!is_array($result)) {
+            $result = array();
+        }
+
+        return $result;
+    }
+
+    /**
+     * Retrieve the URL path to a callback on Resursbank servers (the actual callback name should be all uppercase).
+     *
+     * @param string $type
+     * @return string
+     */
+    public function getCallbackTypePath($type)
+    {
+        return 'callbacks/' . strtoupper((string) $type);
+    }
+
+    /**
      * Perform API call.
      *
      * If it's ever necessary to urlencode data sent to the API please refer to the urlencodeArray() method in
@@ -185,20 +397,16 @@ class Api extends DataObject
      * @param string $action
      * @param string $method (post|put|delete|get)
      * @param string|array $data
-     * @return Zend_Http_Response
+     * @return \Zend\Http\Response
      * @throws Exception
-     * @throws Zend_Http_Client_Exception
      */
     public function call($action, $method, $data = null)
     {
         $this->validateCallMethod($method);
 
-        /** @var Resursbank_Omnicheckout_Model_Rest_Client $client */
-        $client = $this->prepareClient();
-
         try {
             // Perform API call.
-            $response = $this->handleCall($client, $method, "/{$action}", $data);
+            $response = $this->handleCall($method, "/{$action}", $data);
         } catch (Exception $e) {
             // Clear the payment session, ensuring that a new session will be started once the API is reachable again.
             $this->helper->clearPaymentSession();
@@ -211,6 +419,199 @@ class Api extends DataObject
         $this->handleErrors($response);
 
         return $response->getBody();
+    }
+
+    /**
+     * This method should never be called directly, only through call().
+     *
+     * @param string $method
+     * @param string $path
+     * @param string|null $data
+     * @return \Zend\Http\Response
+     */
+    private function handleCall($method, $path, $data = null)
+    {
+        $this->httpClient->getUri()->setPath($path);
+
+        return $this->httpClient->setEncType('application/json')
+                ->setRawBody(json_encode($data))
+                ->setMethod($method)
+                ->send();
+    }
+
+    /**
+     * Prepare API client.
+     */
+    public function prepareHttpClient()
+    {
+        $this->httpClient->setUri($this->getApiUrl());
+        $this->httpClient->setAuth($this->getUsername(), $this->getPassword());
+    }
+
+    /**
+     * Validate API request method.
+     *
+     * @param string $method
+     * @return $this
+     * @throws Exception
+     */
+    public function validateCallMethod($method)
+    {
+        if ($method !== 'get' && $method !== 'put' && $method !== 'post' && $method !== 'delete') {
+            throw new Exception(__('Invalid API method requested.'));
+        }
+
+        return $this;
+    }
+
+    /**
+     * Retrieve iframe of current payment session from checkout/session.
+     *
+     * @return string
+     */
+    public function getSessionIframeHtml()
+    {
+        return (string) $this->checkoutSession->getData(self::PAYMENT_SESSION_IFRAME_KEY);
+    }
+
+    /**
+     * Handle errors on response object.
+     *
+     * @param \Zend\Http\Response $response
+     * @return $this
+     * @throws Exception
+     * @todo Test that logging still works.
+     */
+    public function handleErrors(\Zend\Http\Response $response)
+    {
+        if (($response->isClientError() || $response->isServerError()) && $this->getApiSetting('debug_enabled', true)) {
+            // Log the error.
+            $this->log->debug($response->toString());
+
+            // Get readable error message.
+            $error = __('We apologize, an error occurred while communicating with the payment gateway. Please contact us as soon as possible so we can review this problem.');
+
+            // Add error to message stack.
+            $this->messages->addErrorMessage($error);
+
+            // Stop script.
+            throw new Exception($error);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Retrieve payment session id.
+     *
+     * @return string
+     * @throws Exception
+     */
+    public function getPaymentSessionId()
+    {
+        return (string) $this->checkoutSession->getData(self::PAYMENT_SESSION_ID_KEY);
+    }
+
+    /**
+     * Retrieve quote token.
+     *
+     * @param bool $refresh
+     * @return int
+     * @throws Exception
+     */
+    public function getQuoteToken($refresh = false)
+    {
+        if (!$this->getQuote()) {
+            throw new Exception(__('Missing quote object.'));
+        }
+
+        return $this->helper->getQuoteToken($this->getQuote(), $refresh);
+    }
+
+    /**
+     * Shorthand to get current quote object.
+     *
+     * @return \Magento\Quote\Model\Quote
+     */
+    public function getQuote()
+    {
+        return $this->helper->getQuote();
+    }
+
+    /**
+     * Check if a payment session has been initialized.
+     *
+     * @return bool
+     * @throws Exception
+     */
+    public function paymentSessionInitialized()
+    {
+        return (bool) $this->getPaymentSessionId();
+    }
+
+    /**
+     * Get a setting from the API configuration.
+     *
+     * @param string $key
+     * @param bool $flag
+     * @return mixed
+     */
+    public function getApiSetting($key, $flag = false)
+    {
+        return !$flag ? $this->scopeConfig->getValue("omnicheckout/api/{$key}", \Magento\Store\Model\ScopeInterface::SCOPE_STORE) : $this->scopeConfig->isSetFlag("omnicheckout/api/{$key}", \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+    }
+
+    /**
+     * Get a setting from the CALLBACK configuration.
+     *
+     * @param string $key
+     * @param bool $flag
+     * @return mixed
+     */
+    public function getCallbackSetting($key, $flag = false)
+    {
+        return !$flag ? $this->scopeConfig->getValue("omnicheckout/callback/{$key}", \Magento\Store\Model\ScopeInterface::SCOPE_STORE) : $this->scopeConfig->isSetFlag("omnicheckout/callback/{$key}", \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+    }
+    
+    /**
+     * Check if API is in development/test mode.
+     *
+     * @return bool
+     */
+    public function isInTestMode()
+    {
+        return $this->getApiSetting('test_mode');
+    }
+
+    /**
+     * Retrieve API username.
+     *
+     * @return string
+     */
+    public function getUsername()
+    {
+        return (string) $this->getApiSetting('username');
+    }
+
+    /**
+     * Retrieve API password.
+     *
+     * @return string
+     */
+    public function getPassword()
+    {
+        return (string) $this->getApiSetting('password');
+    }
+
+    /**
+     * Retrieve API URL.
+     *
+     * @param string $action
+     * @return string
+     */
+    public function getApiUrl($action = '')
+    {
+        return $this->isInTestMode() ? (self::TEST_URL . $action) : (self::PRODUCTION_URL . $action);
     }
 
     /**
@@ -378,28 +779,6 @@ class Api extends DataObject
     }
 
     /**
-     * Get a setting from the API configuration.
-     *
-     * @param string $key
-     * @param bool $flag
-     * @return mixed
-     */
-    public function getApiSetting($key, $flag = false)
-    {
-        $result = '';
-
-        $key = (string) $key;
-
-        if ($key === 'weight_unit') {
-            $result = 'kg';
-        }
-
-        return $result;
-
-//        return !$flag ? Mage::getStoreConfig("omnicheckout/api/{$key}", $this->_getHelper()->getStoreId()) : Mage::getStoreConfigFlag("omnicheckout/api/{$key}", $this->_getHelper()->getStoreId());
-    }
-
-    /**
      * Retrieve customer information used when initializing a payment session.
      *
      * @return array
@@ -430,85 +809,51 @@ class Api extends DataObject
      */
     public function getShopUrl()
     {
-        return rtrim($this->storeManager->getStore()->getBaseUrl(), '/');
+        return rtrim($this->url->getBaseUrl(), '/');
     }
 
     /**
-     * Prepare API client.
-     *
-     * @return Resursbank_Omnicheckout_Model_Rest_Client
-     * @throws Zend_Http_Client_Exception
-     */
-    public function prepareClient()
-    {
-        $client = new Resursbank_Omnicheckout_Model_Rest_Client($this->getApiUrl());
-        $client->getHttpClient()->setAuth($this->getUsername(), $this->getPassword());
-
-        return $client;
-    }
-
-    /**
-     * Validate API request method.
-     *
-     * @param string $method
-     * @return $this
-     * @throws Exception
-     */
-    public function validateCallMethod($method)
-    {
-        if ($method !== 'get' && $method !== 'put' && $method !== 'post' && $method !== 'delete') {
-            throw new Exception(__('Invalid API method requested.'));
-        }
-
-        return $this;
-    }
-
-    /**
-     * Retrieve payment session id.
+     * Retrieve iframe protocol:domain. This is used for iframe communication (from JavaScript). This follows the same
+     * rules as getShopUrl() above, so no trailing slashes (e.g https://resursbank.com)
      *
      * @return string
-     * @throws Exception
      */
-    public function getPaymentSessionId()
+    public function getIframeUrl()
     {
-        return (string) $this->checkoutSession->getData(self::PAYMENT_SESSION_ID_KEY);
+        return rtrim($this->getApiUrl(), '/');
     }
 
     /**
-     * Retrieve quote token.
+     * Retrieve URL for order success callback from API.
      *
-     * @param bool $refresh
-     * @return int
-     * @throws Exception
+     * @return string
      */
-    public function getQuoteToken($refresh = false)
+    public function getSuccessCallbackUrl()
     {
-        if (!$this->getQuote()) {
-            throw new Exception(__('Missing quote object.'));
-        }
-
-        return $this->helper->getQuoteToken($this->getQuote(), $refresh);
+        return $this->url->getUrl('checkout/onepage/success');
     }
 
     /**
-     * Shorthand to get current quote object.
+     * Retrieve URL for order failure callback from API.
      *
-     * @return \Magento\Quote\Model\Quote
+     * @return string
      */
-    public function getQuote()
+    public function getFailureCallbackUrl()
     {
-        return $this->helper->getQuote();
+        return $this->url->getUrl('checkout/onepage/failure');
     }
 
     /**
-     * Check if a payment session has been initialized.
+     * Check if we have credentials for the API.
      *
      * @return bool
-     * @throws Exception
      */
-    public function paymentSessionInitialized()
+    public function hasCredentials()
     {
-        return (bool) $this->getPaymentSessionId();
+        $username = $this->getApiSetting('username');
+        $password = $this->getApiSetting('password');
+
+        return (!empty($username) && !empty($password));
     }
 
 }
