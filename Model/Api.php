@@ -115,7 +115,9 @@ class Api extends DataObject
         $this->messages = $messages;
         $this->httpClient = $httpClient;
 
-        $this->prepareHttpClient();
+        if ($this->hasCredentials()) {
+            $this->prepareHttpClient();
+        }
     }
 
     /**

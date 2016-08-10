@@ -1,20 +1,18 @@
 <?php
 /**
- * @var $this \Resursbank\OmniCheckout\Block\System\Config\Callback\Listing
+ * @var $block \Resursbank\OmniCheckout\Block\Adminhtml\System\Config\Callback\Listing
  */
 ?>
 
-TEST
+<?php $callbacks = $block->getCallbacks(); ?>
 
-<?php //$callbacks = $this->getCallbacks(); ?>
-<!--test-->
-<?php //if (count($callbacks)): ?>
-<!---->
-<!--    <div>-->
-<!--        --><?php //foreach ($callbacks as $callback): ?>
-<!--            <p><b>[--><?php //echo $callback->eventType ?><!-- ]</b></p>-->
-<!--            <p style="margin-bottom:10px; padding-bottom:10px; border-bottom:1px dashed #c0c0c0;">--><?php //echo $callback->uriTemplate ?><!--</p>-->
-<!--        --><?php //endforeach; ?>
-<!--    </div>-->
-<!---->
-<?php //endif; ?>
+<?php if (count($callbacks)): ?>
+
+    <div>
+        <?php foreach ($callbacks as $callback): ?>
+            <p><b>[<?php echo $callback->eventType ?> ]</b></p>
+            <p style="margin-bottom:10px; padding-bottom:10px; border-bottom:1px dashed #c0c0c0;"><?php echo $callback->uriTemplate ?></p>
+        <?php endforeach; ?>
+    </div>
+
+<?php endif; ?>

@@ -17,13 +17,20 @@ class Api extends \Magento\Framework\App\Helper\AbstractHelper
     private $quoteRepository;
 
     /**
+     * @var \Resursbank\OmniCheckout\Model\Api
+     */
+    private $apiModel;
+
+    /**
      * @param \Magento\Checkout\Model\Session $checkoutSession
      * @param \Magento\Framework\App\Helper\Context $context
+     * @param \Resursbank\OmniCheckout\Model\Api $apiModel
      * @param \Magento\Quote\Api\CartRepositoryInterface $quoteRepository
      */
     public function __construct(
         \Magento\Checkout\Model\Session $checkoutSession,
         \Magento\Framework\App\Helper\Context $context,
+        \Resursbank\OmniCheckout\Model\Api $apiModel,
         \Magento\Quote\Api\CartRepositoryInterface $quoteRepository
     ) {
         parent::__construct($context);
@@ -31,6 +38,7 @@ class Api extends \Magento\Framework\App\Helper\AbstractHelper
         $this->checkoutSession = $checkoutSession;
         $this->context = $context;
         $this->quoteRepository = $quoteRepository;
+        $this->apiModel = $apiModel;
     }
 
     /**

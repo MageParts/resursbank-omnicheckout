@@ -8,14 +8,10 @@ namespace Resursbank\OmniCheckout\Block\Adminhtml\System\Config\Callback;
 class Listing extends \Magento\Config\Block\System\Config\Form\Field
 {
 
-//    /**
-//     * @var \Resursbank\OmniCheckout\Helper\Callback
-//     */
-//    private $callback;
-//
-//    /**
-//     * @var string
-//     */
+    /**
+     * @var \Resursbank\OmniCheckout\Helper\Callback
+     */
+    private $callback;
 
     /**
      * Set template to itself
@@ -54,29 +50,29 @@ class Listing extends \Magento\Config\Block\System\Config\Form\Field
         return $this->_toHtml();
     }
 
-//
-//    /**
-//     * @param \Magento\Backend\Block\Template\Context $context
-//     * @param \Resursbank\OmniCheckout\Helper\Callback $callback
-//     * @param array $data
-//     * @internal param array $data
-//     */
-//    public function __construct(
-//        \Magento\Backend\Block\Template\Context $context,
-//        \Resursbank\OmniCheckout\Helper\Callback $callback,
-//        array $data = []
-//    ) {
-//        parent::__construct($context, $data);
-//
-//        $this->callback = $callback;
-//    }
-//
-//    /**
-//     * @return array
-//     */
-//    public function getCallbacks()
-//    {
-//        return $this->callback->getCallbacks();
-//    }
+
+    /**
+     * @param \Magento\Backend\Block\Template\Context $context
+     * @param \Resursbank\OmniCheckout\Helper\Callback $callback
+     * @param array $data
+     * @internal param array $data
+     */
+    public function __construct(
+        \Magento\Backend\Block\Template\Context $context,
+        \Resursbank\OmniCheckout\Helper\Callback $callback,
+        array $data = []
+    ) {
+        parent::__construct($context, $data);
+
+        $this->callback = $callback;
+    }
+
+    /**
+     * @return array
+     */
+    public function getCallbacks()
+    {
+        return $this->callback->getCallbacks();
+    }
 
 }

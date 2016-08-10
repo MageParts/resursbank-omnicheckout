@@ -38,7 +38,7 @@ class Callback extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function getCallbacks()
     {
-        return $this->api->getCallbacks();
+        return $this->api->hasCredentials() ? $this->api->getCallbacks() : [];
     }
 
 }
