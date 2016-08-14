@@ -17,11 +17,6 @@ class Api extends \Magento\Framework\App\Helper\AbstractHelper
     private $quoteRepository;
 
     /**
-     * @var \Magento\Customer\Model\Address
-     */
-    private $customerAddress;
-
-    /**
      * @var \Magento\Directory\Helper\Data
      */
     private $directoryHelper;
@@ -35,7 +30,6 @@ class Api extends \Magento\Framework\App\Helper\AbstractHelper
      * @param \Magento\Checkout\Model\Session $checkoutSession
      * @param \Magento\Framework\App\Helper\Context $context
      * @param \Magento\Quote\Api\CartRepositoryInterface $quoteRepository
-     * @param \Magento\Customer\Model\Address $customerAddress
      * @param \Magento\Directory\Helper\Data $directoryHelper
      * @param \Magento\Framework\ObjectManagerInterface $objectManager
      */
@@ -43,14 +37,12 @@ class Api extends \Magento\Framework\App\Helper\AbstractHelper
         \Magento\Checkout\Model\Session $checkoutSession,
         \Magento\Framework\App\Helper\Context $context,
         \Magento\Quote\Api\CartRepositoryInterface $quoteRepository,
-        \Magento\Customer\Model\Address $customerAddress,
         \Magento\Directory\Helper\Data $directoryHelper,
         \Magento\Framework\ObjectManagerInterface $objectManager
     ) {
         $this->checkoutSession = $checkoutSession;
         $this->context = $context;
         $this->quoteRepository = $quoteRepository;
-        $this->customerAddress = $customerAddress;
         $this->directoryHelper = $directoryHelper;
         $this->objectManager = $objectManager;
 
@@ -305,7 +297,9 @@ class Api extends \Magento\Framework\App\Helper\AbstractHelper
     }
 
     /**
-     * Assign an empty Mage_Sales_Model_Quote_Address instance to quote billing/shipping address if needed.
+     * Assign a clean \Magento\Quote\Model\Quote\Address instance to quote billing/shipping address if needed.
+     *
+     * TODO: could be more compact
      *
      * @param string $type (billing|shipping)
      * @return $this

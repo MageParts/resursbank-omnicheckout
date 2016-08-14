@@ -52,13 +52,13 @@ class Index extends \Magento\Framework\App\Action\Action
         if (!$this->apiModel->paymentSessionInitialized()) {
             try {
                 // Assign default address information to quote.
-                $this->apiHelper->quoteAssignDefaultAddress(true, false);
+                $this->apiHelper->quoteAssignDefaultAddress();
 
                 // Assign default shipping method.
-                //$this->assignDefaultShippingMethod();
+                $this->assignDefaultShippingMethod();
 
                 // Initialize payment session.
-                //$this->apiModel->initPaymentSession();
+                $this->apiModel->initPaymentSession();
             } catch (Exception $e) {
                 // Do nothing.
             }

@@ -14,6 +14,7 @@ class Carriers extends \Magento\Framework\View\Element\Template
      * @var \Resursbank\OmniCheckout\Helper\Api
      */
     private $apiHelper;
+
     /**
      * @var \Magento\Checkout\Helper\Data
      */
