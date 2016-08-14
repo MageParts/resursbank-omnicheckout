@@ -103,8 +103,6 @@ class Api extends DataObject
         \Zend\Http\Client $httpClient,
         array $data = []
     ) {
-        parent::__construct($data);
-
         $this->helper = $helper;
         $this->customerSession = $customerSession;
         $this->eventManager = $eventManager;
@@ -114,6 +112,8 @@ class Api extends DataObject
         $this->log = $log;
         $this->messages = $messages;
         $this->httpClient = $httpClient;
+
+        parent::__construct($data);
 
         if ($this->hasCredentials()) {
             $this->prepareHttpClient();

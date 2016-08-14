@@ -1,0 +1,11 @@
+<?php
+/**
+ * @var $block \Resursbank\Omnicheckout\Block\Js
+ */
+?>
+
+<script type="text/javascript">
+    var OMNICHECKOUT = '<?php echo $block->getUrl('omnicheckout'); ?>';
+    var OMNICHECKOUT_IFRAME_URL = '<?php echo $block->getApiModel()->getIframeUrl(); ?>';
+    var FORM_KEY = '<?php echo $block->escapeHtml($block->getFormKey()); ?>';
+</script>

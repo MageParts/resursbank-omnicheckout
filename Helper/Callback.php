@@ -26,9 +26,9 @@ class Callback extends \Magento\Framework\App\Helper\AbstractHelper
         \Magento\Framework\App\Helper\Context $context,
         \Resursbank\OmniCheckout\Model\Api $api
     ) {
-        parent::__construct($context);
-
         $this->api = $api;
+
+        parent::__construct($context);
     }
 
     /**

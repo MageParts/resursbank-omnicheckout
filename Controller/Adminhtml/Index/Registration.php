@@ -31,10 +31,10 @@ class Registration extends \Magento\Backend\App\Action
         \Resursbank\OmniCheckout\Helper\Api $apiHelper,
         \Resursbank\OmniCheckout\Model\Api $apiModel
     ) {
-        parent::__construct($context);
-
         $this->apiHelper = $apiHelper;
         $this->apiModel = $apiModel;
+
+        parent::__construct($context);
     }
 
     /**
