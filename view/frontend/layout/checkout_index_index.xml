@@ -1,0 +1,156 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © 2016 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="checkout" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <update handle="checkout_cart_index" />
+
+    <head>
+        <css src="Resursbank_OmniCheckout::css/style.css" after="-"/>
+        <link src="Resursbank_OmniCheckout::js/checkout.js" after="-"/>
+    </head>
+    <body>
+        <!-- Remove cart blocks -->
+        <referenceBlock name="checkout.cart.coupon" remove="true"/>
+        <referenceBlock name="cart.summary" remove="true"/>
+        <referenceBlock name="checkout.cart.crosssell" remove="true"/>
+
+        <!-- Global JavaScript variables -->
+        <referenceContainer name="before.body.end">
+            <block class="Resursbank\OmniCheckout\Block\Js" template="Resursbank_OmniCheckout::js.phtml" />
+        </referenceContainer>
+
+        <!-- Move cart above checkout elements -->
+        <move element="checkout.cart" destination="content" before="checkout.root" />
+
+        <referenceBlock name="content">
+            <block class="Resursbank\OmniCheckout\Block\Iframe" name="omnicheckout.iframe" template="Resursbank_OmniCheckout::iframe.phtml" />
+        </referenceBlock>
+
+        <!-- Checkout layout -->
+        <referenceBlock name="checkout.root">
+            <arguments>
+                <argument name="jsLayout" xsi:type="array">
+                    <item name="components" xsi:type="array">
+                        <item name="checkout" xsi:type="array">
+                            <item name="children" xsi:type="array">
+                                <!-- Remove authentication (login) widget -->
+                                <item name="authentication" xsi:type="array">
+                                    <item name="config" xsi:type="array">
+                                        <item name="componentDisabled" xsi:type="boolean">true</item>
+                                    </item>
+                                </item>
+
+                                <!-- Remove the progress bar -->
+                                <item name="progressBar" xsi:type="array">
+                                    <item name="config" xsi:type="array">
+                                        <item name="componentDisabled" xsi:type="boolean">true</item>
+                                    </item>
+                                </item>
+
+                                <!-- Remove sidebar -->
+                                <item name="sidebar" xsi:type="array">
+                                    <item name="config" xsi:type="array">
+                                        <item name="componentDisabled" xsi:type="boolean">true</item>
+                                    </item>
+                                </item>
+
+                                <item name="steps" xsi:type="array">
+                                    <item name="children" xsi:type="array">
+                                        <item name="shipping-step" xsi:type="array">
+                                            <item name="children" xsi:type="array">
+                                                <!-- Shipping methods (and disabling a bunch of things) -->
+                                                <item name="shippingAddress" xsi:type="array">
+                                                    <item name="children" xsi:type="array">
+                                                        <!-- Remove email widget -->
+                                                        <item name="customer-email" xsi:type="array">
+                                                            <item name="config" xsi:type="array">
+                                                                <item name="componentDisabled" xsi:type="boolean">true</item>
+                                                            </item>
+                                                        </item>
+
+                                                        <item name="before-form" xsi:type="array">
+                                                            <item name="component" xsi:type="string">uiComponent</item>
+                                                            <item name="displayArea" xsi:type="string">before-form</item>
+                                                            <item name="children" xsi:type="array">
+                                                                <!-- before form fields -->
+                                                            </item>
+                                                        </item>
+                                                        <item name="before-fields" xsi:type="array">
+                                                            <item name="component" xsi:type="string">uiComponent</item>
+                                                            <item name="displayArea" xsi:type="string">before-fields</item>
+                                                            <item name="children" xsi:type="array">
+                                                                <!-- before fields -->
+                                                            </item>
+                                                        </item>
+
+                                                        <!-- Disable address list -->
+                                                        <item name="address-list" xsi:type="array">
+                                                            <item name="config" xsi:type="array">
+                                                                <item name="componentDisabled" xsi:type="boolean">true</item>
+                                                            </item>
+                                                        </item>
+                                                        <item name="address-list-additional-addresses" xsi:type="array">
+                                                            <item name="config" xsi:type="array">
+                                                                <item name="componentDisabled" xsi:type="boolean">true</item>
+                                                            </item>
+                                                        </item>
+
+                                                        <item name="before-shipping-method-form" xsi:type="array">
+                                                            <item name="component" xsi:type="string">uiComponent</item>
+                                                            <item name="displayArea" xsi:type="string">before-shipping-method-form</item>
+                                                            <item name="children" xsi:type="array">
+                                                                <!-- address-list-additional-addresses -->
+                                                            </item>
+                                                        </item>
+
+                                                        <!-- Remove Shipping address -->
+                                                        <item name="shipping-address-fieldset" xsi:type="array">
+                                                            <item name="config" xsi:type="array">
+                                                                <item name="componentDisabled" xsi:type="boolean">true</item>
+                                                            </item>
+                                                        </item>
+                                                    </item>
+                                                </item>
+
+                                                <!-- Terms and conditions -->
+                                                <item name="agreements" xsi:type="array">
+                                                    <item name="component" xsi:type="string">Magento_CheckoutAgreements/js/view/checkout-agreements</item>
+                                                    <item name="sortOrder" xsi:type="string">2</item>
+                                                    <item name="dataScope" xsi:type="string">checkoutAgreements</item>
+                                                    <item name="provider" xsi:type="string">checkoutProvider</item>
+                                                </item>
+
+                                                <!-- Discount widget -->
+                                                <item name="discount" xsi:type="array">
+                                                    <item name="component" xsi:type="string">Magento_SalesRule/js/view/payment/discount</item>
+                                                    <item name="sortOrder" xsi:type="string">3</item>
+                                                    <item name="children" xsi:type="array">
+                                                        <item name="errors" xsi:type="array">
+                                                            <item name="sortOrder" xsi:type="string">3</item>
+                                                            <item name="component" xsi:type="string">Magento_SalesRule/js/view/payment/discount-messages</item>
+                                                        </item>
+                                                    </item>
+                                                </item>
+                                            </item>
+                                        </item>
+
+                                        <!-- Disable the second checkout step, containing all billing/payment information -->
+                                        <item name="billing-step" xsi:type="array">
+                                            <item name="config" xsi:type="array">
+                                                <item name="componentDisabled" xsi:type="boolean">true</item>
+                                            </item>
+                                        </item>
+                                    </item>
+                                </item>
+                            </item>
+                        </item>
+                    </item>
+                </argument>
+            </arguments>
+        </referenceBlock>
+    </body>
+</page>

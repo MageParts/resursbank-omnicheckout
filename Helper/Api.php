@@ -25,6 +25,10 @@ class Api extends \Magento\Framework\App\Helper\AbstractHelper
      * @var \Magento\Framework\ObjectManagerInterface
      */
     private $objectManager;
+    /**
+     * @var \Magento\CheckoutAgreements\Model\CheckoutAgreementsRepository
+     */
+    private $checkoutAgreementsRepository;
 
     /**
      * @param \Magento\Checkout\Model\Session $checkoutSession
@@ -32,19 +36,22 @@ class Api extends \Magento\Framework\App\Helper\AbstractHelper
      * @param \Magento\Quote\Api\CartRepositoryInterface $quoteRepository
      * @param \Magento\Directory\Helper\Data $directoryHelper
      * @param \Magento\Framework\ObjectManagerInterface $objectManager
+     * @param \Magento\CheckoutAgreements\Model\CheckoutAgreementsRepository $checkoutAgreementsRepository
      */
     public function __construct(
         \Magento\Checkout\Model\Session $checkoutSession,
         \Magento\Framework\App\Helper\Context $context,
         \Magento\Quote\Api\CartRepositoryInterface $quoteRepository,
         \Magento\Directory\Helper\Data $directoryHelper,
-        \Magento\Framework\ObjectManagerInterface $objectManager
+        \Magento\Framework\ObjectManagerInterface $objectManager,
+        \Magento\CheckoutAgreements\Model\CheckoutAgreementsRepository $checkoutAgreementsRepository
     ) {
         $this->checkoutSession = $checkoutSession;
         $this->context = $context;
         $this->quoteRepository = $quoteRepository;
         $this->directoryHelper = $directoryHelper;
         $this->objectManager = $objectManager;
+        $this->checkoutAgreementsRepository = $checkoutAgreementsRepository;
 
         parent::__construct($context);
     }

@@ -1,0 +1,16 @@
+/*  Omni Checkout.
+--------------------------------------------------------------------- */
+#omnicheckout-iframe-container iframe {
+    min-height: 1400px;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid silver;
+}
+
+/*  Media queries.
+--------------------------------------------------------------------- */
+@media screen and (max-width: 640px) {
+    #omnicheckout-iframe-container iframe {
+        height: auto !important;
+    }
+}
