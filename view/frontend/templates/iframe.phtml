@@ -7,7 +7,7 @@
 ?>
 <?php if ($this->getApiModel()->paymentSessionInitialized()): ?>
     <div id="omnicheckout-iframe-container">
-        <?php echo preg_replace('#<script(.*?)>(.*?)</script>#is', '', $this->getApiModel()->getSessionIframeHtml()) ?>
+        <?php echo $this->getApiModel()->getSessionIframeHtml() ?>
     </div>
 <?php else: ?>
     <div class="resursbank-messages">
