@@ -36,7 +36,7 @@ define([
          *
          * @type {Object}
          */
-        $this.ajaxLoader = null;
+        // $this.ajaxLoader = null;
 
         /**
          * A form key for the AJAX request of removing the item.
@@ -71,28 +71,34 @@ define([
 
             if (!disabled && !isNaN(quantity)) {
                 $this.disable();
-                $this.ajaxLoader.place($this.element);
+                // $this.ajaxLoader.place($this.element);
+
+                console.log($this.id + ' qty:', quantity);
 
                 mediator.broadcast('checkout:item-quantity-update-pending', {
                     id: $this.id
                 });
 
                 ajaxQ.queue({
-                    url: $this.baseUrl + 'cart/update/id/' + $this.id + '/qty/' + quantity,
+                    url: $this.baseUrl + 'rest/default/V1/omnicheckout/cart/item/' + $this.id + '/set_qty/' + quantity,
                     chain: 'omnicheckout',
-                    parameters: {
-                        itemId: $this.id,
-                        itemQuantity: quantity,
-                        form_key: FORM_KEY
-                    },
+                    method: 'POST',
 
-                    onSuccess: function (response) {
-                        var data = response.responseJSON;
+                    // data: {
+                    //     itemId: $this.id,
+                    //     itemQuantity: quantity,
+                    //     form_key: $this.formKey
+                    // },
 
-                        if (data.message.error.length) {
-                            handleAjaxErrors(data.message.error);
-                        }
-                        else {
+                    success: function (response) {
+                        var data = JSON.parse(response);
+
+                        console.log(data);
+
+                        // if (data.message.error.length) {
+                        //     handleAjaxErrors(data.message.error);
+                        // }
+                        // else {
                             if (data.item_total) {
                                 mediator.broadcast('checkout:item-price-update', {
                                     id: $this.id,
@@ -113,18 +119,18 @@ define([
                                     content: data.elements['header-cart']
                                 });
                             }
-                        }
+                        // }
                     },
 
-                    onFailure: function (response) {
-                        var data = response.responseJSON;
+                    error: function (response) {
+                        var data = JSON.parse(response);
 
                         alert("Sorry, but we can't update quantity of the product at this moment. Please refresh and try again.");
                     },
 
-                    onComplete: function () {
+                    complete: function () {
                         $this.enable();
-                        $this.ajaxLoader.remove($this.element);
+                        // $this.ajaxLoader.remove($this.element);
 
                         mediator.broadcast('checkout:item-quantity-update-complete', {
                             id: $this.id
@@ -213,8 +219,8 @@ define([
         }
 
         if ($this.element) {
-            $this.element.observe('change', $this.pushQuantity);
-            $this.ajaxLoader = ajaxLoaderFactory({});
+            $($this.element).on('change', $this.pushQuantity);
+            // $this.ajaxLoader = ajaxLoaderFactory({});
         }
 
         mediator.listen({
