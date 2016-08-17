@@ -10,7 +10,7 @@
         <observer name="resursbank_omnicheckout_quote_init" instance="Resursbank\OmniCheckout\Observer\QuoteInit" />
     </event>
 
-    <!--<event name="sales_quote_save_after">-->
-        <!--<observer name="resursbank_omnicheckout_quote_update_iframe_session" instance="Resursbank\OmniCheckout\Observer\UpdateIframeSession" />-->
-    <!--</event>-->
+    <event name="sales_quote_save_after">
+        <observer name="resursbank_omnicheckout_quote_save_update_iframe" instance="Resursbank\OmniCheckout\Observer\UpdateIframeSession" />
+    </event>
 </config>

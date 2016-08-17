@@ -72,17 +72,15 @@ define([
 
                 ajaxQ.queue({
                     chain: 'omnicheckout',
-                    url: $this.baseUrl + 'rest/default/V1/omnicheckout/cart/item/' + $this.id,
-                    method: 'DELETE',
+                    url: $this.baseUrl + 'omnicheckout/cart/removeItem/id/' + $this.id,
+                    method: 'GET',
 
                     // data: {
                     //     itemId: $this.id,
                     //     form_key: $this.formKey
                     // },
 
-                    success: function (response) {
-                        var data = JSON.parse(response);
-
+                    success: function (data) {
                         console.log(data);
 
                         // if (data.message.error.length) {
@@ -110,9 +108,7 @@ define([
                         }
                     },
 
-                    error: function (response) {
-                        var data = JSON.parse(response);
-
+                    error: function (data) {
                         alert("Sorry, but we can't remove the product at this moment. Please refresh and try again.");
 
                         $this.enable();

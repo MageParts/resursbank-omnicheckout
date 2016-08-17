@@ -80,19 +80,17 @@ define([
                 });
 
                 ajaxQ.queue({
-                    url: $this.baseUrl + 'rest/default/V1/omnicheckout/cart/item/' + $this.id + '/set_qty/' + quantity,
+                    url: $this.baseUrl + 'omnicheckout/cart/setItemQty',
                     chain: 'omnicheckout',
                     method: 'POST',
 
-                    // data: {
-                    //     itemId: $this.id,
-                    //     itemQuantity: quantity,
-                    //     form_key: $this.formKey
-                    // },
+                    data: {
+                        id: $this.id,
+                        qty: quantity,
+                        form_key: $this.formKey
+                    },
 
-                    success: function (response) {
-                        var data = JSON.parse(response);
-
+                    success: function (data) {
                         console.log(data);
 
                         // if (data.message.error.length) {
@@ -122,9 +120,7 @@ define([
                         // }
                     },
 
-                    error: function (response) {
-                        var data = JSON.parse(response);
-
+                    error: function (data) {
                         alert("Sorry, but we can't update quantity of the product at this moment. Please refresh and try again.");
                     },
 
