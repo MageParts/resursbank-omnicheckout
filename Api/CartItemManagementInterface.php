@@ -13,5 +13,6 @@ interface CartItemManagementInterface
      * @return mixed
      */
     public function setQty($itemId, $qty);
+    public function getQty();
 
 }

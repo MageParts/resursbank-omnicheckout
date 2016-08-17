@@ -4,7 +4,14 @@
 
     <!-- Update quote item qty -->
     <route url="/V1/omnicheckout/cart/item/:itemId/set_qty/:qty" method="POST">
-        <service class="Resursbank\OmniCheckout\Api\CartItemManagementtInterface" method="setQty"/>
+        <service class="Resursbank\OmniCheckout\Api\CartItemManagementInterface" method="setQty"/>
+        <resources>
+            <resource ref="anonymous" />
+        </resources>
+    </route>
+
+    <route url="/V1/omnicheckout/cart/item/qty" method="GET">
+        <service class="Resursbank\OmniCheckout\Api\CartItemManagementInterface" method="getQty"/>
         <resources>
             <resource ref="anonymous" />
         </resources>

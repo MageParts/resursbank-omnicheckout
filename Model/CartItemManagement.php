@@ -61,4 +61,9 @@ class CartItemManagement implements \Resursbank\OmniCheckout\Api\CartItemManagem
         ];
     }
 
+    public function getQty()
+    {
+        return 'test';
+    }
+
 }
