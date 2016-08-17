@@ -15,7 +15,7 @@
         'Resursbank_OmniCheckout/js/omnicheckout'
     ], function(omnicheckout) {
         omnicheckout.init({
-            baseUrl: '<?php echo $block->getUrl('omnicheckout'); ?>',
+            baseUrl: '<?php echo $block->getBaseUrl(); ?>',
             formKey: '<?php echo $block->escapeHtml($block->getFormKey()); ?>',
             iframeUrl: '<?php echo $block->getApiModel()->getIframeUrl(); ?>'
         });

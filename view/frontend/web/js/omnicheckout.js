@@ -6,11 +6,12 @@ define([
     'Resursbank_OmniCheckout/js/mediator',
     'Resursbank_OmniCheckout/js/ajax-q',
     'Resursbank_OmniCheckout/js/cart/item/delete',
-    'Resursbank_OmniCheckout/js/cart/item/update'
-], function ($, mediator, ajaxQ, itemDelete, itemUpdate) {
+    'Resursbank_OmniCheckout/js/cart/item/quantity'
+], function ($, mediator, ajaxQ, itemDelete, itemQuantity) {
     var $this = {};
     var initialized = false;
     var deleteButtons = [];
+    var quantityInputs = [];
 
     var initiateDeleteButtons = function () {
         $.each($this.getDeleteButtons(), function (i, button) {
@@ -26,12 +27,12 @@ define([
     var initiateQuantityInputs = function () {
         $.each($this.getQuantityInputs(), function (i, input) {
             console.log(input, $this.getIdFromQuantityInput(input));
-            // deleteButtons.push(itemDelete({
-            //     element: button,
-            //     baseUrl: $this.baseUrl,
-            //     formKey: $this.formKey,
-            //     id: $this.getIdFromDeleteButton(button)
-            // }));
+            quantityInputs.push(itemQuantity({
+                element: input,
+                baseUrl: $this.baseUrl,
+                formKey: $this.formKey,
+                id: $this.getIdFromQuantityInput(input)
+            }));
         });
     };
 
@@ -53,6 +54,16 @@ define([
 
             initiateDeleteButtons();
             initiateQuantityInputs();
+
+            addEventListener('beforeunload', function (event) {
+                $.each(deleteButtons, function (i, button) {
+                    button.destroy();
+                });
+
+                $.each(quantityInputs, function (i, input) {
+                    input.destroy();
+                });
+            }, false);
 
             initialized = true;
         }
