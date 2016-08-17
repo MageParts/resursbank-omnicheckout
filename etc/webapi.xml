@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
+
+    <!-- Update quote item qty -->
+    <route url="/V1/omnicheckout/cart/item/:itemId/set_qty/:qty" method="POST">
+        <service class="Resursbank\OmniCheckout\Api\CartItemManagementtInterface" method="setQty"/>
+        <resources>
+            <resource ref="anonymous" />
+        </resources>
+    </route>
+
+</routes>
