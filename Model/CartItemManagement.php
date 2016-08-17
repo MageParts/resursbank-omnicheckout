@@ -2,6 +2,8 @@
 
 namespace Resursbank\OmniCheckout\Model;
 
+use Symfony\Component\Config\Definition\Exception\Exception;
+
 class CartItemManagement implements \Resursbank\OmniCheckout\Api\CartItemManagementInterface
 {
 
@@ -53,12 +55,12 @@ class CartItemManagement implements \Resursbank\OmniCheckout\Api\CartItemManagem
         // Save quote changes.
         $this->quoteRepository->save($this->apiHelper->getQuote());
 
-        return [
+        return json_encode([
             'id' => $itemId,
             'item_total' => $this->checkoutHelper->formatPrice($item->getRowTotalInclTax()),
             'item_total_excl_tax' => $this->checkoutHelper->formatPrice($item->getRowTotal()),
             'cart_qty' => $item->getQty()
-        ];
+        ]);
     }
 
 }

@@ -5,15 +5,19 @@
 ?>
 
 <script type="text/javascript">
-    var OMNICHECKOUT = '<?php echo $block->getUrl('omnicheckout'); ?>';
-    var OMNICHECKOUT_IFRAME_URL = '<?php echo $block->getApiModel()->getIframeUrl(); ?>';
-    var FORM_KEY = '<?php echo $block->escapeHtml($block->getFormKey()); ?>';
+//    var OMNICHECKOUT = '<?php //echo $block->getUrl('omnicheckout'); ?>//';
+//    var OMNICHECKOUT_IFRAME_URL = '<?php //echo $block->getApiModel()->getIframeUrl(); ?>//';
+//    var FORM_KEY = '<?php //echo $block->escapeHtml($block->getFormKey()); ?>//';
 </script>
 
 <script>
     require([
         'Resursbank_OmniCheckout/js/omnicheckout'
     ], function(omnicheckout) {
-        
+        omnicheckout.init({
+            baseUrl: '<?php echo $block->getUrl('omnicheckout'); ?>',
+            formKey: '<?php echo $block->escapeHtml($block->getFormKey()); ?>',
+            iframeUrl: '<?php echo $block->getApiModel()->getIframeUrl(); ?>'
+        });
     });
 </script>

@@ -40,11 +40,11 @@ define([
         $this.formKey = '';
 
         /**
-         * The URL to send the AJAX request to that removes the item.
+         * The base URL to send the AJAX request to that removes the item.
          *
          * @type {string}
          */
-        $this.requestUrl = '';
+        $this.baseUrl = '';
 
         /**
          * An click handler that blocks the event from reloading the page. It then disables the instance and
@@ -54,29 +54,29 @@ define([
          */
         $this.preparePush = function (event) {
             $this.preventLink(event)
-                .pushRemoveItem();
+                .pushDeleteItem();
         };
 
         /**
-         * Sends and AJAX request about removing an item.
+         * Sends and AJAX request about deleting an item.
          *
          * @returns {Object} $this.
          */
-        $this.pushRemoveItem = function () {
+        $this.pushDeleteItem = function () {
             if (!disabled) {
                 $this.disable();
 
-                MEDIATOR.broadcast('checkout:item-remove-pending', {
+                mediator.broadcast('checkout:item-remove-pending', {
                     id: $this.id
                 });
 
-                AJAX.queue({
+                ajaxQ.queue({
                     chain: 'omnicheckout',
-                    url: OMNICHECKOUT + 'cart/delete/id/' + $this.id,
+                    url: $this.baseUrl + 'cart/delete/id/' + $this.id,
 
                     parameters: {
                         itemId: $this.id,
-                        form_key: FORM_KEY
+                        form_key: $this.formKey
                     },
 
                     success: function (response) {
@@ -86,22 +86,22 @@ define([
                             handleAjaxErrors(data.message.error);
                         }
                         else if (data.cart_qty === 0) {
-                            location.href = OMNICHECKOUT;
+                            location.href = $this.baseUrl;
                         }
                         else if (data.hasOwnProperty('elements')) {
-                            MEDIATOR.broadcast('shipping:update-content', {
+                            mediator.broadcast('shipping:update-content', {
                                 content: data.elements['omnicheckout-shipping-methods-list']
                             });
 
-                            MEDIATOR.broadcast('discount:update-content', {
+                            mediator.broadcast('discount:update-content', {
                                 content: data.elements['current-coupon-code']
                             });
 
-                            MEDIATOR.broadcast('minicart:update-content', {
+                            mediator.broadcast('minicart:update-content', {
                                 content: data.elements['header-cart']
                             });
 
-                            MEDIATOR.broadcast('checkout:item-remove-success', {
+                            mediator.broadcast('checkout:item-remove-success', {
                                 id: $this.id
                             });
                         }
@@ -130,8 +130,8 @@ define([
             if (!disabled) {
                 disabled = true;
 
-                $this.element.stopObserving('click', $this.preparePush);
-                $this.element.observe('click', $this.preventLink);
+                $($this.element).off('click', $this.preparePush);
+                $($this.element).on('click', $this.preventLink);
             }
 
             return $this;
@@ -146,8 +146,8 @@ define([
             if (disabled) {
                 disabled = false;
 
-                $this.element.observe('click', $this.preparePush);
-                $this.element.stopObserving('click', $this.preventLink);
+                $($this.element).on('click', $this.preparePush);
+                $($this.element).off('click', $this.preventLink);
             }
 
             return $this;
@@ -196,7 +196,7 @@ define([
         }
 
         if ($this.element) {
-            $this.element.observe('click', $this.preparePush);
+            $($this.element).on('click', $this.preparePush);
         }
 
         return $this;
