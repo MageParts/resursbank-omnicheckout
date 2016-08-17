@@ -15,15 +15,11 @@ class SetItemQty extends \Magento\Framework\App\Action\Action
      * @var \Resursbank\OmniCheckout\Helper\Api
      */
     private $apiHelper;
+
     /**
      * @var \Magento\Checkout\Helper\Data
      */
     private $checkoutHelper;
-
-    /**
-     * @var \Magento\Quote\Api\CartItemRepositoryInterface
-     */
-    private $itemRepository;
 
     /**
      * @param \Magento\Framework\App\Action\Context $context
@@ -31,21 +27,18 @@ class SetItemQty extends \Magento\Framework\App\Action\Action
      * @param \Resursbank\OmniCheckout\Helper\Api $apiHelper
      * @param \Magento\Checkout\Helper\Data $checkoutHelper
      * @param \Magento\Framework\Controller\ResultFactory $resultFactory
-     * @param \Magento\Quote\Api\CartItemRepositoryInterface $itemRepository
      */
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
         \Magento\Quote\Api\CartRepositoryInterface $quoteRepository,
         \Resursbank\OmniCheckout\Helper\Api $apiHelper,
         \Magento\Checkout\Helper\Data $checkoutHelper,
-        \Magento\Framework\Controller\ResultFactory $resultFactory,
-        \Magento\Quote\Api\CartItemRepositoryInterface $itemRepository
+        \Magento\Framework\Controller\ResultFactory $resultFactory
     ) {
         $this->quoteRepository = $quoteRepository;
         $this->apiHelper = $apiHelper;
         $this->resultFactory = $resultFactory;
         $this->checkoutHelper = $checkoutHelper;
-        $this->itemRepository = $itemRepository;
 
         parent::__construct($context);
     }

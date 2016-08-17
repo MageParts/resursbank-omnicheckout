@@ -72,13 +72,13 @@ define([
 
                 ajaxQ.queue({
                     chain: 'omnicheckout',
-                    url: $this.baseUrl + 'omnicheckout/cart/removeItem/id/' + $this.id,
-                    method: 'GET',
+                    url: $this.baseUrl + 'omnicheckout/cart/removeItem',
+                    method: 'POST',
 
-                    // data: {
-                    //     itemId: $this.id,
-                    //     form_key: $this.formKey
-                    // },
+                    data: {
+                        id: $this.id,
+                        form_key: $this.formKey
+                    },
 
                     success: function (data) {
                         console.log(data);
