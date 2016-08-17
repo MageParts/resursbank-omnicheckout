@@ -9,3 +9,11 @@
     var OMNICHECKOUT_IFRAME_URL = '<?php echo $block->getApiModel()->getIframeUrl(); ?>';
     var FORM_KEY = '<?php echo $block->escapeHtml($block->getFormKey()); ?>';
 </script>
+
+<script>
+    require([
+        'Resursbank_OmniCheckout/js/omnicheckout'
+    ], function(omnicheckout) {
+        
+    });
+</script>

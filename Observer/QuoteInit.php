@@ -33,9 +33,9 @@ class QuoteInit implements ObserverInterface
     public function execute(\Magento\Framework\Event\Observer $observer)
     {
         // Initialize payment session.
-        if (!$this->apiModel->paymentSessionInitialized()) {
-            $this->apiModel->initPaymentSession();
-        }
+//        if (!$this->apiModel->paymentSessionInitialized()) {
+//            $this->apiModel->initPaymentSession();
+//        }
     }
 
 }
