@@ -25,10 +25,16 @@ class Api extends \Magento\Framework\App\Helper\AbstractHelper
      * @var \Magento\Framework\ObjectManagerInterface
      */
     private $objectManager;
+
     /**
      * @var \Magento\CheckoutAgreements\Model\CheckoutAgreementsRepository
      */
     private $checkoutAgreementsRepository;
+
+    /**
+     * @var \Magento\Framework\App\Config\ScopeConfigInterface
+     */
+    private $scopeConfig;
 
     /**
      * @param \Magento\Checkout\Model\Session $checkoutSession
@@ -37,6 +43,7 @@ class Api extends \Magento\Framework\App\Helper\AbstractHelper
      * @param \Magento\Directory\Helper\Data $directoryHelper
      * @param \Magento\Framework\ObjectManagerInterface $objectManager
      * @param \Magento\CheckoutAgreements\Model\CheckoutAgreementsRepository $checkoutAgreementsRepository
+     * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      */
     public function __construct(
         \Magento\Checkout\Model\Session $checkoutSession,
@@ -44,7 +51,8 @@ class Api extends \Magento\Framework\App\Helper\AbstractHelper
         \Magento\Quote\Api\CartRepositoryInterface $quoteRepository,
         \Magento\Directory\Helper\Data $directoryHelper,
         \Magento\Framework\ObjectManagerInterface $objectManager,
-        \Magento\CheckoutAgreements\Model\CheckoutAgreementsRepository $checkoutAgreementsRepository
+        \Magento\CheckoutAgreements\Model\CheckoutAgreementsRepository $checkoutAgreementsRepository,
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
     ) {
         $this->checkoutSession = $checkoutSession;
         $this->context = $context;
@@ -52,8 +60,10 @@ class Api extends \Magento\Framework\App\Helper\AbstractHelper
         $this->directoryHelper = $directoryHelper;
         $this->objectManager = $objectManager;
         $this->checkoutAgreementsRepository = $checkoutAgreementsRepository;
+        $this->scopeConfig = $scopeConfig;
 
         parent::__construct($context);
+
     }
 
     /**

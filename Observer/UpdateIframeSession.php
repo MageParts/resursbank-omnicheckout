@@ -3,9 +3,9 @@
 namespace Resursbank\OmniCheckout\Observer;
 
 /**
- * Executes after a quote has been initialized.
+ * Executes when quote is saved.
  */
-class QuoteInit implements \Magento\Framework\Event\ObserverInterface
+class UpdateIframeSession implements \Magento\Framework\Event\ObserverInterface
 {
 
     /**
@@ -38,13 +38,10 @@ class QuoteInit implements \Magento\Framework\Event\ObserverInterface
      */
     public function execute(\Magento\Framework\Event\Observer $observer)
     {
-        // Initialize payment session.
-//        if (!$this->apiModel->paymentSessionInitialized()) {
-//            // Assign default address information to quote.
-//            $this->apiHelper->quoteAssignDefaultAddress();
-//
-//            // Initialize payment session.
-//            $this->apiModel->initPaymentSession();
+//        if ($this->apiHelper->cartIsEmpty()) {
+//            $this->apiModel->deletePaymentSession();
+//        } else {
+//            $this->apiModel->updatePaymentSession();
 //        }
     }
 

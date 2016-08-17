@@ -9,4 +9,8 @@
     <event name="controller_action_predispatch_checkout_index_index">
         <observer name="resursbank_omnicheckout_quote_init" instance="Resursbank\OmniCheckout\Observer\QuoteInit" />
     </event>
+
+    <!--<event name="sales_quote_save_after">-->
+        <!--<observer name="resursbank_omnicheckout_quote_update_iframe_session" instance="Resursbank\OmniCheckout\Observer\UpdateIframeSession" />-->
+    <!--</event>-->
 </config>
