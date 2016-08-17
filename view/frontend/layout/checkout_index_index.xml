@@ -20,13 +20,14 @@
 
         <!-- Global JavaScript variables -->
         <referenceContainer name="before.body.end">
-            <block class="Resursbank\OmniCheckout\Block\Js" template="Resursbank_OmniCheckout::js.phtml" />
+
         </referenceContainer>
 
         <!-- Move cart above checkout elements -->
         <move element="checkout.cart" destination="content" before="checkout.root" />
 
         <referenceBlock name="content">
+            <block class="Resursbank\OmniCheckout\Block\Js" template="Resursbank_OmniCheckout::js.phtml" />
             <block class="Resursbank\OmniCheckout\Block\Iframe" name="omnicheckout.iframe" template="Resursbank_OmniCheckout::iframe.phtml" />
         </referenceBlock>
 

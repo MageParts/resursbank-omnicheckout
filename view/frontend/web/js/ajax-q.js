@@ -16,14 +16,14 @@ define(['jquery'], function ($) {
         var ongoingCall = null;
 
         /**
-         * The onComplete callback for AJAX calls. Their callback gets replaced with this one but the original gets
+         * The "complete" callback for AJAX calls. Their callback gets replaced with this one but the original gets
          * fired inside of it.
          *
          * @param callObj
          * @returns {Function}
          */
         var onCallComplete = function (callObj) {
-            var completeCallback = callObj.onComplete;
+            var completeCallback = callObj.complete;
 
             return function () {
                 var nextCall;
@@ -38,7 +38,7 @@ define(['jquery'], function ($) {
 
                 if (running && $this.calls.queue.length > 0) {
                     nextCall = $this.calls.queue.shift();
-                    nextCall.onComplete = onCallComplete(nextCall);
+                    nextCall.complete = onCallComplete(nextCall);
                     $this.call(nextCall);
                 }
                 else if ($this.calls.queue.length === 0) {
@@ -96,7 +96,7 @@ define(['jquery'], function ($) {
             if ($this.calls.queue.length > 0 && !running) {
                 running = true;
                 nextCall = $this.calls.queue.shift();
-                nextCall.onComplete = onCallComplete(nextCall);
+                nextCall.complete = onCallComplete(nextCall);
 
                 $this.call(nextCall);
             }
@@ -132,7 +132,7 @@ define(['jquery'], function ($) {
          *
          * @param {Object} callObj - The AJAX request. This object can hold any information relevant to the call.
          * @param {String} callObj.url - Where the call should be pointed to.
-         * @param {*} [callObj.parameters] - Data that should be sent with the call.
+         * @param {*} [callObj.data] - Data that should be sent with the call.
          * @param {Function} [callObj.success] - A callback when the AJAX call has been successful.
          * @param {Function} [callObj.error] - A callback when the AJAX call has failed.
          * @param {Function} [callObj.complete] - A callback when the AJAX call has completed.

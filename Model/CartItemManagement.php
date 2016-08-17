@@ -2,6 +2,8 @@
 
 namespace Resursbank\OmniCheckout\Model;
 
+use Symfony\Component\Config\Definition\Exception\Exception;
+
 class CartItemManagement implements \Resursbank\OmniCheckout\Api\CartItemManagementInterface
 {
 

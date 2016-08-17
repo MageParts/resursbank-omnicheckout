@@ -34,4 +34,11 @@
         </resources>
     </route>
 
+    <!--<route url="/V1/omnicheckout/cart/item/qty" method="GET">-->
+        <!--<service class="Resursbank\OmniCheckout\Api\CartItemManagementInterface" method="getQty"/>-->
+        <!--<resources>-->
+            <!--<resource ref="anonymous" />-->
+        <!--</resources>-->
+    <!--</route>-->
+
 </routes>
