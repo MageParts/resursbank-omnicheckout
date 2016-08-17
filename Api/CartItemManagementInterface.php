@@ -8,11 +8,16 @@ interface CartItemManagementInterface
     /**
      * Set quote item quantity.
      *
-     * @param string $itemId
+     * @param int $itemId
      * @param float $qty
-     * @return mixed
+     * @return string JSON
      */
-    public function setQty($itemId, $qty);
-    public function getQty();
+    public function setItemQty($itemId, $qty);
+
+    /**
+     * @param int $itemId
+     * @return string JSON
+    */
+    public function removeItem($itemId);
 
 }

@@ -16,12 +16,20 @@ class QuoteInit implements ObserverInterface
     private $apiModel;
 
     /**
+     * @var \Resursbank\OmniCheckout\Helper\Api
+     */
+    private $apiHelper;
+
+    /**
      * @param \Resursbank\OmniCheckout\Model\Api $apiModel
+     * @param \Resursbank\OmniCheckout\Helper\Api $apiHelper
      */
     public function __construct(
-        \Resursbank\OmniCheckout\Model\Api $apiModel
+        \Resursbank\OmniCheckout\Model\Api $apiModel,
+        \Resursbank\OmniCheckout\Helper\Api $apiHelper
     ) {
         $this->apiModel = $apiModel;
+        $this->apiHelper = $apiHelper;
     }
 
     /**
@@ -34,6 +42,10 @@ class QuoteInit implements ObserverInterface
     {
         // Initialize payment session.
         if (!$this->apiModel->paymentSessionInitialized()) {
+            // Assign default address information to quote.
+            $this->apiHelper->quoteAssignDefaultAddress();
+
+            // Initialize payment session.
             $this->apiModel->initPaymentSession();
         }
     }

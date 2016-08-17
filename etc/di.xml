@@ -2,4 +2,6 @@
 
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <preference for="Resursbank\OmniCheckout\Api\CartItemManagementInterface" type="Resursbank\OmniCheckout\Model\CartItemManagement" />
+    <preference for="Resursbank\OmniCheckout\Api\DiscountManagementInterface" type="Resursbank\OmniCheckout\Model\DiscountManagement" />
+    <preference for="Resursbank\OmniCheckout\Api\ShipmentManagementInterface" type="Resursbank\OmniCheckout\Model\ShipmentManagement" />
 </config>

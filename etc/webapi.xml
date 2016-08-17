@@ -2,16 +2,33 @@
 
 <routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
 
-    <!-- Update quote item qty -->
+    <!-- Set quote item qty -->
     <route url="/V1/omnicheckout/cart/item/:itemId/set_qty/:qty" method="POST">
-        <service class="Resursbank\OmniCheckout\Api\CartItemManagementInterface" method="setQty"/>
+        <service class="Resursbank\OmniCheckout\Api\CartItemManagementInterface" method="setItemQty"/>
         <resources>
             <resource ref="anonymous" />
         </resources>
     </route>
 
-    <route url="/V1/omnicheckout/cart/item/qty" method="GET">
-        <service class="Resursbank\OmniCheckout\Api\CartItemManagementInterface" method="getQty"/>
+    <!-- Delete item -->
+    <route url="/V1/omnicheckout/cart/item/:itemId" method="DELETE">
+        <service class="Resursbank\OmniCheckout\Api\CartItemManagementInterface" method="removeItem"/>
+        <resources>
+            <resource ref="anonymous" />
+        </resources>
+    </route>
+
+    <!-- Apply discount code -->
+    <route url="/V1/omnicheckout/cart/discount/apply/:code" method="GET">
+        <service class="Resursbank\OmniCheckout\Api\DiscountManagementInterface" method="apply"/>
+        <resources>
+            <resource ref="anonymous" />
+        </resources>
+    </route>
+
+    <!-- Set shipping method -->
+    <route url="/V1/omnicheckout/cart/shipment/set_method/:code" method="POST">
+        <service class="Resursbank\OmniCheckout\Api\ShipmentManagementInterface" method="setMethod"/>
         <resources>
             <resource ref="anonymous" />
         </resources>
