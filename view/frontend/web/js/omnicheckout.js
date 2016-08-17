@@ -13,7 +13,19 @@ define([
     console.log('ajaxQ:', ajaxQ);
     console.log('mediator:', mediator);
 
-    return {name: 'omnicheckout'};
+    return {
+        testRequest: function () {
+            ajaxQ.createChain('omnicheckout')
+                .queue({
+                    url: 'http://resursbank.dev/index.php/rest/default/V1/omnicheckout/cart/item/10/set_qty/2',
+                    chain: 'omnicheckout',
+                    data: {
+                        qty: 2
+                    }
+                })
+                .run('omnicheckout');
+        }
+    };
 });
 
 
