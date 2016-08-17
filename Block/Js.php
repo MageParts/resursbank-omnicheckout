@@ -20,11 +20,6 @@ class Js extends \Magento\Framework\View\Element\Template
     private $formKey;
 
     /**
-     * @var \Resursbank\OmniCheckout\Helper\Api
-     */
-//    private $apiHelper;
-
-    /**
      * @param \Magento\Framework\View\Element\Template\Context $context
      * @param \Magento\Framework\UrlInterface $urlManager
      * @param \Resursbank\OmniCheckout\Model\Api $apiModel
@@ -35,14 +30,12 @@ class Js extends \Magento\Framework\View\Element\Template
         \Magento\Framework\View\Element\Template\Context $context,
         \Magento\Framework\UrlInterface $urlManager,
         \Resursbank\OmniCheckout\Model\Api $apiModel,
-//        \Resursbank\OmniCheckout\Helper\Api $apiHelper,
         \Magento\Framework\Data\Form\FormKey $formKey,
         array $data = []
     ) {
         $this->urlManager = $urlManager;
         $this->apiModel = $apiModel;
         $this->formKey = $formKey;
-//        $this->apiHelper = $apiHelper;
 
         parent::__construct($context, $data);
     }
@@ -76,15 +69,5 @@ class Js extends \Magento\Framework\View\Element\Template
     {
         return $this->apiModel;
     }
-
-//    /**
-//     * Retrieve API helper.
-//     *
-//     * @return \Resursbank\OmniCheckout\Helper\Api
-//     */
-//    public function getApiHelper()
-//    {
-//        return $this->apiHelper;
-//    }
 
 }

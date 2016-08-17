@@ -4,12 +4,6 @@
  */
 ?>
 
-<script type="text/javascript">
-//    var OMNICHECKOUT = '<?php //echo $block->getUrl('omnicheckout'); ?>//';
-//    var OMNICHECKOUT_IFRAME_URL = '<?php //echo $block->getApiModel()->getIframeUrl(); ?>//';
-//    var FORM_KEY = '<?php //echo $block->escapeHtml($block->getFormKey()); ?>//';
-</script>
-
 <script>
     require([
         'Resursbank_OmniCheckout/js/omnicheckout'
@@ -17,8 +11,7 @@
         omnicheckout.init({
             baseUrl: '<?php echo $block->getBaseUrl(); ?>',
             formKey: '<?php echo $block->escapeHtml($block->getFormKey()); ?>',
-            iframeUrl: '<?php echo $block->getApiModel()->getIframeUrl(); ?>',
-//            cartId: '<?php //echo $block->getApiHelper()->getQuote()->getId(); ?>//'
+            iframeUrl: '<?php echo $block->getApiModel()->getIframeUrl(); ?>'
         });
     });
 </script>
