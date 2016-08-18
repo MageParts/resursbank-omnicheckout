@@ -4,7 +4,7 @@ namespace Resursbank\OmniCheckout\Controller\Cart;
 
 use Exception;
 
-class SetItemQty extends \Magento\Framework\App\Action\Action
+class SetShippingMethod extends \Magento\Framework\App\Action\Action
 {
     /**
      * @var \Magento\Quote\Api\CartRepositoryInterface
@@ -17,28 +17,20 @@ class SetItemQty extends \Magento\Framework\App\Action\Action
     private $apiHelper;
 
     /**
-     * @var \Magento\Checkout\Helper\Data
-     */
-    private $checkoutHelper;
-
-    /**
      * @param \Magento\Framework\App\Action\Context $context
      * @param \Magento\Quote\Api\CartRepositoryInterface $quoteRepository
      * @param \Resursbank\OmniCheckout\Helper\Api $apiHelper
-     * @param \Magento\Checkout\Helper\Data $checkoutHelper
      * @param \Magento\Framework\Controller\ResultFactory $resultFactory
      */
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
         \Magento\Quote\Api\CartRepositoryInterface $quoteRepository,
         \Resursbank\OmniCheckout\Helper\Api $apiHelper,
-        \Magento\Checkout\Helper\Data $checkoutHelper,
         \Magento\Framework\Controller\ResultFactory $resultFactory
     ) {
         $this->quoteRepository = $quoteRepository;
         $this->apiHelper = $apiHelper;
         $this->resultFactory = $resultFactory;
-        $this->checkoutHelper = $checkoutHelper;
 
         parent::__construct($context);
     }
@@ -52,19 +44,14 @@ class SetItemQty extends \Magento\Framework\App\Action\Action
     public function execute()
     {
         // Get request parameters.
-        $id = (int) $this->getRequest()->getParam('id');
+        $code = (int) $this->getRequest()->getParam('code');
 
-        if (!$id) {
-            throw new Exception('Please provide a valid item id.');
+        if (!$code) {
+            throw new Exception('Please provide a valid shipping method.');
         }
 
-        $qty = (float) $this->getRequest()->getParam('qty');
-
-        /** @var \Magento\Quote\Model\Quote\Item $item */
-        $item = $this->apiHelper->getQuote()->getItemById($id);
-
-        // Update item qty.
-        $item->setQty($qty);
+        // Set shipping method on quote.
+        $this->apiHelper->getQuote()->getShippingAddress()->setShippingMethod($code);
 
         // Save quote changes.
         $this->quoteRepository->save($this->apiHelper->getQuote());
@@ -72,8 +59,7 @@ class SetItemQty extends \Magento\Framework\App\Action\Action
         // Build response object.
         $result = $this->resultFactory->create(\Magento\Framework\Controller\ResultFactory::TYPE_JSON);
         $result->setData([
-            'item_total' => $this->checkoutHelper->formatPrice($item->getRowTotalInclTax()),
-            'item_total_excl_tax' => $this->checkoutHelper->formatPrice($item->getRowTotal())
+            'code' => $code
         ]);
 
         // Respond.

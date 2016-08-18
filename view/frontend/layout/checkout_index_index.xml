@@ -27,6 +27,7 @@
         <move element="checkout.cart" destination="content" before="checkout.root" />
 
         <referenceBlock name="content">
+            <block class="Resursbank\OmniCheckout\Block\DiscountInfo" template="Resursbank_OmniCheckout::discount-info.phtml" />
             <block class="Resursbank\OmniCheckout\Block\Js" template="Resursbank_OmniCheckout::js.phtml" />
             <block class="Resursbank\OmniCheckout\Block\Iframe" name="omnicheckout.iframe" template="Resursbank_OmniCheckout::iframe.phtml" />
         </referenceBlock>

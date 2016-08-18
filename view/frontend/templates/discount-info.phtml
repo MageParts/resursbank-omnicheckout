@@ -1,0 +1,15 @@
+<?php
+/**
+ * Template displaying applied discount code and value.
+ *
+ * @var $block \Resursbank\OmniCheckout\Block\DiscountInfo
+ */
+?>
+
+<div id="discount-info">
+    <?php if ($block->couponIsApplied()): ?>
+        <div class="coupon-code"><?php echo __('Discount code (%s)', $block->getCode()) ?></div>
+        <div class="coupon-discount-amount"><?php echo $block->getDiscountAmount() ?></div>
+    <?php endif; ?>
+</div>
+
