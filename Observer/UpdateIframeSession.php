@@ -39,7 +39,7 @@ class UpdateIframeSession implements \Magento\Framework\Event\ObserverInterface
     public function execute(\Magento\Framework\Event\Observer $observer)
     {
         if ($this->apiModel->paymentSessionInitialized()) {
-            if ($this->apiHelper->cartIsEmpty() ) {
+            if ($this->apiHelper->cartIsEmpty()) {
                 $this->apiModel->deletePaymentSession();
             } else {
                 $this->apiModel->updatePaymentSession();
