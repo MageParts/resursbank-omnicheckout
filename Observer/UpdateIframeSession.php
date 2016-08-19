@@ -33,6 +33,9 @@ class UpdateIframeSession implements \Magento\Framework\Event\ObserverInterface
     /**
      * Address before save event handler
      *
+     * TODO: The quote can be changed externally through the API, we should use some custom timestamp to compare it
+     * TODO: against the quotes update time, and when different update the payment session so its properly synced.
+     *
      * @param \Magento\Framework\Event\Observer $observer
      * @return void
      */
