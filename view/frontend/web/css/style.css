@@ -1,3 +1,91 @@
+/*  Cart table.
+--------------------------------------------------------------------- */
+.checkout-index-index .cart-container .form-cart {
+    width: 100%;
+}
+
+.checkout-index-index .cart-container .form-cart .actions {
+    display: none;
+}
+
+
+/*  Checkout steps.
+--------------------------------------------------------------------- */
+.checkout-index-index #checkout .opc-wrapper {
+    float: none;
+    width:100%;
+}
+
+.checkout-index-index #checkoutSteps #shipping,
+.checkout-index-index #checkoutSteps #shipping-method-buttons-container {
+    display: none !important;
+}
+
+
+/*  Checkout steps - shipping methods.
+--------------------------------------------------------------------- */
+.checkout-index-index #checkoutSteps #opc-shipping_method {
+    width: 500px;
+    float: left;
+    display: block;
+    margin-right: 50px;
+}
+
+
+/*  Checkout steps - checkout agreements.
+--------------------------------------------------------------------- */
+.checkout-index-index #checkoutSteps div[data-role="checkout-agreements"] {
+    width: 200px;
+    float: left;
+    display: block;
+    margin-right: 50px;
+}
+
+.checkout-index-index #checkoutSteps .checkout-agreement {
+    margin-bottom: 10px;
+}
+
+.checkout-index-index #checkoutSteps .checkout-agreement button {
+    color: #1979c3;
+    padding: 0;
+    text-decoration: none;
+    background: none;
+    border: 0 !important;
+    font-weight: 400;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
+    box-shadow: none !important;
+    -moz-box-shadow: none !important;
+}
+
+
+/*  Checkout steps - discount count.
+--------------------------------------------------------------------- */
+.checkout-index-index #checkoutSteps div.discount-code {
+    width: 410px;
+    float: left;
+    display: block;
+}
+
+.checkout-index-index #checkoutSteps #block-discount-heading  {
+    color: #1979c3;
+    display: inline-block;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.checkout-index-index #checkoutSteps div.discount-code .payment-option-inner,
+.checkout-index-index #checkoutSteps div.discount-code .actions-toolbar {
+    margin-top: 15px;
+}
+
+.checkout-index-index #checkoutSteps div.discount-code .applied-discount-amount {
+    color: #C92828;
+    text-align: left;
+    margin-top: 15px;
+}
+
 /*  Omni Checkout.
 --------------------------------------------------------------------- */
 #omnicheckout-iframe-container iframe {
@@ -7,6 +95,11 @@
     border-top: 1px solid silver;
 }
 
+.omni-clear {
+    clear: both;
+}
+
+
 /*  Media queries.
 --------------------------------------------------------------------- */
 @media screen and (max-width: 640px) {
@@ -14,3 +107,27 @@
         height: auto !important;
     }
 }
+
+
+
+/*#terms.button {*/
+    /*color: #1979c3;*/
+    /*padding: 0;*/
+    /*text-decoration: none;*/
+    /*background: none;*/
+    /*border: 0;*/
+    /*font-weight:400;*/
+    /*-webkit-border-radius:;*/
+    /*-moz-border-radius:;*/
+    /*border-radius: 0;*/
+
+/*}*/
+
+
+/*.apply.discount.code-heading {*/
+    /*color: #1979c3;*/
+    /*display: inline-block;*/
+    /*text-decoration: none;*/
+    /*cursor: pointer;*/
+/*}*/
+

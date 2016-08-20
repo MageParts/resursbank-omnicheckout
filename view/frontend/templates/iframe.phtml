@@ -5,6 +5,9 @@
  * @var $block \Resursbank\OmniCheckout\Block\Iframe
  */
 ?>
+
+<div class="omni-clear"><!-- CLEAR FLOATS --></div>
+
 <?php if ($this->getApiModel()->paymentSessionInitialized()): ?>
     <div id="omnicheckout-iframe-container">
         <?php echo $this->getApiModel()->getSessionIframeHtml() ?>

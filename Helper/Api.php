@@ -69,63 +69,6 @@ class Api extends \Magento\Framework\App\Helper\AbstractHelper
     }
 
     /**
-     * Retrieve quote repository model.
-     *
-     * @return \Magento\Quote\Api\CartRepositoryInterface
-     */
-    public function getQuoteRepository()
-    {
-        return $this->quoteRepository;
-    }
-
-    /**
-     * Check if quote object have any items.
-     *
-     * @return bool
-     */
-    public function quoteHasItems()
-    {
-        return $this->getQuote()->hasItems();
-    }
-
-    /**
-     * Check if the quote object is unusable (ie. cannot be checked out).
-     *
-     * @return bool
-     */
-    public function quoteIsUnusable()
-    {
-        return (!$this->getQuote()->hasItems() || $this->getQuote()->getHasError());
-    }
-
-    /**
-     * Redirect back to previous URL.
-     */
-    public function redirectBack()
-    {
-        header('Location: ' . $_SERVER['HTTP_REFERER']);
-    }
-
-    /**
-     * Perform a hard redirect to $url
-     *
-     * @param $url
-     * @throws Exception
-     */
-    public function hardRedirect($url)
-    {
-        $url = (string) $url;
-
-        if (empty($url)) {
-            throw new Exception("Cannot redirect to empty URL.");
-        }
-
-        header('Location: ' . (string) $url) ;
-
-        exit;
-    }
-
-    /**
      * Retrieve/generate unique token used to identify quote/order object when communicating with Resursbank servers.
      * The token is a completely unique string to ensure that callbacks made from Resursbank will identify the correct
      * quote/order.
@@ -183,6 +126,16 @@ class Api extends \Magento\Framework\App\Helper\AbstractHelper
     }
 
     /**
+     * Check if shopping cart is empty.
+     *
+     * @return bool
+     */
+    public function cartIsEmpty()
+    {
+        return ((float) $this->getQuote()->getItemsCount() < 1);
+    }
+
+    /**
      * Clear payment session information from checkout session.
      *
      * @return $this
@@ -195,178 +148,225 @@ class Api extends \Magento\Framework\App\Helper\AbstractHelper
             ->unsetData(\Resursbank\OmniCheckout\Model\Api::PAYMENT_SESSION_IFRAME_KEY);
 
         // Reset rendered checkout blocks.
-        $this->resetCheckoutElements();
+//        $this->resetCheckoutElements();
 
         return $this;
     }
 
-    /**
-     * Check if some value has changed based on a hash stored in the checkout session (useful when checking if certain
-     * blocks have been updated as values are changed in checkout, otherwise we do not need to transport the HTML back
-     * to the client and ultimately we conserve resources that way).
-     *
-     * @param string $value
-     * @param string $key
-     * @return bool
-     */
-    public function blockHasChanged($value, $key)
-    {
-        $result = false;
+//    /**
+//     * Retrieve quote repository model.
+//     *
+//     * @return \Magento\Quote\Api\CartRepositoryInterface
+//     */
+//    public function getQuoteRepository()
+//    {
+//        return $this->quoteRepository;
+//    }
 
-        $value = (string) $value;
-        $key = preg_replace('/[^a-z0-9]/', '', strtolower((string) $key));
+//    /**
+//     * Check if quote object have any items.
+//     *
+//     * @return bool
+//     */
+//    public function quoteHasItems()
+//    {
+//        return $this->getQuote()->hasItems();
+//    }
 
-        $key = 'omnicheckout_hash_' . $key;
+//    /**
+//     * Check if the quote object is unusable (ie. cannot be checked out).
+//     *
+//     * @return bool
+//     */
+//    public function quoteIsUnusable()
+//    {
+//        return (!$this->getQuote()->hasItems() || $this->getQuote()->getHasError());
+//    }
 
-        $current = $this->checkoutSession->getData($key);
-        $new = md5($value);
+//    /**
+//     * Redirect back to previous URL.
+//     */
+//    public function redirectBack()
+//    {
+//        header('Location: ' . $_SERVER['HTTP_REFERER']);
+//    }
 
-        if ($current !== $new) {
-            $this->checkoutSession->setData($key, $new);
-            $result = true;
-        }
+//    /**
+//     * Perform a hard redirect to $url
+//     *
+//     * @param $url
+//     * @throws Exception
+//     */
+//    public function hardRedirect($url)
+//    {
+//        $url = (string) $url;
+//
+//        if (empty($url)) {
+//            throw new Exception("Cannot redirect to empty URL.");
+//        }
+//
+//        header('Location: ' . (string) $url) ;
+//
+//        exit;
+//    }
 
-        return $result;
-    }
+//    /**
+//     * Check if some value has changed based on a hash stored in the checkout session (useful when checking if certain
+//     * blocks have been updated as values are changed in checkout, otherwise we do not need to transport the HTML back
+//     * to the client and ultimately we conserve resources that way).
+//     *
+//     * @param string $value
+//     * @param string $key
+//     * @return bool
+//     */
+//    public function blockHasChanged($value, $key)
+//    {
+//        $result = false;
+//
+//        $value = (string) $value;
+//        $key = preg_replace('/[^a-z0-9]/', '', strtolower((string) $key));
+//
+//        $key = 'omnicheckout_hash_' . $key;
+//
+//        $current = $this->checkoutSession->getData($key);
+//        $new = md5($value);
+//
+//        if ($current !== $new) {
+//            $this->checkoutSession->setData($key, $new);
+//            $result = true;
+//        }
+//
+//        return $result;
+//    }
 
-    /**
-     * Reset checkout elements.
-     *
-     * @return $this
-     */
-    public function resetCheckoutElements()
-    {
-        $this->checkoutSession->setData('omnicheckout_hash_header-cart', null);
-        $this->checkoutSession->setData('omnicheckout_hash_omnicheckout-shipping-methods-list', null);
-        $this->checkoutSession->setData('omnicheckout_hash_current-coupon-code', null);
+//    /**
+//     * Reset checkout elements.
+//     *
+//     * @return $this
+//     */
+//    public function resetCheckoutElements()
+//    {
+//        $this->checkoutSession->setData('omnicheckout_hash_header-cart', null);
+//        $this->checkoutSession->setData('omnicheckout_hash_omnicheckout-shipping-methods-list', null);
+//        $this->checkoutSession->setData('omnicheckout_hash_current-coupon-code', null);
+//
+//        return $this;
+//    }
 
-        return $this;
-    }
+//    /**
+//     * Check if any address information is missing on the quote object.
+//     *
+//     * @return bool
+//     * @todo Check if this is the proper way of checking this, can probably be improved.
+//     */
+//    public function quoteIsMissingAddress()
+//    {
+//        return (!$this->getQuote()->getShippingAddress()->getData('country_id') || !$this->getQuote()->getBillingAddress()->getData('country_id'));
+//    }
 
-    /**
-     * Check if any address information is missing on the quote object.
-     *
-     * @return bool
-     * @todo Check if this is the proper way of checking this, can probably be improved.
-     */
-    public function quoteIsMissingAddress()
-    {
-        return (!$this->getQuote()->getShippingAddress()->getData('country_id') || !$this->getQuote()->getBillingAddress()->getData('country_id'));
-    }
+//    /**
+//     * Assign default address information to quote object (in order to collect available shipping methods).
+//     *
+//     * @param bool $shipping
+//     * @param bool $billing
+//     * @return $this
+//     * @todo This might function differently if users are logged in.
+//     */
+//    public function quoteAssignDefaultAddress($shipping = true, $billing = true)
+//    {
+//        if ($shipping) {
+//            $this->quoteAssignAddress(array(
+//                'country_id' => $this->directoryHelper->getDefaultCountry()
+//            ), 'shipping');
+//        }
+//
+//        if ($billing) {
+//            $this->quoteAssignAddress(array(
+//                'country_id' => $this->directoryHelper->getDefaultCountry()
+//            ), 'billing');
+//        }
+//
+//        return $this;
+//    }
 
-    /**
-     * Assign default address information to quote object (in order to collect available shipping methods).
-     *
-     * @param bool $shipping
-     * @param bool $billing
-     * @return $this
-     * @todo This might function differently if users are logged in.
-     */
-    public function quoteAssignDefaultAddress($shipping = true, $billing = true)
-    {
-        if ($shipping) {
-            $this->quoteAssignAddress(array(
-                'country_id' => $this->directoryHelper->getDefaultCountry()
-            ), 'shipping');
-        }
+//    /**
+//     * Assign address information to quote object.
+//     *
+//     * @param array $data
+//     * @param string $type
+//     * @return $this
+//     * @throws Exception
+//     */
+//    public function quoteAssignAddress(array $data, $type)
+//    {
+//        $this->quoteValidateAddressType($type);
+//
+//        // Create empty address objects if they are missing.
+//        $this->quoteCreateMissingAddressObject($type);
+//
+//        if ($type === 'billing') {
+//            $this->getQuote()->getBillingAddress()->addData($data);
+//        } else {
+//            $this->getQuote()->getShippingAddress()->addData($data);
+//        }
+//
+//        $this->quoteRepository->save($this->getQuote());
+//
+//        return $this;
+//    }
 
-        if ($billing) {
-            $this->quoteAssignAddress(array(
-                'country_id' => $this->directoryHelper->getDefaultCountry()
-            ), 'billing');
-        }
+//    /**
+//     * Assign a clean \Magento\Quote\Model\Quote\Address instance to quote billing/shipping address if needed.
+//     *
+//     * TODO: could be more compact
+//     *
+//     * @param string $type (billing|shipping)
+//     * @return $this
+//     * @throws Exception
+//     */
+//    public function quoteCreateMissingAddressObject($type)
+//    {
+//        $this->quoteValidateAddressType($type);
+//
+//        if ($type === 'billing') {
+//            if (!$this->getQuote()->getBillingAddress()) {
+//                $this->getQuote()->setBillingAddress($this->objectManager->create('Magento\Quote\Model\Quote\Address'));
+//            }
+//        } else {
+//            if (!$this->getQuote()->getShippingAddress()) {
+//                $this->getQuote()->setShippingAddress($this->objectManager->create('Magento\Quote\Model\Quote\Address'));
+//            }
+//        }
+//
+//        return $this;
+//    }
 
-        return $this;
-    }
+//    /**
+//     * Validate address type, should be either billing or shipping.
+//     *
+//     * @param string $type
+//     * @return bool
+//     * @throws Exception
+//     */
+//    public function quoteValidateAddressType(&$type)
+//    {
+//        $type = (string) $type;
+//
+//        if ($type !== 'billing' && $type !== 'shipping') {
+//            throw new Exception("Invalid address type provided.");
+//        }
+//
+//        return true;
+//    }
 
-    /**
-     * Assign address information to quote object.
-     *
-     * @param array $data
-     * @param string $type
-     * @return $this
-     * @throws Exception
-     */
-    public function quoteAssignAddress(array $data, $type)
-    {
-        $this->quoteValidateAddressType($type);
-
-        // Create empty address objects if they are missing.
-        $this->quoteCreateMissingAddressObject($type);
-
-        if ($type === 'billing') {
-            $this->getQuote()->getBillingAddress()->addData($data);
-        } else {
-            $this->getQuote()->getShippingAddress()->addData($data);
-        }
-
-        $this->quoteRepository->save($this->getQuote());
-
-        return $this;
-    }
-
-    /**
-     * Assign a clean \Magento\Quote\Model\Quote\Address instance to quote billing/shipping address if needed.
-     *
-     * TODO: could be more compact
-     *
-     * @param string $type (billing|shipping)
-     * @return $this
-     * @throws Exception
-     */
-    public function quoteCreateMissingAddressObject($type)
-    {
-        $this->quoteValidateAddressType($type);
-
-        if ($type === 'billing') {
-            if (!$this->getQuote()->getBillingAddress()) {
-                $this->getQuote()->setBillingAddress($this->objectManager->create('Magento\Quote\Model\Quote\Address'));
-            }
-        } else {
-            if (!$this->getQuote()->getShippingAddress()) {
-                $this->getQuote()->setShippingAddress($this->objectManager->create('Magento\Quote\Model\Quote\Address'));
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * Validate address type, should be either billing or shipping.
-     *
-     * @param string $type
-     * @return bool
-     * @throws Exception
-     */
-    public function quoteValidateAddressType(&$type)
-    {
-        $type = (string) $type;
-
-        if ($type !== 'billing' && $type !== 'shipping') {
-            throw new Exception("Invalid address type provided.");
-        }
-
-        return true;
-    }
-
-    /**
-     * Return collection of available shipping methods based on quote information.
-     *
-     * @return \Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection
-     */
-    public function getShippingRatesCollection()
-    {
-        return $this->getQuote()->getShippingAddress()->getAllShippingRates();
-    }
-
-    /**
-     * Check if shopping cart is empty.
-     *
-     * @return bool
-     */
-    public function cartIsEmpty()
-    {
-        return ((float) $this->getQuote()->getItemsCount() < 1);
-    }
+//    /**
+//     * Return collection of available shipping methods based on quote information.
+//     *
+//     * @return \Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection
+//     */
+//    public function getShippingRatesCollection()
+//    {
+//        return $this->getQuote()->getShippingAddress()->getAllShippingRates();
+//    }
     
 }

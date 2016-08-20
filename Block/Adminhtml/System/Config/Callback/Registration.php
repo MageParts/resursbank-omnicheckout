@@ -8,7 +8,12 @@
 
 namespace Resursbank\OmniCheckout\Block\Adminhtml\System\Config\Callback;
 
-
+/**
+ * Render button used to register callback URLs.
+ *
+ * Class Registration
+ * @package Resursbank\OmniCheckout\Block\Adminhtml\System\Config\Callback
+ */
 class Registration extends \Magento\Config\Block\System\Config\Form\Field
 {
 
@@ -25,7 +30,7 @@ class Registration extends \Magento\Config\Block\System\Config\Form\Field
     }
 
     /**
-     * Remove scope label
+     * Unset some non-related element parameters.
      *
      * @param  \Magento\Framework\Data\Form\Element\AbstractElement $element
      * @return string
@@ -33,6 +38,7 @@ class Registration extends \Magento\Config\Block\System\Config\Form\Field
     public function render(\Magento\Framework\Data\Form\Element\AbstractElement $element)
     {
         $element->unsScope()->unsCanUseWebsiteValue()->unsCanUseDefaultValue();
+
         return parent::render($element);
     }
 
@@ -51,7 +57,7 @@ class Registration extends \Magento\Config\Block\System\Config\Form\Field
             ->setType('button')
             ->setClass('scalable')
             ->setLabel(__('Update callbacks'))
-            ->setOnClick("setLocation('" . $this->getUrl('omnicheckout/index/registration') . "')")
+            ->setOnClick("setLocation('" . $this->getUrl('omnicheckout/callback/registration') . "')")
             ->toHtml();
     }
 

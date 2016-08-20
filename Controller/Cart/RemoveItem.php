@@ -4,6 +4,12 @@ namespace Resursbank\OmniCheckout\Controller\Cart;
 
 use Exception;
 
+/**
+ * TODO: This could possibly be an API service instead.
+ *
+ * Class RemoveItem
+ * @package Resursbank\OmniCheckout\Controller\Cart
+ */
 class RemoveItem extends \Magento\Framework\App\Action\Action
 {
     /**

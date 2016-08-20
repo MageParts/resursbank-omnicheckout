@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <payment>
+            <!-- Existing Resursbank card -->
+            <resursbank_card>
+                <group>offline</group>
+            </resursbank_card>
+
+            <!-- New Resursbank card (create while placing order, this module is not responsible for that process) -->
+            <resursbank_newcard>
+                <group>offline</group>
+            </resursbank_newcard>
+
+            <!-- Invoice -->
+            <resursbank_invoice>
+                <group>offline</group>
+            </resursbank_invoice>
+
+            <!-- Invoice, part payments -->
+            <resursbank_partpayment>
+                <group>offline</group>
+            </resursbank_partpayment>
+
+            <!-- VISA/Master card -->
+            <resursbank_netscard>
+                <group>offline</group>
+            </resursbank_netscard>
+
+            <!-- Unknown Resursbank payment method (added in server repository but not defined in this module) -->
+            <resursbank_default>
+                <group>offline</group>
+            </resursbank_default>
+        </payment>
+    </default>
+</config>
