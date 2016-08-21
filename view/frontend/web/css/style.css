@@ -1,3 +1,17 @@
+/*  Omni Checkout.
+--------------------------------------------------------------------- */
+#omnicheckout-iframe-container iframe {
+    min-height: 1400px;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid silver;
+}
+
+.omni-clear {
+    clear: both;
+}
+
+
 /*  Cart table.
 --------------------------------------------------------------------- */
 .checkout-index-index .cart-container .form-cart {
@@ -94,39 +108,14 @@
     width: 100%;
 }
 
-/*  Omni Checkout.
---------------------------------------------------------------------- */
-#omnicheckout-iframe-container iframe {
-    min-height: 1400px;
-    margin-top: 15px;
-    padding-top: 15px;
-    border-top: 1px solid silver;
-}
-
-.omni-clear {
-    clear: both;
-}
-
 
 /*  Media queries.
 --------------------------------------------------------------------- */
-@media screen and (max-width: 640px) {
-    #omnicheckout-iframe-container iframe {
-        height: auto !important;
-    }
-}
-
-@media screen and (max-width: 767px) {
-    #omnicheckout-iframe-container iframe {
-        height: auto !important;
-    }
-
-    .checkout-index-index .cart-container .table-wrapper {
-        border-top: none;
-    }
-}
-
 @media screen and (max-width: 639px) {
+    #omnicheckout-iframe-container iframe {
+        height: auto !important;
+    }
+
     .checkout-index-index #checkoutSteps div.discount-code,
     .checkout-index-index #checkoutSteps div[data-role="checkout-agreements"],
     .checkout-index-index #checkoutSteps #opc-shipping_method {
@@ -143,18 +132,10 @@
 
 }
 
-/*@media screen and (max-width: 1024px) {*/
-    /*.checkout-index-index #checkoutSteps .table-checkout-shipping-method .col-carrier {*/
-        /*display: none;*/
-    /*}*/
+@media screen and (max-width: 767px) {
+    .checkout-index-index .cart-container .table-wrapper {
+        border-top: none;
+    }
+}
 
-    /*.checkout-index-index #checkoutSteps .table-checkout-shipping-method,*/
-    /*.checkout-index-index #checkoutSteps .table-checkout-shipping-method tbody,*/
-    /*.checkout-index-index #checkoutSteps .table-checkout-shipping-method .row {*/
-        /*min-width: 350px;*/
-    /*}*/
 
-    /*.checkout-index-index #checkoutSteps #opc-shipping_method {*/
-        /*width: 350px;*/
-    /*}*/
-/*}*/
