@@ -19,14 +19,23 @@ define(
         'Magento_Catalog/js/price-utils',
         'Magento_Checkout/js/action/get-payment-information'
     ],
-    function ($, ko, Component, quote, setCouponCodeAction, cancelCouponAction, utils, getPaymentInformationAction) {
+    function (
+        $,
+        ko,
+        Component,
+        quote,
+        setCouponCodeAction,
+        cancelCouponAction,
+        priceUtils,
+        getPaymentInformationAction
+    ) {
         'use strict';
         var totals = quote.getTotals();
         var couponCode = ko.observable(null);
         var discountAmount = ko.observable(null);
         if (totals()) {
             couponCode(totals()['coupon_code']);
-            discountAmount(utils.formatPrice(totals()['discount_amount'], quote.getPriceFormat()));
+            discountAmount(priceUtils.formatPrice(totals()['discount_amount'], quote.getPriceFormat()));
         }
         var isApplied = ko.observable(couponCode() != null);
         var isLoading = ko.observable(false);
@@ -64,7 +73,7 @@ define(
                                 totals = quote.getTotals();
 
                                 // Set the new amount and display the element again.
-                                discountEl.text(utils.formatPrice(totals()['discount_amount'], quote.getPriceFormat()));
+                                discountEl.text(priceUtils.formatPrice(totals()['discount_amount'], quote.getPriceFormat()));
                                 discountEl.show();
                             });
                         }
