@@ -16,9 +16,10 @@ define(
         'Magento_Checkout/js/model/quote',
         'Magento_SalesRule/js/action/set-coupon-code',
         'Magento_SalesRule/js/action/cancel-coupon',
-        'Magento_Catalog/js/price-utils'
+        'Magento_Catalog/js/price-utils',
+        'Magento_Checkout/js/action/get-payment-information'
     ],
-    function ($, ko, Component, quote, setCouponCodeAction, cancelCouponAction, utils) {
+    function ($, ko, Component, quote, setCouponCodeAction, cancelCouponAction, utils, getPaymentInformationAction) {
         'use strict';
         var totals = quote.getTotals();
         var couponCode = ko.observable(null);
@@ -46,16 +47,28 @@ define(
             apply: function() {
                 if (this.validate()) {
                     isLoading(true);
-                    var result = setCouponCodeAction(couponCode(), isApplied, isLoading);
 
-                   //console.log(result.hasOwnProperty('responseText'));
-                   //console.log(result.hasOwnProperty('responseJSON'));
-                   //console.log(result.hasOwnProperty('get*AllResponseHeaders'));
-                   //console.log(result.getAllResponseHeaders());
-                   //console.log(result);
+                    $.when(setCouponCodeAction(couponCode(), isApplied, isLoading)).done(function () {
+                        // Get the discount amount element.
+                        var discountEl = $('#omnicheckout-applied-discount-amount');
 
+                        if (discountEl.length > 0) {
+                            // Temporarily hide the element (initially it will display a value of 0.00 and we want to avoid that).
+                            discountEl.hide();
 
-                    //discountAmount(utils.formatPrice(2, quote.getPriceFormat()));
+                            // Refresh quote totals.
+                            var deferred = $.Deferred();
+                            getPaymentInformationAction(deferred);
+
+                            $.when(deferred).done(function () {
+                                totals = quote.getTotals();
+
+                                // Set the new amount and display the element again.
+                                discountEl.text(utils.formatPrice(totals()['discount_amount'], quote.getPriceFormat()));
+                                discountEl.show();
+                            });
+                        }
+                    });
                 }
             },
             /**

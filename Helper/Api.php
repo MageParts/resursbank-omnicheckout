@@ -160,7 +160,7 @@ class Api extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function getDiscountAmount()
     {
-        return $this->getQuote()->getSubtotal() - $this->getQuote()->getSubtotalWithDiscount();
+        return (float) $this->getQuote()->getSubtotal() - (float) $this->getQuote()->getSubtotalWithDiscount();
     }
 
 //    /**

@@ -98,7 +98,7 @@
     margin-top: 15px;
 }
 
-.checkout-index-index #checkoutSteps div.discount-code .applied-discount-amount {
+.checkout-index-index #checkoutSteps div.discount-code #omnicheckout-applied-discount-amount {
     color: #C92828;
     text-align: left;
     margin-top: 15px;
@@ -125,7 +125,6 @@
         margin: 20px -15px 15px;
         padding: 0px 15px 15px 15px;
     }
-
 }
 
 @media screen and (max-width: 767px) {

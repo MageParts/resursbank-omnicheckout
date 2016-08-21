@@ -8,8 +8,4 @@
     <type name="Magento\Checkout\Controller\Index\Index">
         <plugin name="resursbank_omnicheckout_payment_session_init" type="Resursbank\OmniCheckout\Plugin\PaymentSession\Init" />
     </type>
-
-    <type name="Magento\Quote\Model\GuestCart\GuestCouponManagement">
-        <plugin name="resursbank_omnicheckout_quote_coupon_management" type="Resursbank\OmniCheckout\Plugin\Quote\GuestCouponManagement" />
-    </type>
 </config>
