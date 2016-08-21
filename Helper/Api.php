@@ -153,16 +153,6 @@ class Api extends \Magento\Framework\App\Helper\AbstractHelper
         return $this;
     }
 
-    /**
-     * Retrieve discount amount on quote.
-     *
-     * @return float
-     */
-    public function getDiscountAmount()
-    {
-        return (float) $this->getQuote()->getSubtotal() - (float) $this->getQuote()->getSubtotalWithDiscount();
-    }
-
 //    /**
 //     * Retrieve quote repository model.
 //     *
