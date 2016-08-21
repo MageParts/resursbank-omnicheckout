@@ -1,11 +1,14 @@
 <?php
 
-namespace Resursbank\OmniCheckout\Observer;
+namespace Resursbank\OmniCheckout\Plugin\PaymentSession;
 
 /**
- * Executes when quote is saved.
+ * Update existing payment session.
+ *
+ * Class Update
+ * @package Resursbank\OmniCheckout\Plugin\PaymentSession
  */
-class UpdateIframeSession implements \Magento\Framework\Event\ObserverInterface
+class Update
 {
 
     /**
@@ -31,15 +34,14 @@ class UpdateIframeSession implements \Magento\Framework\Event\ObserverInterface
     }
 
     /**
-     * Address before save event handler
+     * Update Resursbank payment session after the quote has been saved.
      *
-     * TODO: The quote can be changed externally through the API, we should use some custom timestamp to compare it
-     * TODO: against the quotes update time, and when different update the payment session so its properly synced.
-     *
-     * @param \Magento\Framework\Event\Observer $observer
-     * @return void
+     * @param \Magento\Quote\Model\Quote $subject
+     * @param \Magento\Quote\Model\Quote $result
+     * @return \Magento\Quote\Model\Quote
+     * @throws \Exception
      */
-    public function execute(\Magento\Framework\Event\Observer $observer)
+    public function afterAfterSave(\Magento\Quote\Model\Quote $subject, $result)
     {
         if ($this->apiModel->paymentSessionInitialized()) {
             if ($this->apiHelper->cartIsEmpty()) {
@@ -48,6 +50,8 @@ class UpdateIframeSession implements \Magento\Framework\Event\ObserverInterface
                 $this->apiModel->updatePaymentSession();
             }
         }
+
+        return $result;
     }
 
 }

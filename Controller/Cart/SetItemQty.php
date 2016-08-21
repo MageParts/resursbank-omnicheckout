@@ -4,6 +4,12 @@ namespace Resursbank\OmniCheckout\Controller\Cart;
 
 use Exception;
 
+/**
+ * TODO: This could possibly be an API service instead.
+ *
+ * Class SetItemQty
+ * @package Resursbank\OmniCheckout\Controller\Cart
+ */
 class SetItemQty extends \Magento\Framework\App\Action\Action
 {
     /**

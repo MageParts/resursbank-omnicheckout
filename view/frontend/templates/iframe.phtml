@@ -5,10 +5,13 @@
  * @var $block \Resursbank\OmniCheckout\Block\Iframe
  */
 ?>
+
+<div class="omni-clear"><!-- CLEAR FLOATS --></div>
+
 <?php if ($this->getApiModel()->paymentSessionInitialized()): ?>
-        <div id="omnicheckout-iframe-container">
-            <?php echo $this->getApiModel()->getSessionIframeHtml() ?>
-        </div>
+    <div id="omnicheckout-iframe-container">
+        <?php echo $this->getApiModel()->getSessionIframeHtml() ?>
+    </div>
 <?php else: ?>
     <div class="resursbank-messages">
         <p class="payment-gateway-connection-error"><?php echo __('The connection to the payment gateway failed and thus you cannot proceed to our checkout. Please try again in a few minutes.') ?></p>

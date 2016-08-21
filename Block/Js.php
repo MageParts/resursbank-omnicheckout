@@ -2,6 +2,12 @@
 
 namespace Resursbank\OmniCheckout\Block;
 
+/**
+ * JavaScript.
+ *
+ * Class Js
+ * @package Resursbank\OmniCheckout\Block
+ */
 class Js extends \Magento\Framework\View\Element\Template
 {
     /**

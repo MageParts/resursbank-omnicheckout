@@ -1,11 +1,14 @@
 <?php
 
-namespace Resursbank\OmniCheckout\Observer;
+namespace Resursbank\OmniCheckout\Plugin\PaymentSession;
 
 /**
- * Executes after a quote has been initialized.
+ * Initialize payment session.
+ *
+ * Class Init
+ * @package Resursbank\OmniCheckout\Plugin\PaymentSession
  */
-class QuoteInit implements \Magento\Framework\Event\ObserverInterface
+class Init
 {
 
     /**
@@ -31,19 +34,20 @@ class QuoteInit implements \Magento\Framework\Event\ObserverInterface
     }
 
     /**
-     * Address before save event handler
+     * Update Resursbank payment session after the quote has been saved.
      *
-     * TODO: Test if we need to set default shipping method if there is only one availalbe shippign method.
-     *
-     * @param \Magento\Framework\Event\Observer $observer
-     * @return void
+     * @param \Magento\Checkout\Controller\Index\Index $subject
+     * @return  null
+     * @throws \Exception
      */
-    public function execute(\Magento\Framework\Event\Observer $observer)
+    public function beforeExecute(\Magento\Checkout\Controller\Index\Index $subject)
     {
+        return;
+
         // Initialize payment session.
         if (!$this->apiModel->paymentSessionInitialized()) {
             // Assign default address information to quote.
-            $this->apiHelper->quoteAssignDefaultAddress();
+//            $this->apiHelper->quoteAssignDefaultAddress();
 
 //            $this->assignDefaultShippingMethod();
 
@@ -74,5 +78,6 @@ class QuoteInit implements \Magento\Framework\Event\ObserverInterface
 //
 //        return $this;
 //    }
+
 
 }

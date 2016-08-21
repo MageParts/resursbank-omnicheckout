@@ -7,10 +7,131 @@
     border-top: 1px solid silver;
 }
 
+.omni-clear {
+    clear: both;
+}
+
+
+/*  Cart table.
+--------------------------------------------------------------------- */
+.checkout-index-index .cart-container .form-cart {
+    width: 100%;
+}
+
+.checkout-index-index .cart-container .form-cart .actions {
+    display: none;
+}
+
+
+/*  Checkout steps.
+--------------------------------------------------------------------- */
+.checkout-index-index #checkout .opc-wrapper {
+    float: none;
+    width: 100%;
+}
+
+.checkout-index-index #checkoutSteps #shipping,
+.checkout-index-index #checkoutSteps #shipping-method-buttons-container {
+    display: none !important;
+}
+
+
+/*  Checkout steps - shipping methods.
+--------------------------------------------------------------------- */
+.checkout-index-index #checkoutSteps #opc-shipping_method {
+    width: 45%;
+    float: left;
+    display: block;
+    margin-right: 4%;
+}
+
+.checkout-index-index #checkoutSteps .table-checkout-shipping-method {
+    min-width: 100%;
+}
+
+
+/*  Checkout steps - checkout agreements.
+--------------------------------------------------------------------- */
+.checkout-index-index #checkoutSteps div[data-role="checkout-agreements"] {
+    width: 20%;
+    float: left;
+    display: block;
+    margin-right: 4%;
+}
+
+.checkout-index-index #checkoutSteps .checkout-agreement {
+    margin-bottom: 10px;
+}
+
+.checkout-index-index #checkoutSteps .checkout-agreement button {
+    color: #1979c3;
+    padding: 0;
+    text-decoration: none;
+    background: none;
+    border: 0 !important;
+    font-weight: 400;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
+    box-shadow: none !important;
+    -moz-box-shadow: none !important;
+}
+
+
+/*  Checkout steps - discount count.
+--------------------------------------------------------------------- */
+.checkout-index-index #checkoutSteps div.discount-code {
+    width: 25%;
+    float: left;
+    display: block;
+}
+
+.checkout-index-index #checkoutSteps #block-discount-heading  {
+    color: #1979c3;
+    display: inline-block;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.checkout-index-index #checkoutSteps div.discount-code .payment-option-inner,
+.checkout-index-index #checkoutSteps div.discount-code .actions-toolbar {
+    margin-top: 15px;
+}
+
+.checkout-index-index #checkoutSteps div.discount-code .applied-discount-amount {
+    color: #C92828;
+    text-align: left;
+    margin-top: 15px;
+}
+
+
 /*  Media queries.
 --------------------------------------------------------------------- */
-@media screen and (max-width: 640px) {
+@media screen and (max-width: 639px) {
     #omnicheckout-iframe-container iframe {
         height: auto !important;
     }
+
+    .checkout-index-index #checkoutSteps div.discount-code,
+    .checkout-index-index #checkoutSteps div[data-role="checkout-agreements"],
+    .checkout-index-index #checkoutSteps #opc-shipping_method {
+        float: none;
+        width: 100%;
+    }
+
+    .checkout-index-index #checkoutSteps div[data-role="checkout-agreements"],
+    .checkout-index-index #checkoutSteps div.discount-code {
+        border-bottom:1px solid #ccc;
+        margin: 20px -15px 15px;
+        padding: 0px 15px 15px 15px;
+    }
+
 }
+
+@media screen and (max-width: 767px) {
+    .checkout-index-index .cart-container .table-wrapper {
+        border-top: none;
+    }
+}
+
+

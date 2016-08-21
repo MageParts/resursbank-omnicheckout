@@ -1,6 +1,11 @@
 /**
  * TODO: find a way to avoid this file, it only injects discountAmount.
  *
+ * TODO: what happens if you apply a discount code, and then enter payment/shipping information relevant for that code?
+ * TODO: for example, if a discount code is dependant on a shipping method being selected, will the code first be
+ * TODO: applied after the proper shipping method has been selected, or will it not be applied at all without the user
+ * TODO: manually re-applying it? Test this.
+ *
  * Copied from vendor/magento/module-sales-rule/view/frontend/web/js/view/payment/discount.js
  */
 define(
@@ -41,7 +46,16 @@ define(
             apply: function() {
                 if (this.validate()) {
                     isLoading(true);
-                    setCouponCodeAction(couponCode(), isApplied, isLoading);
+                    var result = setCouponCodeAction(couponCode(), isApplied, isLoading);
+
+                   //console.log(result.hasOwnProperty('responseText'));
+                   //console.log(result.hasOwnProperty('responseJSON'));
+                   //console.log(result.hasOwnProperty('get*AllResponseHeaders'));
+                   //console.log(result.getAllResponseHeaders());
+                   //console.log(result);
+
+
+                    //discountAmount(utils.formatPrice(2, quote.getPriceFormat()));
                 }
             },
             /**

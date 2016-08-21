@@ -3,7 +3,10 @@
 namespace Resursbank\OmniCheckout\Block\Adminhtml\System\Config\Callback;
 
 /**
- * URL exceptions widget renderer.
+ * Render all registered callbacks.
+ *
+ * Class Listing
+ * @package Resursbank\OmniCheckout\Block\Adminhtml\System\Config\Callback
  */
 class Listing extends \Magento\Config\Block\System\Config\Form\Field
 {
@@ -14,21 +17,34 @@ class Listing extends \Magento\Config\Block\System\Config\Form\Field
     private $callback;
 
     /**
-     * Set template to itself
-     *
-     * @return \Magento\Customer\Block\Adminhtml\System\Config\Validatevat
+     * @param \Magento\Backend\Block\Template\Context $context
+     * @param \Resursbank\OmniCheckout\Helper\Callback $callback
+     * @param array $data
      */
-    protected function _prepareLayout()
-    {
-        parent::_prepareLayout();
-        if (!$this->getTemplate()) {
-            $this->setTemplate('system/config/callback/listing.phtml');
-        }
-        return $this;
+    public function __construct(
+        \Magento\Backend\Block\Template\Context $context,
+        \Resursbank\OmniCheckout\Helper\Callback $callback,
+        array $data = []
+    ) {
+        $this->callback = $callback;
+
+        $this->setTemplate('system/config/callback/listing.phtml');
+
+        parent::__construct($context, $data);
     }
 
     /**
-     * Unset some non-related element parameters
+     * Retrieve array of registered callbacks.
+     *
+     * @return array
+     */
+    public function getCallbacks()
+    {
+        return $this->callback->getCallbacks();
+    }
+
+    /**
+     * Unset some non-related element parameters.
      *
      * @param \Magento\Framework\Data\Form\Element\AbstractElement $element
      * @return string
@@ -36,6 +52,7 @@ class Listing extends \Magento\Config\Block\System\Config\Form\Field
     public function render(\Magento\Framework\Data\Form\Element\AbstractElement $element)
     {
         $element->unsScope()->unsCanUseWebsiteValue()->unsCanUseDefaultValue();
+
         return parent::render($element);
     }
 
@@ -48,31 +65,6 @@ class Listing extends \Magento\Config\Block\System\Config\Form\Field
     protected function _getElementHtml(\Magento\Framework\Data\Form\Element\AbstractElement $element)
     {
         return $this->_toHtml();
-    }
-
-
-    /**
-     * @param \Magento\Backend\Block\Template\Context $context
-     * @param \Resursbank\OmniCheckout\Helper\Callback $callback
-     * @param array $data
-     * @internal param array $data
-     */
-    public function __construct(
-        \Magento\Backend\Block\Template\Context $context,
-        \Resursbank\OmniCheckout\Helper\Callback $callback,
-        array $data = []
-    ) {
-        parent::__construct($context, $data);
-
-        $this->callback = $callback;
-    }
-
-    /**
-     * @return array
-     */
-    public function getCallbacks()
-    {
-        return $this->callback->getCallbacks();
     }
 
 }

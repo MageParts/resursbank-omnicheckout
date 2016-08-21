@@ -2,6 +2,12 @@
 
 namespace Resursbank\OmniCheckout\Block;
 
+/**
+ * Resursbank payment session iframe.
+ *
+ * Class Iframe
+ * @package Resursbank\OmniCheckout\Block
+ */
 class Iframe extends \Magento\Framework\View\Element\Template
 {
     /**

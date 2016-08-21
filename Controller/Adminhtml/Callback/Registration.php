@@ -1,9 +1,10 @@
 <?php
 
-namespace Resursbank\OmniCheckout\Controller\Adminhtml\Index;
+namespace Resursbank\OmniCheckout\Controller\Adminhtml\Callback;
 
 class Registration extends \Magento\Backend\App\Action
 {
+
     /**
      * Authorization level of a basic admin session
      *
@@ -38,12 +39,17 @@ class Registration extends \Magento\Backend\App\Action
     }
 
     /**
-     * Index action
-     * @todo Redirect back.
+     * Register callback URLs.
+     *
+     * @return \Magento\Framework\Controller\ResultInterface
      */
     public function execute()
     {
+        // Register callback URLs.
         $this->apiModel->registerCallbacks();
+
+        // Redirect back to the config section.
+        $this->_redirect($this->_redirect->getRefererUrl());
     }
 
 }
