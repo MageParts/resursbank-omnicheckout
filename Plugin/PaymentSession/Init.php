@@ -42,8 +42,6 @@ class Init
      */
     public function beforeExecute(\Magento\Checkout\Controller\Index\Index $subject)
     {
-        return;
-
         // Initialize payment session.
         if (!$this->apiModel->paymentSessionInitialized()) {
             // Assign default address information to quote.
