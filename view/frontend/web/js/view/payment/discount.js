@@ -46,7 +46,16 @@ define(
             apply: function() {
                 if (this.validate()) {
                     isLoading(true);
-                    setCouponCodeAction(couponCode(), isApplied, isLoading);
+                    var result = setCouponCodeAction(couponCode(), isApplied, isLoading);
+
+                   //console.log(result.hasOwnProperty('responseText'));
+                   //console.log(result.hasOwnProperty('responseJSON'));
+                   //console.log(result.hasOwnProperty('get*AllResponseHeaders'));
+                   //console.log(result.getAllResponseHeaders());
+                   //console.log(result);
+
+
+                    //discountAmount(utils.formatPrice(2, quote.getPriceFormat()));
                 }
             },
             /**

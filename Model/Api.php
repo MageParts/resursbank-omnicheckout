@@ -652,7 +652,7 @@ class Api extends DataObject
     {
         $result = array();
 
-        $amount = (float) ($this->getQuote()->getSubtotal() - $this->getQuote()->getSubtotalWithDiscount());
+        $amount = $this->helper->getDiscountAmount();
 
         if ($amount > 0) {
             $name = 'Discount';

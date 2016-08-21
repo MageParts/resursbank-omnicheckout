@@ -2,6 +2,12 @@
 
 namespace Resursbank\OmniCheckout\Plugin\PaymentSession;
 
+/**
+ * Update existing payment session.
+ *
+ * Class Update
+ * @package Resursbank\OmniCheckout\Plugin\PaymentSession
+ */
 class Update
 {
 
