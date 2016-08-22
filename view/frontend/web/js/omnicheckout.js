@@ -171,7 +171,7 @@ define([
             // Add message listener.
             window.addEventListener('message', postMessageDelegator, false);
 
-            iframe = $$('#omni-checkout-container > iframe')[0];
+            iframe = $('#omni-checkout-container > iframe')[0];
 
             initiateDeleteButtons();
             initiateQuantityInputs();
