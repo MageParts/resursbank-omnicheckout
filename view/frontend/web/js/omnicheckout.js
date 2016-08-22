@@ -183,7 +183,7 @@ define([
             // Add message listener.
             window.addEventListener('message', postMessageDelegator, false);
 
-            $('#omnicheckout-iframe-container').prepend(iframe);
+            $this.placeIframe();
 
             userInformation.init({
                 baseUrl: $this.baseUrl,
@@ -205,6 +205,23 @@ define([
 
             initialized = true;
         }
+
+        return $this;
+    };
+
+    /**
+     * Place the Iframe element after the page-cache has finished loading, otherwise we will receive errors.
+     *
+     * @returns {Object} $this.
+     */
+    $this.placeIframe = function() {
+        var run = setInterval(function() {
+            if ($('#block-discount-heading').length > 0) {
+                $('#omnicheckout-iframe-container').prepend(iframe);
+
+                clearInterval(run);
+            }
+        }, 1000);
 
         return $this;
     };

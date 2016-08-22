@@ -6,13 +6,21 @@
 
 <script>
     require([
-        'Resursbank_OmniCheckout/js/omnicheckout'
-    ], function(omnicheckout) {
-        omnicheckout.init({
-            baseUrl: '<?php echo $block->getBaseUrl(); ?>',
-            formKey: '<?php echo $block->escapeHtml($block->getFormKey()); ?>',
-            iframeUrl: '<?php echo $block->getApiModel()->getIframeUrl(); ?>',
-            iframe: '<?php echo preg_replace('#<script(.*?)>(.*?)</script>#is', '', $block->getApiModel()->getSessionIframeHtml()); ?>'
+        'domReady',
+        'Resursbank_OmniCheckout/js/omnicheckout',
+        'Magento_PageCache/js/page-cache'
+    ], function(
+        domReady,
+        omnicheckout,
+        pageCache
+    ) {
+        domReady(function () {
+            omnicheckout.init({
+                baseUrl: '<?php echo $block->getBaseUrl(); ?>',
+                formKey: '<?php echo $block->escapeHtml($block->getFormKey()); ?>',
+                iframeUrl: '<?php echo $block->getApiModel()->getIframeUrl(); ?>',
+                iframe: '<?php echo preg_replace('#<script(.*?)>(.*?)</script>#is', '', $block->getApiModel()->getSessionIframeHtml()); ?>'
+            });
         });
     });
 </script>

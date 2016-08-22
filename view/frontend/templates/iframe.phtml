@@ -10,7 +10,7 @@
 
 <?php if ($block->getApiModel()->paymentSessionInitialized()): ?>
         <div id="omnicheckout-iframe-container">
-            <?php echo preg_replace('#<iframe(.*?)>(.*?)</iframe>#is', '', $block->getApiModel()->getSessionIframeHtml()); ?>
+<!--            --><?php //echo preg_replace('#<iframe(.*?)>(.*?)</iframe>#is', '', $block->getApiModel()->getSessionIframeHtml()); ?>
         </div>
 <?php else: ?>
     <div class="resursbank-messages">
