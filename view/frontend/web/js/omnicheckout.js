@@ -6,8 +6,10 @@ define([
     'Resursbank_OmniCheckout/js/mediator',
     'Resursbank_OmniCheckout/js/ajax-q',
     'Resursbank_OmniCheckout/js/cart/item/delete',
-    'Resursbank_OmniCheckout/js/cart/item/quantity'
-], function ($, mediator, ajaxQ, itemDelete, itemQuantity) {
+    'Resursbank_OmniCheckout/js/cart/item/quantity',
+    'Resursbank_OmniCheckout/js/shipping-methods',
+    'Resursbank_OmniCheckout/js/user-information'
+], function ($, mediator, ajaxQ, itemDelete, itemQuantity, shippingMethod, userInformation) {
     var $this = {};
     var initialized = false;
     var deleteButtons = [];
@@ -78,6 +80,8 @@ define([
         var data;
         var origin = event.origin || event.originalEvent.origin;
 
+        console.log('message event:', event);
+
         if (origin !== iframeUrl ||
             typeof event.data !== 'string' ||
             event.data === '[iFrameResizerChild]Ready') {
@@ -85,6 +89,8 @@ define([
         }
 
         data = JSON.parse(event.data);
+
+        console.log('message data:', data);
 
         if (data.hasOwnProperty('eventType') && typeof data.eventType === 'string') {
             switch (data.eventType) {
@@ -108,6 +114,8 @@ define([
     var postMessage = function (data) {
         var iframeWindow;
 
+        console.log('posting:', data);
+
         if (iframe && typeof iframeUrl === 'string' && iframeUrl !== '') {
             iframeWindow = iframe.contentWindow || iframe.contentDocument;
             iframeWindow.postMessage(JSON.stringify(data), iframeUrl);
@@ -123,6 +131,7 @@ define([
      */
     var finalizeIframeSetup = function () {
         if (!finalizedIframe) {
+            console.log('finalizeIframeSetup()');
             // Post the booking rule to Omnicheckout. This post basically says that when a user presses the button
             // to finalize the order, check with the server if the order is ready to be booked.
             postMessage({
@@ -144,7 +153,7 @@ define([
      * @returns {Object} $this.
      */
     $this.init = function (config) {
-        var i;
+        var i, temp;
 
         if (!initialized) {
             for (i in config) {
@@ -153,6 +162,9 @@ define([
                 }
                 else if (i === 'iframeUrl') {
                     iframeUrl = config[i];
+                }
+                else if (i === 'iframe') {
+                    iframe = $(config[i])[0];
                 }
             }
 
@@ -171,10 +183,25 @@ define([
             // Add message listener.
             window.addEventListener('message', postMessageDelegator, false);
 
-            iframe = $$('#omni-checkout-container > iframe')[0];
+            $('#omnicheckout-iframe-container').prepend(iframe);
+
+            userInformation.init({
+                baseUrl: $this.baseUrl,
+                formKey: $this.formKey
+            });
 
             initiateDeleteButtons();
             initiateQuantityInputs();
+
+            // Initialize shipping methods.
+            // $(document).ready(function () {
+            //     alert();
+            //     shippingMethod.init({
+            //         element: $('#checkout-shipping-method-load')[0]
+            //     });
+            // });
+
+            shippingMethod.setRadioHandlers();
 
             initialized = true;
         }

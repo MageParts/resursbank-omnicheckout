@@ -5,9 +5,9 @@
  * @var $block \Resursbank\OmniCheckout\Block\Iframe
  */
 ?>
-<?php if ($this->getApiModel()->paymentSessionInitialized()): ?>
+<?php if ($block->getApiModel()->paymentSessionInitialized()): ?>
         <div id="omnicheckout-iframe-container">
-            <?php echo $this->getApiModel()->getSessionIframeHtml() ?>
+            <?php echo preg_replace('#<iframe(.*?)>(.*?)</iframe>#is', '', $block->getApiModel()->getSessionIframeHtml()); ?>
         </div>
 <?php else: ?>
     <div class="resursbank-messages">
