@@ -11,7 +11,8 @@
         omnicheckout.init({
             baseUrl: '<?php echo $block->getBaseUrl(); ?>',
             formKey: '<?php echo $block->escapeHtml($block->getFormKey()); ?>',
-            iframeUrl: '<?php echo $block->getApiModel()->getIframeUrl(); ?>'
+            iframeUrl: '<?php echo $block->getApiModel()->getIframeUrl(); ?>',
+            iframe: '<?php echo preg_replace('#<script(.*?)>(.*?)</script>#is', '', $block->getApiModel()->getSessionIframeHtml()); ?>'
         });
     });
 </script>

@@ -13,8 +13,10 @@ define([
     'Magento_Checkout/js/model/quote'
 ], function ($, storage, mediator, ajaxQ, rateRegistry, resourceUrlManager, shippingService, errorProcessor, quote) {
     var previousShippingMethod = null;
+    var initialized = false;
 
     var radioClickHandler = function () {
+        console.log('radio button selected');
         if ($this.selected !== this) {
             $this.select(this)
                 .pushShippingMethod();
@@ -23,7 +25,7 @@ define([
 
     var $this = {
         /**
-         * The product row.
+         * The element containing shipping methods.
          *
          * @type {Element}
          */
@@ -49,6 +51,34 @@ define([
          * @type {string}
          */
         baseUrl: '',
+
+        init: function (config) {
+            var i;
+
+            if (!initialized) {
+                for (i in config) {
+                    if ($this.hasOwnProperty(i)) {
+                        $this[i] = config[i];
+                    }
+                }
+
+                // Setting up mediator listeners.
+                mediator.listen({
+                    event: 'shipping:update-content',
+                    identifier: $this,
+                    callback: function (data) {
+                        if (typeof data.content === 'string' && data.content !== '') {
+                            $this.updateHtml(data.content)
+                                .setRadioHandlers()
+                                .resetSelection();
+                        }
+                    }
+                });
+
+                console.log('shipping methods element:', $this.element);
+                console.log('shipping methods config:', config);
+            }
+        },
 
         /**
          * Puts click handlers on the radio buttons. When clicking a radio button it will send the selected
@@ -127,7 +157,7 @@ define([
          * @returns {Array}
          */
         getShippingMethodRadios: function () {
-            return $($this.element).find('input[name=shipping_method]').toArray();
+            return $($this.element).find('input[type="radio"]').toArray();
         },
 
         /**
@@ -149,16 +179,6 @@ define([
                     data: {
                         shipping_method: $this.selected.value,
                         form_key: $this.formKey
-                    },
-
-                    success: function (data) {
-                        // if (data.message.error.length) {
-                        //     handleAjaxErrors(data.message.error);
-                        // }
-                    },
-
-                    error: function (data) {
-                        // var data = response.responseJSON;
                     },
 
                     complete: function () {
@@ -265,19 +285,6 @@ define([
             }
         }
     };
-
-    // Setting up mediator listeners.
-    mediator.listen({
-        event: 'shipping:update-content',
-        identifier: $this,
-        callback: function (data) {
-            if (typeof data.content === 'string' && data.content !== '') {
-                $this.updateHtml(data.content)
-                    .setRadioHandlers()
-                    .resetSelection();
-            }
-        }
-    });
 
     return $this;
 });

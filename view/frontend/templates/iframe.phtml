@@ -8,10 +8,10 @@
 
 <div class="omni-clear"><!-- CLEAR FLOATS --></div>
 
-<?php if ($this->getApiModel()->paymentSessionInitialized()): ?>
-    <div id="omnicheckout-iframe-container">
-        <?php echo $this->getApiModel()->getSessionIframeHtml() ?>
-    </div>
+<?php if ($block->getApiModel()->paymentSessionInitialized()): ?>
+        <div id="omnicheckout-iframe-container">
+            <?php echo preg_replace('#<iframe(.*?)>(.*?)</iframe>#is', '', $block->getApiModel()->getSessionIframeHtml()); ?>
+        </div>
 <?php else: ?>
     <div class="resursbank-messages">
         <p class="payment-gateway-connection-error"><?php echo __('The connection to the payment gateway failed and thus you cannot proceed to our checkout. Please try again in a few minutes.') ?></p>
