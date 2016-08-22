@@ -8,8 +8,9 @@ define([
     'Resursbank_OmniCheckout/js/cart/item/delete',
     'Resursbank_OmniCheckout/js/cart/item/quantity',
     'Resursbank_OmniCheckout/js/shipping-methods',
-    'Resursbank_OmniCheckout/js/user-information'
-], function ($, mediator, ajaxQ, itemDelete, itemQuantity, shippingMethod, userInformation) {
+    'Resursbank_OmniCheckout/js/user-information',
+    'Resursbank_OmniCheckout/js/view/shipping-service'
+], function ($, mediator, ajaxQ, itemDelete, itemQuantity, shippingMethod, userInformation, shippingService) {
     var $this = {};
     var initialized = false;
     var deleteButtons = [];
@@ -201,6 +202,7 @@ define([
             //     });
             // });
 
+            shippingService.init();
             shippingMethod.setRadioHandlers();
 
             initialized = true;
