@@ -22,7 +22,7 @@ define([
     selectBillingAddress,
     defaultProcessor,
     selectPaymentMethod,
-    paymentServices,
+    paymentService,
     methodList
 ) {
     var initialized = false;
@@ -32,7 +32,6 @@ define([
 
     quote.shippingMethod.subscribe(function () {
         if (readyToSaveInfo) {
-            console.log(paymentServices.getAvailablePaymentMethods());
             defaultProcessor.saveShippingInformation();
             readyToSaveInfo = false;
         }
@@ -74,9 +73,22 @@ define([
 
                         data.billing = $this.prepareBillingInfo(data.address);
 
-                        console.log('data:', data);
+                        // console.log('data:', data);
 
                         $this.pushUserInfo(data);
+                    }
+                });
+
+                mediator.listen({
+                    event: 'payment-method:change',
+                    identifier: $this,
+                    callback: function (data) {
+                        selectPaymentMethod({
+                            method: 'checkmo'
+                        });
+                        console.log(paymentService.getAvailablePaymentMethods());
+                        console.log('payment method:', quote.paymentMethod());
+                        console.log('payment method data:', data);
                     }
                 });
             }
