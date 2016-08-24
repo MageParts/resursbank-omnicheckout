@@ -1,8 +1,10 @@
 define(
     [
+        'Resursbank_OmniCheckout/js/mediator',
         'Magento_Checkout/js/model/shipping-service'
     ],
     function (
+        mediator,
         shippingService
     ) {
         "use strict";
@@ -14,7 +16,7 @@ define(
                     orig(ratesData);
 
                     // custom code here
-                    console.log('Yay');
+                    mediator.broadcast('omnicheckout:init-shipping-methods');
                 };
             }
         };

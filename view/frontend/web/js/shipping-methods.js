@@ -75,8 +75,15 @@ define([
                     }
                 });
 
-                console.log('shipping methods element:', $this.element);
-                console.log('shipping methods config:', config);
+                mediator.listen({
+                    event: 'checkout:item-quantity-update-complete',
+                    identifier: $this,
+                    callback: $this.reload
+                });
+
+                $this.setRadioHandlers();
+
+                initialized = true;
             }
         },
 
@@ -87,7 +94,7 @@ define([
          * @returns {$this}
          */
         setRadioHandlers: function () {
-            $.each($this.getShippingMethodRadios(), function (radio) {
+            $.each($this.getShippingMethodRadios(), function (i, radio) {
                 $(radio).on('click', radioClickHandler);
             });
 
@@ -244,10 +251,12 @@ define([
                 }
             );
 
+            console.log('can use for billing:', quote.shippingAddress().canUseForBilling());
+
             shippingService.isLoading(true);
             storage.post(
                 resourceUrlManager.getUrlForEstimationShippingMethodsForNewAddress(quote)
-                , null, false
+                , payload, false
             ).done(
                 function (result) {
                     console.log('result:', result);
@@ -261,6 +270,7 @@ define([
                 }
             ).always(
                 function () {
+                    $this.setRadioHandlers();
                     shippingService.isLoading(false);
                 }
             );

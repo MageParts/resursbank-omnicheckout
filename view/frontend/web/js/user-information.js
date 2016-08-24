@@ -1,8 +1,13 @@
 define([
     'jquery',
     'Resursbank_OmniCheckout/js/ajax-q',
-    'Resursbank_OmniCheckout/js/mediator'
-], function ($, ajaxQ, mediator) {
+    'Resursbank_OmniCheckout/js/mediator',
+    'Magento_Checkout/js/model/quote',
+    'Magento_Checkout/js/action/create-billing-address',
+    'Magento_Checkout/js/action/create-shipping-address',
+    'Magento_Checkout/js/action/select-shipping-address',
+    'Magento_Checkout/js/model/shipping-save-processor/default'
+], function ($, ajaxQ, mediator, quote, createBillingAddress, createShippingAddress, selectShippingAddress, defaultProcessor) {
     var initialized = false;
     var previousUserBilling = null;
     var previousUserShipping = null;
@@ -37,12 +42,20 @@ define([
                     event: 'user-info:change',
                     identifier: $this,
                     callback: function (data) {
-                        if ($this.useBillingForShipping(data)) {
-                            $this.pushBillingInfo($this.prepareBillingInfo(data));
+                        // if ($this.useBillingForShipping(data)) {
+                        //     $this.pushBillingInfo($this.prepareBillingInfo(data));
+                        // }
+                        // else {
+                        //     $this.pushShippingInfo($this.prepareShippingInfo(data));
+                        // }
+
+                        if (data.hasOwnProperty('delivery')) {
+                            data.delivery = $this.prepareShippingInfo(data);
                         }
-                        else {
-                            $this.pushShippingInfo($this.prepareShippingInfo(data));
-                        }
+
+                        data.address = $this.prepareBillingInfo(data);
+
+                        $this.pushBillingInfo(data);
                     }
                 });
             }
@@ -58,26 +71,45 @@ define([
          */
         pushBillingInfo: function (data) {
             data.form_key = $this.formKey;
-            data.billing = JSON.stringify(data.billing);
+            // data.billing = JSON.stringify(data.billing);
 
-            if (previousUserBilling !== data.billing) {
-                previousUserBilling = data.billing;
-
-                ajaxQ.queue({
-                    chain: 'omnicheckout',
-                    url: $this.baseUrl + 'index/saveBilling',
-                    parameters: data,
-
-                    onSuccess: function (response) {
-                        var data = response.responseJSON;
-                    },
-
-                    onFailure: function (response) {
-                        var data = response.responseJSON;
-                    }
-                })
-                    .run('omnicheckout');
+            if (data.hasOwnProperty('delivery')) {
+                selectShippingAddress(createShippingAddress(data.delivery));
             }
+            else {
+                selectShippingAddress(createShippingAddress(data.billing));
+            }
+
+            defaultProcessor.saveShippingInformation();
+
+            // console.log('pushShippingInfo data:', data);
+            // // console.log('createBillingAddress:', createBillingAddress(data.billing));
+            // console.log('createShippingAddress:', createShippingAddress(data.billing));
+            // console.log('quote shipping method:', quote.shippingMethod());
+            //
+            // selectShippingAddress(createShippingAddress(data.billing));
+            // console.log('quote.shippingAddress:', quote.shippingAddress());
+            //
+            // defaultProcessor.saveShippingInformation();
+
+            // if (previousUserBilling !== data.billing) {
+            //     previousUserBilling = data.billing;
+
+                // ajaxQ.queue({
+                //     chain: 'omnicheckout',
+                //     url: $this.baseUrl + 'index/saveBilling',
+                //     parameters: data,
+                //
+                //     onSuccess: function (response) {
+                //         var data = response.responseJSON;
+                //     },
+                //
+                //     onFailure: function (response) {
+                //         var data = response.responseJSON;
+                //     }
+                // })
+                //     .run('omnicheckout');
+            // }
 
             return $this;
         },
@@ -91,8 +123,6 @@ define([
         pushShippingInfo: function (data) {
             data.form_key = $this.formKey;
             data.shipping = JSON.stringify(data.shipping);
-
-            console.log('pushShippingInfo:', data);
 
             if (previousUserShipping !== data.shipping) {
                 previousUserShipping = data.shipping;

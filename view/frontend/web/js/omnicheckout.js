@@ -56,13 +56,23 @@ define([
      */
     var initiateQuantityInputs = function () {
         $.each($this.getQuantityInputs(), function (i, input) {
-            console.log(input, $this.getIdFromQuantityInput(input));
             quantityInputs.push(itemQuantity({
                 element: input,
                 baseUrl: $this.baseUrl,
                 formKey: $this.formKey,
                 id: $this.getIdFromQuantityInput(input)
             }));
+        });
+    };
+
+    var initiateShippingMethods = function () {
+        shippingMethod.init({
+            element: $('#checkout-shipping-method-load')[0]
+        });
+
+        mediator.ignore('omnicheckout:init-shipping-methods', {
+            identifier: $this,
+            callback: initiateShippingMethods
         });
     };
 
@@ -81,7 +91,7 @@ define([
         var data;
         var origin = event.origin || event.originalEvent.origin;
 
-        console.log('message event:', event);
+        // console.log('message event:', event);
 
         if (origin !== iframeUrl ||
             typeof event.data !== 'string' ||
@@ -91,7 +101,7 @@ define([
 
         data = JSON.parse(event.data);
 
-        console.log('message data:', data);
+        // console.log('message data:', data);
 
         if (data.hasOwnProperty('eventType') && typeof data.eventType === 'string') {
             switch (data.eventType) {
@@ -115,7 +125,7 @@ define([
     var postMessage = function (data) {
         var iframeWindow;
 
-        console.log('posting:', data);
+        // console.log('posting:', data);
 
         if (iframe && typeof iframeUrl === 'string' && iframeUrl !== '') {
             iframeWindow = iframe.contentWindow || iframe.contentDocument;
@@ -169,6 +179,12 @@ define([
                 }
             }
 
+            mediator.listen({
+                event: 'omnicheckout:init-shipping-methods',
+                identifier: $this,
+                callback: initiateShippingMethods
+            });
+
             ajaxQ.createChain('omnicheckout');
 
             window.addEventListener('beforeunload', function (event) {
@@ -186,6 +202,8 @@ define([
 
             $this.placeIframe();
 
+            shippingService.init();
+
             userInformation.init({
                 baseUrl: $this.baseUrl,
                 formKey: $this.formKey
@@ -194,16 +212,6 @@ define([
             initiateDeleteButtons();
             initiateQuantityInputs();
 
-            // Initialize shipping methods.
-            // $(document).ready(function () {
-            //     alert();
-            //     shippingMethod.init({
-            //         element: $('#checkout-shipping-method-load')[0]
-            //     });
-            // });
-
-            shippingService.init();
-            shippingMethod.setRadioHandlers();
 
             initialized = true;
         }
@@ -227,29 +235,6 @@ define([
 
         return $this;
     };
-
-    // PLEASE REMOVE CODE!
-    //
-    // $this.testRequest = function () {
-    //     console.log('omnicheckout.restRequest()');
-    //     ajaxQ.createChain('omnicheckout')
-    //         .queue({
-    //             url: 'http://resursbank.dev/index.php/rest/default/V1/omnicheckout/cart/item/10/set_qty/4',
-    //             method: 'POST',
-    //             chain: 'omnicheckout',
-    //
-    //             success: function (response, status, jqXhr) {
-    //                 console.log('success:', JSON.parse(response));
-    //                 console.log('status:', status);
-    //                 console.log('jqXhr:', jqXhr);
-    //             },
-    //
-    //             error: function (response) {
-    //                 console.log('ERROR!:', response);
-    //             }
-    //         })
-    //         .run('omnicheckout');
-    // };
 
     /**
      * Returns an empty array or an array of the delete buttons for every product in the cart.

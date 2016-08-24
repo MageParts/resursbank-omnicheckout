@@ -137,53 +137,6 @@ define([
                         mediator.broadcast('checkout:item-quantity-update-complete', {
                             id: $this.id
                         });
-
-                        var shippingAddress = quote.shippingAddress();
-                        var payload = JSON.stringify({
-                                address: {
-                                    'street': shippingAddress.street,
-                                    'city': shippingAddress.city,
-                                    'region_id': shippingAddress.regionId,
-                                    'region': shippingAddress.region,
-                                    'country_id': shippingAddress.countryId,
-                                    'postcode': shippingAddress.postcode,
-                                    'email': shippingAddress.email,
-                                    'customer_id': shippingAddress.customerId,
-                                    'firstname': shippingAddress.firstname,
-                                    'lastname': shippingAddress.lastname,
-                                    'middlename': shippingAddress.middlename,
-                                    'prefix': shippingAddress.prefix,
-                                    'suffix': shippingAddress.suffix,
-                                    'vat_id': shippingAddress.vatId,
-                                    'company': shippingAddress.company,
-                                    'telephone': shippingAddress.telephone,
-                                    'fax': shippingAddress.fax,
-                                    'custom_attributes': shippingAddress.customAttributes,
-                                    'save_in_address_book': shippingAddress.saveInAddressBook
-                                }
-                            }
-                        );
-
-                        shippingService.isLoading(true);
-                        storage.post(
-                            resourceUrlManager.getUrlForEstimationShippingMethodsForNewAddress(quote)
-                            , payload, false
-                        ).done(
-                            function (result) {
-                                console.log('result:', result);
-                                rateRegistry.set(shippingAddress.getKey(), result);
-                                shippingService.setShippingRates(result);
-                            }
-                        ).fail(
-                            function (response) {
-                                shippingService.setShippingRates([]);
-                                // errorProcessor.process(response);
-                            }
-                        ).always(
-                            function () {
-                                shippingService.isLoading(false);
-                            }
-                        );
                     }
                 })
                     .run('omnicheckout');
