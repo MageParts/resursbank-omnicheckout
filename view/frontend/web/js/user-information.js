@@ -6,11 +6,37 @@ define([
     'Magento_Checkout/js/action/create-billing-address',
     'Magento_Checkout/js/action/create-shipping-address',
     'Magento_Checkout/js/action/select-shipping-address',
-    'Magento_Checkout/js/model/shipping-save-processor/default'
-], function ($, ajaxQ, mediator, quote, createBillingAddress, createShippingAddress, selectShippingAddress, defaultProcessor) {
+    'Magento_Checkout/js/action/select-billing-address',
+    'Magento_Checkout/js/model/shipping-save-processor/default',
+    'Magento_Checkout/js/action/select-payment-method',
+    'Magento_Checkout/js/model/payment-service',
+    'Magento_Checkout/js/model/payment/method-list'
+], function (
+    $,
+    ajaxQ,
+    mediator,
+    quote,
+    createBillingAddress,
+    createShippingAddress,
+    selectShippingAddress,
+    selectBillingAddress,
+    defaultProcessor,
+    selectPaymentMethod,
+    paymentServices,
+    methodList
+) {
     var initialized = false;
     var previousUserBilling = null;
     var previousUserShipping = null;
+    var readyToSaveInfo = false;
+
+    quote.shippingMethod.subscribe(function () {
+        if (readyToSaveInfo) {
+            console.log(paymentServices.getAvailablePaymentMethods());
+            defaultProcessor.saveShippingInformation();
+            readyToSaveInfo = false;
+        }
+    });
 
     var $this = {
         /**
@@ -42,20 +68,15 @@ define([
                     event: 'user-info:change',
                     identifier: $this,
                     callback: function (data) {
-                        // if ($this.useBillingForShipping(data)) {
-                        //     $this.pushBillingInfo($this.prepareBillingInfo(data));
-                        // }
-                        // else {
-                        //     $this.pushShippingInfo($this.prepareShippingInfo(data));
-                        // }
-
                         if (data.hasOwnProperty('delivery')) {
-                            data.delivery = $this.prepareShippingInfo(data);
+                            data.shipping = $this.prepareShippingInfo(data.address, data.delivery);
                         }
 
-                        data.address = $this.prepareBillingInfo(data);
+                        data.billing = $this.prepareBillingInfo(data.address);
 
-                        $this.pushBillingInfo(data);
+                        console.log('data:', data);
+
+                        $this.pushUserInfo(data);
                     }
                 });
             }
@@ -69,80 +90,23 @@ define([
          * @param data {Object}
          * @return {$this}
          */
-        pushBillingInfo: function (data) {
+        pushUserInfo: function (data) {
+            var address;
+
             data.form_key = $this.formKey;
-            // data.billing = JSON.stringify(data.billing);
 
             if (data.hasOwnProperty('delivery')) {
-                selectShippingAddress(createShippingAddress(data.delivery));
+                selectShippingAddress(createShippingAddress(data.shipping));
+                selectBillingAddress(createBillingAddress(data.billing));
             }
             else {
-                selectShippingAddress(createShippingAddress(data.billing));
+                address = createBillingAddress(data.billing);
+
+                selectShippingAddress(address);
+                selectBillingAddress(address);
             }
 
-            defaultProcessor.saveShippingInformation();
-
-            // console.log('pushShippingInfo data:', data);
-            // // console.log('createBillingAddress:', createBillingAddress(data.billing));
-            // console.log('createShippingAddress:', createShippingAddress(data.billing));
-            // console.log('quote shipping method:', quote.shippingMethod());
-            //
-            // selectShippingAddress(createShippingAddress(data.billing));
-            // console.log('quote.shippingAddress:', quote.shippingAddress());
-            //
-            // defaultProcessor.saveShippingInformation();
-
-            // if (previousUserBilling !== data.billing) {
-            //     previousUserBilling = data.billing;
-
-                // ajaxQ.queue({
-                //     chain: 'omnicheckout',
-                //     url: $this.baseUrl + 'index/saveBilling',
-                //     parameters: data,
-                //
-                //     onSuccess: function (response) {
-                //         var data = response.responseJSON;
-                //     },
-                //
-                //     onFailure: function (response) {
-                //         var data = response.responseJSON;
-                //     }
-                // })
-                //     .run('omnicheckout');
-            // }
-
-            return $this;
-        },
-
-        /**
-         * Sends the shipping information to the server with an AJAX call. This method should only
-         *
-         * @param data {Object}
-         * @return {$this}
-         */
-        pushShippingInfo: function (data) {
-            data.form_key = $this.formKey;
-            data.shipping = JSON.stringify(data.shipping);
-
-            if (previousUserShipping !== data.shipping) {
-                previousUserShipping = data.shipping;
-
-                ajaxQ.queue({
-                    chain: 'omnicheckout',
-                    url: $this.baseUrl + 'index/saveShipping',
-
-                    parameters: data,
-
-                    onSuccess: function (response) {
-                        var data = response.responseJSON;
-                    },
-
-                    onFailure: function (response) {
-                        var data = response.responseJSON;
-                    }
-                })
-                    .run('omnicheckout');
-            }
+            readyToSaveInfo = true;
 
             return $this;
         },
@@ -151,61 +115,46 @@ define([
          * Prepares the users billing information to be sent to the server. Can alter names and add properties
          * that the server expects to get.
          *
-         * @param {Object} data
+         * @param {Object} billingData
          * @returns {Object} The corrected user information, ready to be sent to the server.
          */
-        prepareBillingInfo: function (data) {
-            var info = {
-                billing: {
-                    street: [],
-                    use_for_shipping: $this.useBillingForShipping(data) ? 1 : 0
-                }
-            };
-
-            $.each(data.address, function (key, value) {
-                switch (key) {
-                    case 'address': info.billing.street[0] = value; break;
-                    case 'addressExtra': info.billing.street[1] = value; break;
-                    default: info.billing[$this.getCorrectInfoName(key)] = value;
-                }
-            });
-
-            return info;
+        prepareBillingInfo: function (billingData) {
+            return $this.correctAddressObject(billingData);
         },
 
         /**
          * Prepares the users shipping information to be sent to the server. Can alter names and add properties
          * that the server expects to get.
          *
-         * @param {Object} data
+         * @param {Object} billingData
+         * @param {Object} shippingData
          * @returns {Object} The corrected user information, ready to be sent to the server.
          */
-        prepareShippingInfo: function (data) {
-            var info = {
-                shipping: {
-                    street: []
-                }
-            };
+        prepareShippingInfo: function (billingData, shippingData) {
+            shippingData.telephone = billingData.telephone;
+            shippingData.email = billingData.email;
 
-            $.each(data.delivery, function (key, value) {
-                switch (key) {
-                    case 'address': info.shipping.street[0] = value; break;
-                    case 'addressExtra': info.shipping.street[1] = value; break;
-                    default: info.shipping[$this.getCorrectInfoName(key)] = value;
-                }
-            });
-
-            return info;
+            return $this.correctAddressObject(shippingData);
         },
 
         /**
-         * Check if a shipping address has been set.
+         * Prepares either the shipping or billing address, depending which object was passed to this method.
          *
-         * @param {Object} data
-         * @returns {Boolean}
+         * @param addressData
+         * @return {Object} The new address object.
          */
-        useBillingForShipping: function (data) {
-            return !data.hasOwnProperty('delivery');
+        correctAddressObject: function (addressData) {
+            return function (obj) {
+                $.each(addressData, function (key, value) {
+                    switch (key) {
+                        case 'address': obj.street[0] = value; break;
+                        case 'addressExtra': obj.street[1] = value; break;
+                        default: obj[$this.getCorrectInfoName(key)] = value;
+                    }
+                });
+
+                return obj;
+            }({street: []});
         },
 
         /**
