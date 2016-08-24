@@ -8,7 +8,7 @@ namespace Resursbank\OmniCheckout\Model\Payment;
 class NetsCard extends \Resursbank\OmniCheckout\Model\Payment\Standard
 {
 
-    const PAYMENT_METHOD_RESURSBANK_NETSCARD_CODE = 'netscard';
+    const PAYMENT_METHOD_RESURSBANK_NETSCARD_CODE = 'resursbank_netscard';
 
     /**
      * Payment method code.

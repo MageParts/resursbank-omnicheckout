@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © 2016 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<payment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Payment:etc/payment.xsd">
+    <groups>
+        <group id="offline">
+            <label>Offline Payment Methods</label>
+        </group>
+    </groups>
+    <methods>
+        <method name="resursbank_card">
+            <allow_multiple_address>0</allow_multiple_address>
+        </method>
+        <method name="resursbank_invoice">
+            <allow_multiple_address>0</allow_multiple_address>
+        </method>
+        <method name="resursbank_netscard">
+            <allow_multiple_address>0</allow_multiple_address>
+        </method>
+        <method name="resursbank_newcard">
+            <allow_multiple_address>0</allow_multiple_address>
+        </method>
+        <method name="resursbank_partpayment">
+            <allow_multiple_address>0</allow_multiple_address>
+        </method>
+        <method name="resursbank_default">
+            <allow_multiple_address>0</allow_multiple_address>
+        </method>
+    </methods>
+</payment>

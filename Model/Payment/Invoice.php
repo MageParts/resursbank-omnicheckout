@@ -8,7 +8,7 @@ namespace Resursbank\OmniCheckout\Model\Payment;
 class Invoice extends \Resursbank\OmniCheckout\Model\Payment\Standard
 {
 
-    const PAYMENT_METHOD_RESURSBANK_INVOICE_CODE = 'invoice';
+    const PAYMENT_METHOD_RESURSBANK_INVOICE_CODE = 'resursbank_invoice';
 
     /**
      * Payment method code.

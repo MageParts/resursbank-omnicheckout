@@ -10,6 +10,7 @@
                 <order_status>pending</order_status>
                 <title>Resursbank kort</title>
                 <allowspecific>0</allowspecific>
+                <payment_action>true</payment_action>
                 <group>offline</group>
             </resursbank_card>
 
@@ -20,6 +21,7 @@
                 <order_status>pending</order_status>
                 <title>Resursbank kort (nytt)</title>
                 <allowspecific>0</allowspecific>
+                <payment_action>true</payment_action>
                 <group>offline</group>
             </resursbank_newcard>
 
@@ -30,6 +32,7 @@
                 <order_status>pending</order_status>
                 <title>Faktura</title>
                 <allowspecific>0</allowspecific>
+                <payment_action>true</payment_action>
                 <group>offline</group>
             </resursbank_invoice>
 
@@ -40,6 +43,7 @@
                 <order_status>pending</order_status>
                 <title>Delbetalning</title>
                 <allowspecific>0</allowspecific>
+                <payment_action>true</payment_action>
                 <group>offline</group>
             </resursbank_partpayment>
 
@@ -50,6 +54,7 @@
                 <order_status>pending</order_status>
                 <title>Kreditkort (VISA/MasterCard)</title>
                 <allowspecific>0</allowspecific>
+                <payment_action>true</payment_action>
                 <group>offline</group>
             </resursbank_netscard>
 
@@ -60,6 +65,7 @@
                 <order_status>pending</order_status>
                 <title>Resursbank</title>
                 <allowspecific>0</allowspecific>
+                <payment_action>true</payment_action>
                 <group>offline</group>
             </resursbank_default>
         </payment>

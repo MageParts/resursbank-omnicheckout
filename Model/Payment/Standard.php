@@ -8,7 +8,7 @@ namespace Resursbank\OmniCheckout\Model\Payment;
 class Standard extends \Magento\Payment\Model\Method\AbstractMethod
 {
     
-    const PAYMENT_METHOD_RESURSBANK_STANDARD_CODE = 'default';
+    const PAYMENT_METHOD_RESURSBANK_STANDARD_CODE = 'resursbank_default';
 
     /**
      * Payment method code.
