@@ -36,8 +36,18 @@ define([
 
     quote.shippingMethod.subscribe(function () {
         if (readyToSaveInfo) {
-            defaultProcessor.saveShippingInformation();
-            readyToSaveInfo = false;
+            defaultProcessor.saveShippingInformation()
+                .complete(function () {
+                    console.log('save shipping information done!');
+
+                    readyToSaveInfo = false;
+
+                    var paymentMethod = 'checkmo'; // $this.correctPaymentMethod(data.method);
+
+                    selectPaymentMethod(paymentMethod);
+
+                    placeOrderAction(quote.getPaymentMethod(), new Messages());
+                });
         }
     });
 
@@ -87,23 +97,23 @@ define([
                     }
                 });
 
-                mediator.listen({
-                    event: 'payment-method:change',
-                    identifier: $this,
-                    callback: function (data) {
-                        var paymentMethod = $this.correctPaymentMethod(data.method);
-
-                        selectPaymentMethod(paymentMethod);
-
-                        console.log('Message instance:', new Messages());
-
-                        placeOrderAction(quote.getPaymentMethod(), new Messages());
-
-                        console.log(paymentService.getAvailablePaymentMethods());
-                        console.log('payment method:', quote.paymentMethod());
-                        console.log('payment method data:', data);
-                    }
-                });
+                // mediator.listen({
+                //     event: 'payment-method:change',
+                //     identifier: $this,
+                //     callback: function (data) {
+                //         var paymentMethod = $this.correctPaymentMethod(data.method);
+                //
+                //         selectPaymentMethod(paymentMethod);
+                //
+                //         console.log('Message instance:', new Messages());
+                //
+                //         placeOrderAction(quote.getPaymentMethod(), new Messages());
+                //
+                //         console.log(paymentService.getAvailablePaymentMethods());
+                //         console.log('payment method:', quote.paymentMethod());
+                //         console.log('payment method data:', data);
+                //     }
+                // });
 
                 initialized = true;
             }

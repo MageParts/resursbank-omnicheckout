@@ -91,7 +91,7 @@ define([
         var data;
         var origin = event.origin || event.originalEvent.origin;
 
-        // console.log('message event:', event);
+         // console.log('message event:', event);
 
         if (origin !== iframeUrl ||
             typeof event.data !== 'string' ||
