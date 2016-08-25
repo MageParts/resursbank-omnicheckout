@@ -34,7 +34,7 @@ class Init
     }
 
     /**
-     * Update Resursbank payment session after the quote has been saved.
+     * Initialize payment session before the checkout page loads (predispatch of checkout_index_index).
      *
      * @param \Magento\Checkout\Controller\Index\Index $subject
      * @return  null
@@ -42,40 +42,9 @@ class Init
      */
     public function beforeExecute(\Magento\Checkout\Controller\Index\Index $subject)
     {
-        // Initialize payment session.
         if (!$this->apiModel->paymentSessionInitialized()) {
-            // Assign default address information to quote.
-//            $this->apiHelper->quoteAssignDefaultAddress();
-
-//            $this->assignDefaultShippingMethod();
-
-            // Initialize payment session.
             $this->apiModel->initPaymentSession();
         }
     }
-
-//    /**
-//     * Assign default shipping method (this only applies if there is only one shipping method available).
-//     *
-//     * @return $this
-//     * @throws Exception
-//     */
-//    public function assignDefaultShippingMethod()
-//    {
-//        if ($this->apiHelper->getQuote()) {
-//            $rates = $this->apiHelper->getShippingRatesCollection();
-//
-//            if (count($rates) === 1) {
-//                foreach ($rates as $rate) {
-//                    $this->apiHelper->getQuote()->getShippingAddress()->setShippingMethod("{$rate->getCarrier()}_{$rate->getCode()}");
-//                    $this->apiHelper->getQuote()->collectTotals();
-//                    $this->apiHelper->getQuoteRepository()->save($this->apiHelper->getQuote());
-//                }
-//            }
-//        }
-//
-//        return $this;
-//    }
-
 
 }

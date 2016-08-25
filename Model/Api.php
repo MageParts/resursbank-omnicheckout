@@ -45,11 +45,6 @@ class Api extends DataObject
     private $customerSession;
 
     /**
-     * @var \Magento\Framework\Event\ManagerInterface
-     */
-    private $eventManager;
-
-    /**
      * @var \Magento\Checkout\Model\Session
      */
     private $checkoutSession;
@@ -82,7 +77,6 @@ class Api extends DataObject
     /**
      * @param \Magento\Customer\Model\Session $customerSession
      * @param \Resursbank\OmniCheckout\Helper\Api $helper
-     * @param \Magento\Framework\Event\ManagerInterface $eventManager
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      * @param \Psr\Log\LoggerInterface $log
      * @param \Magento\Framework\UrlInterface $url
@@ -94,7 +88,6 @@ class Api extends DataObject
     public function __construct(
         \Magento\Customer\Model\Session $customerSession,
         \Resursbank\OmniCheckout\Helper\Api $helper,
-        \Magento\Framework\Event\ManagerInterface $eventManager,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \Psr\Log\LoggerInterface $log,
         \Magento\Framework\UrlInterface $url,
@@ -105,7 +98,6 @@ class Api extends DataObject
     ) {
         $this->helper = $helper;
         $this->customerSession = $customerSession;
-        $this->eventManager = $eventManager;
         $this->checkoutSession = $checkoutSession;
         $this->scopeConfig = $scopeConfig;
         $this->url = $url;
@@ -137,27 +129,8 @@ class Api extends DataObject
             'customer'   => $this->getCustomerInformation()
         );
 
-        // Allows observers to modify the data submitted to the API.
-        $this->eventManager->dispatch(
-            'omnicheckout_api_init_session_before',
-            array(
-                'data'  => $data,
-                'quote' => $this->getQuote()
-            )
-        );
-
         // Perform API request.
         $result = $this->call("checkout/payments/{$this->getQuoteToken(true)}", 'post', $data);
-
-        // Allows observers to perform actions based on API response.
-        $this->eventManager->dispatch(
-            'omnicheckout_api_init_session_after',
-            array(
-                'data'      => $data,
-                'response'  => $result,
-                'quote'     => $this->getQuote()
-            )
-        );
 
         // Handle API response.
         $result = @json_decode($result);
@@ -188,29 +161,8 @@ class Api extends DataObject
             'orderLines' => $this->getOrderLines()
         );
 
-        // Allows observers to modify the data submitted to the API.
-        $this->eventManager->dispatch(
-            'omnicheckout_api_update_session_before',
-            array(
-                'data'  => $data,
-                'quote' => $this->getQuote()
-            )
-        );
-
         // Perform API request.
-        $result = $this->call("checkout/payments/{$this->getQuoteToken()}", 'put', $data);
-
-        // Allows observers to perform actions based on API response.
-        $this->eventManager->dispatch(
-            'omnicheckout_api_update_session_after',
-            array(
-                'data'      => $data,
-                'response'  => $result,
-                'quote'     => $this->getQuote()
-            )
-        );
-
-        return $result;
+        return $this->call("checkout/payments/{$this->getQuoteToken()}", 'put', $data);
     }
 
     /**
@@ -221,24 +173,7 @@ class Api extends DataObject
      */
     public function getPayment($quoteToken)
     {
-        // Allows observers to take actions before performing the API request.
-        $this->eventManager->dispatch(
-            'omnicheckout_api_get_session_before',
-            array(
-                'quote_token' => $quoteToken
-            )
-        );
-
         $result = $this->call("checkout/payments/{$quoteToken}", 'get');
-
-        // Allows observers to perform actions based on API response.
-        $this->eventManager->dispatch(
-            'omnicheckout_api_get_session_after',
-            array(
-                'response'    => $result,
-                'quote_token' => $quoteToken
-            )
-        );
 
         if (!empty($result)) {
             $result = @json_decode($result);
@@ -254,26 +189,7 @@ class Api extends DataObject
      */
     public function deletePaymentSession()
     {
-        // Allows observers to take actions before performing the API request.
-        $this->eventManager->dispatch(
-            'omnicheckout_api_delete_session_before',
-            array(
-                'quote' => $this->getQuote()
-            )
-        );
-
-        $result = $this->call("checkout/payments/{$this->getQuoteToken()}", 'delete');
-
-        // Allows observers to perform actions based on API response.
-        $this->eventManager->dispatch(
-            'omnicheckout_api_delete_session_after',
-            array(
-                'response'  => $result,
-                'quote'     => $this->getQuote()
-            )
-        );
-
-        return $result;
+        return $this->call("checkout/payments/{$this->getQuoteToken()}", 'delete');
     }
 
     /**
