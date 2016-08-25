@@ -45,7 +45,7 @@ class Update
     {
         if ($this->apiModel->paymentSessionInitialized()) {
             if ($this->apiHelper->cartIsEmpty()) {
-                $this->apiModel->deletePaymentSession();
+//                $this->apiModel->deletePaymentSession();
             } else {
                 $this->apiModel->updatePaymentSession();
             }

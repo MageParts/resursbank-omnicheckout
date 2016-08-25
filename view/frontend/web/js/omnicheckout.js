@@ -101,7 +101,7 @@ define([
 
         data = JSON.parse(event.data);
 
-        // console.log('message data:', data);
+        console.log('message data:', data);
 
         if (data.hasOwnProperty('eventType') && typeof data.eventType === 'string') {
             switch (data.eventType) {
