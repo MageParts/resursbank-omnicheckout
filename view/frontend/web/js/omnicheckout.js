@@ -8,9 +8,22 @@ define([
     'Resursbank_OmniCheckout/js/cart/item/delete',
     'Resursbank_OmniCheckout/js/cart/item/quantity',
     'Resursbank_OmniCheckout/js/shipping-methods',
-    'Resursbank_OmniCheckout/js/user-information',
-    'Resursbank_OmniCheckout/js/view/shipping-service'
-], function ($, mediator, ajaxQ, itemDelete, itemQuantity, shippingMethod, userInformation, shippingService) {
+    'Resursbank_OmniCheckout/js/address',
+    'Resursbank_OmniCheckout/js/view/shipping-service',
+    'Resursbank_OmniCheckout/js/order/payment-method',
+    'Resursbank_OmniCheckout/js/order/place-order'
+], function (
+    $,
+    mediator,
+    ajaxQ,
+    itemDelete,
+    itemQuantity,
+    shippingMethod,
+    address,
+    shippingService,
+    paymentMethod,
+    placeOrder
+) {
     var $this = {};
     var initialized = false;
     var deleteButtons = [];
@@ -101,7 +114,7 @@ define([
 
         data = JSON.parse(event.data);
 
-        console.log('message data:', data);
+        // console.log('message data:', data);
 
         if (data.hasOwnProperty('eventType') && typeof data.eventType === 'string') {
             switch (data.eventType) {
@@ -124,8 +137,6 @@ define([
      */
     var postMessage = function (data) {
         var iframeWindow;
-
-        // console.log('posting:', data);
 
         if (iframe && typeof iframeUrl === 'string' && iframeUrl !== '') {
             iframeWindow = iframe.contentWindow || iframe.contentDocument;
@@ -204,14 +215,16 @@ define([
 
             shippingService.init();
 
-            userInformation.init({
+            address.init({
                 baseUrl: $this.baseUrl,
                 formKey: $this.formKey
             });
 
+            paymentMethod.init();
+            placeOrder.init();
+
             initiateDeleteButtons();
             initiateQuantityInputs();
-
 
             initialized = true;
         }
