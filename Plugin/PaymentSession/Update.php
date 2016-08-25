@@ -36,7 +36,10 @@ class Update
     /**
      * Update Resursbank payment session after the quote has been saved.
      *
-     * TODO: Check if we can use deletePaymentSession and avoid problems where quote cannot be placed.
+     * TODO: During order placement the cart becomes empty, thus deletePaymentSession is triggered and yields an error.
+     * TODO: See if there is any way to utilize deletePaymentSession except when order placement occurs, and if it
+     * TODO: causes any problems if is doesn't occur during order placement. Check past commits for an implementation
+     * TODO: example of deletePaymentSession (should occur if cart is empty, so cartIsEmpty() {delete} else {update}).
      *
      * @param \Magento\Quote\Model\Quote $subject
      * @param \Magento\Quote\Model\Quote $result
@@ -46,9 +49,7 @@ class Update
     public function afterAfterSave(\Magento\Quote\Model\Quote $subject, $result)
     {
         if ($this->apiModel->paymentSessionInitialized()) {
-            if ($this->apiHelper->cartIsEmpty()) {
-                $this->apiModel->deletePaymentSession();
-            } else {
+            if (!$this->apiHelper->cartIsEmpty()) {
                 $this->apiModel->updatePaymentSession();
             }
         }
