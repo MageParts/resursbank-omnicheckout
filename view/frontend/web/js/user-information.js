@@ -42,11 +42,19 @@ define([
 
                     readyToSaveInfo = false;
 
+                    // quote.setPaymentMethod('checkmo');
+
                     var paymentMethod = 'checkmo'; // $this.correctPaymentMethod(data.method);
 
                     selectPaymentMethod(paymentMethod);
 
-                    placeOrderAction(quote.getPaymentMethod(), new Messages());
+                    console.log('selected payment method: ' + quote.paymentMethod());
+
+                    quote.guestEmail = 'fuckoff@johanna.se';
+
+                    placeOrderAction({
+                        'method': quote.paymentMethod()
+                    }, new Messages());
                 });
         }
     });

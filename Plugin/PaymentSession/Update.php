@@ -36,6 +36,8 @@ class Update
     /**
      * Update Resursbank payment session after the quote has been saved.
      *
+     * TODO: Check if we can use deletePaymentSession and avoid problems where quote cannot be placed.
+     *
      * @param \Magento\Quote\Model\Quote $subject
      * @param \Magento\Quote\Model\Quote $result
      * @return \Magento\Quote\Model\Quote
