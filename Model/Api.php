@@ -6,6 +6,12 @@ use Exception;
 use \Magento\Framework\DataObject;
 use stdClass;
 
+/**
+ * TODO: Not sure we need to extend DataObject anymore.
+ *
+ * Class Api
+ * @package Resursbank\OmniCheckout\Model
+ */
 class Api extends DataObject
 {
 

@@ -44,7 +44,7 @@ define([
 
                     // quote.setPaymentMethod('checkmo');
 
-                    var paymentMethod = 'checkmo'; // $this.correctPaymentMethod(data.method);
+                    var paymentMethod = 'resursbank_invoice'; // $this.correctPaymentMethod(data.method);
 
                     selectPaymentMethod(paymentMethod);
 

@@ -1,0 +1,50 @@
+#resursbank-omnicheckout-order-view-info {
+    width: 100%;
+    background-image: url(i/logo.png);
+    background-position: right 20px top 20px;
+    background-repeat: no-repeat;
+    -webkit-background-size: 170px 60px;
+    background-size: 170px 60px;
+    background-color: #afe3f9;
+    margin-bottom: 20px;
+}
+
+#resursbank-omnicheckout-order-view-info .content {
+    padding:20px 20px 20px 20px;
+}
+
+#resursbank-omnicheckout-order-view-info h3 {
+    padding-bottom:10px;
+}
+
+#resursbank-omnicheckout-order-view-info .content .field-group-customer {
+    margin-top:20px;
+    padding-top:20px;
+    border-top:1px dashed #85CAE8;
+}
+
+#resursbank-omnicheckout-order-view-info .content .fields {
+    width:450px;
+}
+
+#resursbank-omnicheckout-order-view-info .content .fields .field {
+    padding:5px;
+    list-style: none;
+}
+
+#resursbank-omnicheckout-order-view-info .content .fields .field:nth-child(odd) {
+    background:#85CAE8;
+}
+
+#resursbank-omnicheckout-order-view-info .content .fields .field .field-label {
+    display: inline-block;
+    font-weight: bold;
+    margin-right:15px;
+    width: 100px;
+    vertical-align: top;
+}
+
+#resursbank-omnicheckout-order-view-info .content .fields .field .field-value {
+    display: inline-block;
+    width:325px;
+}
