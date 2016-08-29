@@ -21,10 +21,24 @@ define([
             }
         },
 
-        placerOrder: function (data) {
+        /**
+         * Attempts to place the order.
+         *
+         * @param data
+         * @returns {Object} $this.
+         */
+        placeOrder: function (data) {
             placeOrderAction({
                 'method': quote.paymentMethod()
-            }, new Messages());
+            }, new Messages())
+                .success(function () {
+                    console.log('place order: success!');
+                    mediator.broadcast('omnicheckout:booking-order', {isOrderReady: true});
+                })
+                .fail(function () {
+                    console.log('place order: fail!');
+                    mediator.broadcast('omnicheckout:booking-order', {isOrderReady: false});
+                });
 
             return $this;
         },

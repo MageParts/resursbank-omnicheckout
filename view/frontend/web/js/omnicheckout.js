@@ -104,7 +104,7 @@ define([
         var data;
         var origin = event.origin || event.originalEvent.origin;
 
-         // console.log('message event:', event);
+         console.log('message event:', event);
 
         if (origin !== iframeUrl ||
             typeof event.data !== 'string' ||
@@ -114,7 +114,7 @@ define([
 
         data = JSON.parse(event.data);
 
-        // console.log('message data:', data);
+        console.log('message data:', data);
 
         if (data.hasOwnProperty('eventType') && typeof data.eventType === 'string') {
             switch (data.eventType) {
@@ -190,14 +190,34 @@ define([
                 }
             }
 
+            console.log('baseUrl:', $this.baseUrl);
+            console.log('iframeUrl:', iframeUrl);
+
+            // Listener for initiating the shipping methods. At load they get placed with AJAX, and we can only
+            // initiate them after that. This is only used once.
             mediator.listen({
                 event: 'omnicheckout:init-shipping-methods',
                 identifier: $this,
                 callback: initiateShippingMethods
             });
 
+            // Listener for booking the order.
+            mediator.listen({
+                event: 'omnicheckout:booking-order',
+                identifier: $this,
+                callback: function (data) {
+                    if (typeof data.isOrderReady === 'boolean') {
+                        postMessage({
+                            eventType: 'omnicheckout:booking-order',
+                            isOrderReady: data.isOrderReady
+                        });
+                    }
+                }
+            });
+
             ajaxQ.createChain('omnicheckout');
 
+            // Remove everything.
             window.addEventListener('beforeunload', function (event) {
                 $.each(deleteButtons, function (i, button) {
                     button.destroy();
@@ -211,8 +231,10 @@ define([
             // Add message listener.
             window.addEventListener('message', postMessageDelegator, false);
 
+            // Place the iframe in the body.
             $this.placeIframe();
 
+            // Inject our own function that will broadcast a message when hipping methods has been loaded.
             shippingService.init();
 
             address.init({
