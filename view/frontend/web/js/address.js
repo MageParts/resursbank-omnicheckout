@@ -23,12 +23,14 @@ define([
     var previousUserShipping = null;
 
     quote.shippingMethod.subscribe(function () {
-        if (readyToSaveInfo) {
+        //console.log(quote.shippingMethod());
+        //console.log(quote.shippingAddress());
+        //if (readyToSaveInfo) {
             defaultProcessor.saveShippingInformation()
                 .complete(function () {
                     readyToSaveInfo = false;
                 });
-        }
+        //}
     });
 
     var $this = {
@@ -94,7 +96,7 @@ define([
          * Sends the billing information to the server with an AJAX call.
          *
          * @param data {Object}
-         * @return {$this}
+         * @return {Object} $this.
          */
         pushUserInfo: function (data) {
             var address;
