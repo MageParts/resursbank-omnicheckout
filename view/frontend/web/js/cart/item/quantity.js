@@ -77,7 +77,6 @@ define([
 
             if (!disabled && !isNaN(quantity)) {
                 $this.disable();
-                // $this.ajaxLoader.place($this.element);
 
                 console.log($this.id + ' qty:', quantity);
 
@@ -99,31 +98,26 @@ define([
                     success: function (data) {
                         console.log(data);
 
-                        // if (data.message.error.length) {
-                        //     handleAjaxErrors(data.message.error);
-                        // }
-                        // else {
-                            if (data.item_total) {
-                                mediator.broadcast('checkout:item-price-update', {
-                                    id: $this.id,
-                                    element: data.item_total
-                                });
-                            }
+                        if (data.item_total) {
+                            mediator.broadcast('checkout:item-price-update', {
+                                id: $this.id,
+                                element: data.item_total
+                            });
+                        }
 
-                            if (data.hasOwnProperty('elements')) {
-                                mediator.broadcast('shipping:update-content', {
-                                    content: data.elements['omnicheckout-shipping-methods-list']
-                                });
+                        if (data.hasOwnProperty('elements')) {
+                            mediator.broadcast('shipping:update-content', {
+                                content: data.elements['omnicheckout-shipping-methods-list']
+                            });
 
-                                mediator.broadcast('discount:update-content', {
-                                    content: data.elements['current-coupon-code']
-                                });
+                            mediator.broadcast('discount:update-content', {
+                                content: data.elements['current-coupon-code']
+                            });
 
-                                mediator.broadcast('minicart:update-content', {
-                                    content: data.elements['header-cart']
-                                });
-                            }
-                        // }
+                            mediator.broadcast('minicart:update-content', {
+                                content: data.elements['header-cart']
+                            });
+                        }
                     },
 
                     error: function (data) {
@@ -132,7 +126,6 @@ define([
 
                     complete: function () {
                         $this.enable();
-                        // $this.ajaxLoader.remove($this.element);
 
                         mediator.broadcast('checkout:item-quantity-update-complete', {
                             id: $this.id

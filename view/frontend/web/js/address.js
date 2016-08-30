@@ -1,60 +1,32 @@
 define([
     'jquery',
-    'Resursbank_OmniCheckout/js/ajax-q',
     'Resursbank_OmniCheckout/js/mediator',
     'Magento_Checkout/js/model/quote',
     'Magento_Checkout/js/action/create-billing-address',
     'Magento_Checkout/js/action/create-shipping-address',
     'Magento_Checkout/js/action/select-shipping-address',
     'Magento_Checkout/js/action/select-billing-address',
-    'Magento_Checkout/js/model/shipping-save-processor/default',
-    'Magento_Checkout/js/action/select-payment-method',
-    'Magento_Checkout/js/model/payment-service',
-    'Magento_Checkout/js/action/place-order',
-    'Magento_Ui/js/model/messages',
-    'Magento_Customer/js/model/customer'
+    'Magento_Checkout/js/model/shipping-save-processor/default'
 ], function (
     $,
-    ajaxQ,
     mediator,
     quote,
     createBillingAddress,
     createShippingAddress,
     selectShippingAddress,
     selectBillingAddress,
-    defaultProcessor,
-    selectPaymentMethod,
-    paymentService,
-    placeOrderAction,
-    Messages,
-    customer
+    defaultProcessor
 ) {
     var initialized = false;
+    var readyToSaveInfo = false;
     var previousUserBilling = null;
     var previousUserShipping = null;
-    var readyToSaveInfo = false;
 
     quote.shippingMethod.subscribe(function () {
         if (readyToSaveInfo) {
             defaultProcessor.saveShippingInformation()
                 .complete(function () {
-                    console.log('save shipping information done!');
-
                     readyToSaveInfo = false;
-
-                    // quote.setPaymentMethod('checkmo');
-
-                    var paymentMethod = 'resursbank_invoice'; // $this.correctPaymentMethod(data.method);
-
-                    selectPaymentMethod(paymentMethod);
-
-                    console.log('selected payment method: ' + quote.paymentMethod());
-
-                    quote.guestEmail = 'fuckoff@johanna.se';
-
-                    placeOrderAction({
-                        'method': quote.paymentMethod()
-                    }, new Messages());
                 });
         }
     });
@@ -89,42 +61,31 @@ define([
                     event: 'user-info:change',
                     identifier: $this,
                     callback: function (data) {
-                        // if (quote.billingAddress() && !customer.isLoggedIn()) {
-                        //     quote.guestEmail = quote.billingAddress().email;
-                        // }
-                        //
-                        // console.log('guest email:', quote.guestEmail);
-
                         if (data.hasOwnProperty('delivery')) {
                             data.shipping = $this.prepareShippingInfo(data.address, data.delivery);
                         }
 
                         data.billing = $this.prepareBillingInfo(data.address);
 
-                        $this.pushUserInfo(data);
+                        $this.setGuestEmail(data.billing.email)
+                            .pushUserInfo(data);
                     }
                 });
 
-                // mediator.listen({
-                //     event: 'payment-method:change',
-                //     identifier: $this,
-                //     callback: function (data) {
-                //         var paymentMethod = $this.correctPaymentMethod(data.method);
-                //
-                //         selectPaymentMethod(paymentMethod);
-                //
-                //         console.log('Message instance:', new Messages());
-                //
-                //         placeOrderAction(quote.getPaymentMethod(), new Messages());
-                //
-                //         console.log(paymentService.getAvailablePaymentMethods());
-                //         console.log('payment method:', quote.paymentMethod());
-                //         console.log('payment method data:', data);
-                //     }
-                // });
-
                 initialized = true;
             }
+
+            return $this;
+        },
+
+        /**
+         * Sets the [guestEmail] property of the quote object.
+         *
+         * @param email
+         * @returns {Object} $this
+         */
+        setGuestEmail: function (email) {
+            quote.guestEmail = email;
 
             return $this;
         },
@@ -219,27 +180,6 @@ define([
             }
 
             return correctedName;
-        },
-
-        /**
-         * Corrects the name of the payment method that is sent by the iframe.
-         *
-         * @param method {String} The payment method.
-         * @returns {String}
-         */
-        correctPaymentMethod: function (method) {
-            var correction = '';
-
-            switch (method) {
-                case 'CARD': correction = 'resursbank_card'; break;
-                case 'NEWCARD': correction = 'resursbank_newcard'; break;
-                case 'INVOICE': correction = 'resursbank_invoice'; break;
-                case 'PARTPAYMENT': correction = 'resursbank_partpayment'; break;
-                case 'NETSCARD': correction = 'resursbank_netscard'; break;
-                default: correction = 'resursbank_default';
-            }
-
-            return correction;
         },
 
         /**
