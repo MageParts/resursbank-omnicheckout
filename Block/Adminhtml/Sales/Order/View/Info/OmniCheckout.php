@@ -6,6 +6,9 @@ namespace Resursbank\OmniCheckout\Block\Adminhtml\Sales\Order\View\Info;
  * Rewrite of Mage_Adminhtml_Block_Sales_Order_View_Info. This class allows us to include custom HTML on the order view
  * in the admin panel.
  *
+ * TODO: \Magento\Checkout\Helper\Data is being utilized to format price values. This doesn't seem like the correct
+ * TODO: appraoch, we should look for a better way.
+ *
  * Class Info
  */
 class OmniCheckout extends \Magento\Backend\Block\Template
@@ -29,15 +32,22 @@ class OmniCheckout extends \Magento\Backend\Block\Template
     private $registry;
 
     /**
+     * @var \Magento\Checkout\Helper\Data
+     */
+    private $checkoutHelper;
+
+    /**
      * @param \Magento\Backend\Block\Template\Context $context
      * @param \Resursbank\OmniCheckout\Model\Api $apiModel
      * @param \Magento\Framework\Registry $registry
+     * @param \Magento\Checkout\Helper\Data $checkoutHelper
      * @param array $data
      */
     public function __construct(
         \Magento\Backend\Block\Template\Context $context,
         \Resursbank\OmniCheckout\Model\Api $apiModel,
         \Magento\Framework\Registry $registry,
+        \Magento\Checkout\Helper\Data $checkoutHelper,
         array $data = []
     ) {
         $this->apiModel = $apiModel;
@@ -46,6 +56,7 @@ class OmniCheckout extends \Magento\Backend\Block\Template
         parent::__construct($context, $data);
 
         $this->setTemplate('Resursbank_OmniCheckout::sales/order/view/info/omnicheckout.phtml');
+        $this->checkoutHelper = $checkoutHelper;
     }
 
     /**
@@ -81,7 +92,7 @@ class OmniCheckout extends \Magento\Backend\Block\Template
      */
     public function getPaymentTotal()
     {
-        return (float) $this->getPaymentInformation('totalAmount');
+        return $this->checkoutHelper->formatPrice((float) $this->getPaymentInformation('totalAmount'));
     }
 
     /**
@@ -91,7 +102,7 @@ class OmniCheckout extends \Magento\Backend\Block\Template
      */
     public function getPaymentLimit()
     {
-        return (float) $this->getPaymentInformation('limit');
+        return $this->checkoutHelper->formatPrice((float) $this->getPaymentInformation('limit'));
     }
 
     /**
