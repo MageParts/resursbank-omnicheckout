@@ -83,9 +83,6 @@ define([
                     success: function (data) {
                         console.log(data);
 
-                        // if (data.message.error.length) {
-                        //     handleAjaxErrors(data.message.error);
-                        // }
                         if (data.cart_qty === 0) {
                             location.href = $this.baseUrl;
                         }
