@@ -230,6 +230,9 @@ class Api extends DataObject
      *  UPDATE
      *  BOOKED
      *
+     * TODO: Do not use url->getBaseUrl(), use url->getUrl() instead (this currently retrieves a URL for the
+     * TODO: administration panel, hence we changed it for now to getBaseUrl()).
+     *
      * @param string $type
      * @return \Zend\Http\Response
      * @todo basic_username and basic_password should be tested (.htpasswd)
@@ -239,7 +242,7 @@ class Api extends DataObject
         $type = strtolower((string) $type);
 
         return $this->call($this->getCallbackTypePath($type), 'post', array(
-            'uriTemplate' => $this->url->getUrl("omnicheckout/callback/{$type}"),
+            'uriTemplate' => $this->url->getBaseUrl() . "rest/V1/omnicheckout/order/{$type}",
             'basicAuthUserName' => $this->getCallbackSetting('basic_username'),
             'basicAuthPassword' => $this->getCallbackSetting('basic_password')
         ));

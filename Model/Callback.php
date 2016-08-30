@@ -11,7 +11,7 @@ namespace Resursbank\OmniCheckout\Model;
  * Class Callback
  * @package Resursbank\OmniCheckout\Model
  */
-class Callback implements CallbackInterface
+class Callback implements \Resursbank\OmniCheckout\Api\CallbackInterface
 {
 
     /**
