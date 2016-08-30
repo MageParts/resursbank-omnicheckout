@@ -91,7 +91,7 @@ define([
          * Puts click handlers on the radio buttons. When clicking a radio button it will send the selected
          * shipping method to the server with an AJAX call.
          *
-         * @returns {$this}
+         * @returns {Object} $this.
          */
         setRadioHandlers: function () {
             $.each($this.getShippingMethodRadios(), function (i, radio) {
@@ -106,7 +106,7 @@ define([
          * string.
          *
          * @param {String} content
-         * @returns {$this}
+         * @returns {Object} $this.
          */
         updateHtml: function (content) {
             if ($this.element && typeof content === 'string') {
@@ -120,7 +120,7 @@ define([
          * Sets the selected radio.
          *
          * @param {Element} radio The radio button to select.
-         * @returns {$this}
+         * @returns {Object} $this.
          */
         select: function (radio) {
             if (radio.checked && radio !== $this.selected) {
@@ -135,7 +135,7 @@ define([
          * After an content update, this method selects the new radio button that has the same value as the old
          * radio button. If the option can't be found it will reset shipping.selected to null.
          *
-         * @returns {$this}
+         * @returns {Object} $this.
          */
         resetSelection: function () {
             var currentSelectedValue = null;
@@ -170,30 +170,30 @@ define([
         /**
          * Sends the selected shipping method to the server.
          *
-         * @returns {$this}
+         * @returns {Object} $this.
          */
         pushShippingMethod: function () {
-            if ($this.selected && previousShippingMethod !== $this.selected.value) {
-                $this.disable();
-
-                previousShippingMethod = $this.selected.value;
-
-                ajaxQ.queue({
-                    chain: 'omnicheckout',
-                    url: $this.baseUrl + 'omnicheckout/cart/saveShippingMethod',
-                    method: 'POST',
-
-                    data: {
-                        shipping_method: $this.selected.value,
-                        form_key: $this.formKey
-                    },
-
-                    complete: function () {
-                        $this.enable();
-                    }
-                })
-                    .run('omnicheckout');
-            }
+            // if ($this.selected && previousShippingMethod !== $this.selected.value) {
+            //     $this.disable();
+            //
+            //     previousShippingMethod = $this.selected.value;
+            //
+            //     ajaxQ.queue({
+            //         chain: 'omnicheckout',
+            //         url: $this.baseUrl + 'omnicheckout/cart/saveShippingMethod',
+            //         method: 'POST',
+            //
+            //         data: {
+            //             shipping_method: $this.selected.value,
+            //             form_key: $this.formKey
+            //         },
+            //
+            //         complete: function () {
+            //             $this.enable();
+            //         }
+            //     })
+            //         .run('omnicheckout');
+            // }
 
             return $this;
         },
