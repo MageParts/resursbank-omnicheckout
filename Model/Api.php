@@ -6,6 +6,12 @@ use Exception;
 use \Magento\Framework\DataObject;
 use stdClass;
 
+/**
+ * TODO: Not sure we need to extend DataObject anymore.
+ *
+ * Class Api
+ * @package Resursbank\OmniCheckout\Model
+ */
 class Api extends DataObject
 {
 
@@ -407,7 +413,7 @@ class Api extends DataObject
             $this->log->debug($response->toString());
 
             // Get readable error message.
-            $error = __('We apologize, an error occurred while communicating with the payment gateway. Please contact us as soon as possible so we can review this problem.');
+            $error = (string) __('We apologize, an error occurred while communicating with the payment gateway. Please contact us as soon as possible so we can review this problem.');
 
             // Add error to message stack.
             $this->messages->addErrorMessage($error);
@@ -580,7 +586,7 @@ class Api extends DataObject
 
             $result = array(
                 'artNo'                 => $code ? $code : 'discount',
-                'description'           => __($name, array($code)),
+                'description'           => (string) __($name, array($code)),
                 'quantity'              => 1,
                 'unitMeasure'           => 'pcs',
                 'unitAmountWithoutVat'  => -$amount,
@@ -605,7 +611,7 @@ class Api extends DataObject
         if ($amount > 0) {
             $result = array(
                 'artNo'                 => 'shipping',
-                'description'           => __('Shipping'),
+                'description'           => (string) __('Shipping'),
                 'quantity'              => 1,
                 'unitMeasure'           => 'pcs',
                 'unitAmountWithoutVat'  => $amount,

@@ -1,11 +1,26 @@
 <?xml version="1.0"?>
 
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <!-- Update payment session whenever quote is updated -->
     <type name="Magento\Quote\Model\Quote">
         <plugin name="resursbank_omnicheckout_payment_session_update" type="Resursbank\OmniCheckout\Plugin\PaymentSession\Update" />
     </type>
 
+    <!-- Initialize payment session upon entering checkout -->
     <type name="Magento\Checkout\Controller\Index\Index">
         <plugin name="resursbank_omnicheckout_payment_session_init" type="Resursbank\OmniCheckout\Plugin\PaymentSession\Init" />
     </type>
+
+    <!-- Prepend invoice information from Resursbank on order view information block -->
+    <type name="Magento\Sales\Block\Adminhtml\Order\View\Info">
+        <plugin name="resursbank_omnicheckout_block_adminhtml_sales_order_view_info_after_to_html" type="Resursbank\OmniCheckout\Plugin\Block\Adminhtml\Sales\Order\View\AppendPaymentInfo" />
+    </type>
+
+    <!-- Append Resursbank token to order when creating it -->
+    <type name="Magento\Sales\Model\Order">
+        <plugin name="resursbank_omnicheckout_order_append_token" type="Resursbank\OmniCheckout\Plugin\Order\AppendToken" />
+    </type>
+
+    <!-- Callback API interface -->
+    <preference for="Resursbank\OmniCheckout\Api\CallbackInterface" type="Resursbank\OmniCheckout\Model\Callback" />
 </config>
