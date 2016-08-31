@@ -66,7 +66,7 @@ define(['jquery'], function ($) {
         /**
          * Stops the queue from running.
          *
-         * @returns {*} $this.
+         * @returns {Object} $this.
          */
         $this.stop = function () {
             running = false;
@@ -153,7 +153,7 @@ define(['jquery'], function ($) {
          * Saves the call object for future use.
          *
          * @param {Object} callObj
-         * @returns {*} $this.
+         * @returns {Object} $this.
          */
         $this.saveCall = function (callObj) {
             if ($this.calls.hasOwnProperty(callObj.name)) {
@@ -169,7 +169,7 @@ define(['jquery'], function ($) {
          * Removes a saved call.
          *
          * @param callName
-         * @returns {*} $this.
+         * @returns {Object} $this.
          */
         $this.deleteCall = function (callName) {
             if ($this.calls.hasOwnProperty(callName)) {

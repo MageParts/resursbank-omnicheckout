@@ -7,6 +7,7 @@ define([
     'Resursbank_OmniCheckout/js/ajax-q',
     'Resursbank_OmniCheckout/js/cart/item/delete',
     'Resursbank_OmniCheckout/js/cart/item/quantity',
+    'Resursbank_OmniCheckout/js/cart/item/price',
     'Resursbank_OmniCheckout/js/shipping-methods',
     'Resursbank_OmniCheckout/js/address',
     'Resursbank_OmniCheckout/js/view/shipping-service',
@@ -18,6 +19,7 @@ define([
     ajaxQ,
     itemDelete,
     itemQuantity,
+    itemPrice,
     shippingMethod,
     address,
     shippingService,
@@ -28,6 +30,7 @@ define([
     var initialized = false;
     var deleteButtons = [];
     var quantityInputs = [];
+    var itemPrices = [];
 
     /**
      * The Omnicheckout iframe element.
@@ -39,14 +42,14 @@ define([
     /**
      * The URL of the Omnicheckout iframe.
      *
-     * @type {string}
+     * @type {String}
      */
     var iframeUrl = null;
 
     /**
      * Whether or not finalizeIframeSetup() has been called.
      *
-     * @type {boolean}
+     * @type {Boolean}
      */
     var finalizedIframe = false;
 
@@ -78,6 +81,21 @@ define([
         });
     };
 
+    /**
+     * Initiates a price object for every item.
+     */
+    var initiateItemPrices = function () {
+        $.each($this.getQuantityInputs(), function (i, input) {
+            itemPrices.push(itemPrice({
+                item: $this.getItemFromQuantityInput(input),
+                id: $this.getIdFromQuantityInput(input)
+            }));
+        });
+    };
+
+    /**
+     * Initiates the shipping methods.
+     */
     var initiateShippingMethods = function () {
         shippingMethod.init({
             element: $('#checkout-shipping-method-load')[0]
@@ -104,8 +122,6 @@ define([
         var data;
         var origin = event.origin || event.originalEvent.origin;
 
-         console.log('message event:', event);
-
         if (origin !== iframeUrl ||
             typeof event.data !== 'string' ||
             event.data === '[iFrameResizerChild]Ready') {
@@ -113,8 +129,6 @@ define([
         }
 
         data = JSON.parse(event.data);
-
-        console.log('message data:', data);
 
         if (data.hasOwnProperty('eventType') && typeof data.eventType === 'string') {
             switch (data.eventType) {
@@ -153,7 +167,6 @@ define([
      */
     var finalizeIframeSetup = function () {
         if (!finalizedIframe) {
-            console.log('finalizeIframeSetup()');
             // Post the booking rule to Omnicheckout. This post basically says that when a user presses the button
             // to finalize the order, check with the server if the order is ready to be booked.
             postMessage({
@@ -189,9 +202,6 @@ define([
                     iframe = $(config[i])[0];
                 }
             }
-
-            console.log('baseUrl:', $this.baseUrl);
-            console.log('iframeUrl:', iframeUrl);
 
             // Listener for initiating the shipping methods. At load they get placed with AJAX, and we can only
             // initiate them after that. This is only used once.
@@ -247,6 +257,7 @@ define([
 
             initiateDeleteButtons();
             initiateQuantityInputs();
+            initiateItemPrices();
 
             initialized = true;
         }
@@ -311,6 +322,16 @@ define([
      */
     $this.getIdFromQuantityInput = function (input) {
         return parseInt(input.name.match(/cart\[(\d+)\]/)[1], 10);
+    };
+
+    /**
+     * Get the product row element of a quantity input.
+     *
+     * @param {Element} input
+     * @returns {Element}
+     */
+    $this.getItemFromQuantityInput = function (input) {
+        return $(input).closest('tr.item-info')[0];
     };
 
     return $this;
