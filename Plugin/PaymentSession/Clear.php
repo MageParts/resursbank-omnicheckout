@@ -37,9 +37,11 @@ class Clear
         $test2 = $subject->getOrigData();
         $test3 = $subject->getData();
 
-        if ($subject->isObjectNew()) {
-            $this->apiHelper->clearPaymentSession();
-        }
+//        if ($subject->isObjectNew()) {
+//            $this->apiHelper->clearPaymentSession();
+//        }
+
+        // $this->apiHelper->clearPaymentSession();
     }
 
 }

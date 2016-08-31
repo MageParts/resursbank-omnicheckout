@@ -49,7 +49,11 @@ class Update
     public function afterAfterSave(\Magento\Quote\Model\Quote $subject, $result)
     {
         if ($this->apiModel->paymentSessionInitialized()) {
-            $this->apiModel->updatePaymentSession();
+            if ($subject->getItemsCount() > 0) {
+                $this->apiModel->updatePaymentSession();
+            } else {
+                $this->apiHelper->clearPaymentSession();
+            }
         }
 
         return $result;
