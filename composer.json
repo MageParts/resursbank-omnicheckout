@@ -13,7 +13,7 @@
         "magento/module-checkout": "*",
         "magento/module-quote": "*"
     },
-    "version": "1.0.0",
+    "version": "1.0.1",
     "autoload": {
         "files": [
             "registration.php"
