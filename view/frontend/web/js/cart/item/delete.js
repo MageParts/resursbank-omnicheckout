@@ -16,7 +16,6 @@ define([
         var i;
         var $this = {};
         var disabled = false;
-        var href = '';
 
         /**
          * The ID of the product.
@@ -81,8 +80,6 @@ define([
                     },
 
                     success: function (data) {
-                        console.log(data);
-
                         if (data.cart_qty === 0) {
                             location.href = $this.baseUrl;
                         }

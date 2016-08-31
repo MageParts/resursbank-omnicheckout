@@ -18,19 +18,10 @@ define([
     defaultProcessor
 ) {
     var initialized = false;
-    var readyToSaveInfo = false;
-    var previousUserBilling = null;
-    var previousUserShipping = null;
 
+    // When the shippingMethod changes value.
     quote.shippingMethod.subscribe(function () {
-        //console.log(quote.shippingMethod());
-        //console.log(quote.shippingAddress());
-        //if (readyToSaveInfo) {
-            defaultProcessor.saveShippingInformation()
-                .complete(function () {
-                    readyToSaveInfo = false;
-                });
-        //}
+        defaultProcessor.saveShippingInformation();
     });
 
     var $this = {
@@ -113,8 +104,6 @@ define([
                 selectShippingAddress(address);
                 selectBillingAddress(address);
             }
-
-            readyToSaveInfo = true;
 
             return $this;
         },

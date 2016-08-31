@@ -16,10 +16,8 @@ define([
     var initialized = false;
 
     var radioClickHandler = function () {
-        console.log('radio button selected');
         if ($this.selected !== this) {
-            $this.select(this)
-                .pushShippingMethod();
+            $this.select(this);
         }
     };
 
@@ -168,37 +166,6 @@ define([
         },
 
         /**
-         * Sends the selected shipping method to the server.
-         *
-         * @returns {Object} $this.
-         */
-        pushShippingMethod: function () {
-            // if ($this.selected && previousShippingMethod !== $this.selected.value) {
-            //     $this.disable();
-            //
-            //     previousShippingMethod = $this.selected.value;
-            //
-            //     ajaxQ.queue({
-            //         chain: 'omnicheckout',
-            //         url: $this.baseUrl + 'omnicheckout/cart/saveShippingMethod',
-            //         method: 'POST',
-            //
-            //         data: {
-            //             shipping_method: $this.selected.value,
-            //             form_key: $this.formKey
-            //         },
-            //
-            //         complete: function () {
-            //             $this.enable();
-            //         }
-            //     })
-            //         .run('omnicheckout');
-            // }
-
-            return $this;
-        },
-
-        /**
          * Disables the radio buttons.
          *
          * @returns {Object} $this.
@@ -224,6 +191,11 @@ define([
             return $this;
         },
 
+        /**
+         * Updates the shipping methods with an AJAX call.
+         *
+         * @return {Object} $this.
+         */
         reload: function () {
             var shippingAddress = quote.shippingAddress();
             var payload = JSON.stringify({
@@ -251,22 +223,18 @@ define([
                 }
             );
 
-            console.log('can use for billing:', quote.shippingAddress().canUseForBilling());
-
             shippingService.isLoading(true);
             storage.post(
                 resourceUrlManager.getUrlForEstimationShippingMethodsForNewAddress(quote)
                 , payload, false
             ).done(
                 function (result) {
-                    console.log('result:', result);
                     rateRegistry.set(shippingAddress.getKey(), result);
                     shippingService.setShippingRates(result);
                 }
             ).fail(
                 function (response) {
                     shippingService.setShippingRates([]);
-                    // errorProcessor.process(response);
                 }
             ).always(
                 function () {
@@ -274,6 +242,8 @@ define([
                     shippingService.isLoading(false);
                 }
             );
+
+            return $this;
         },
 
         /**

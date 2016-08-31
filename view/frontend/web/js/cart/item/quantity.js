@@ -80,8 +80,6 @@ define([
             if (!disabled && !isNaN(quantity)) {
                 $this.disable();
 
-                console.log($this.id + ' qty:', quantity);
-
                 mediator.broadcast('checkout:item-quantity-update-pending', {
                     id: $this.id
                 });
@@ -98,12 +96,10 @@ define([
                     },
 
                     success: function (data) {
-                        console.log(data);
-
                         if (data.item_total) {
                             mediator.broadcast('checkout:item-price-update', {
                                 id: $this.id,
-                                element: data.item_total
+                                subtotal: data.item_total
                             });
                         }
 
@@ -219,7 +215,12 @@ define([
 
         if ($this.element) {
             $($this.element).on('change', $this.pushQuantity);
-            // $this.ajaxLoader = ajaxLoaderFactory({});
+            $($this.element).on('keypress', function (event) {
+                if (event.keyCode === 13) {
+                    event.preventDefault();
+                    $this.element.blur();
+                }
+            });
         }
 
         mediator.listen({

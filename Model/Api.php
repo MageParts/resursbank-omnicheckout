@@ -167,8 +167,12 @@ class Api extends DataObject
             'orderLines' => $this->getOrderLines()
         );
 
+        $token = $this->getQuoteToken();
+        $temp = $this->call("checkout/payments/{$this->getQuoteToken()}", 'put', $data);
+        $str = 'random!';
+
         // Perform API request.
-        return $this->call("checkout/payments/{$this->getQuoteToken()}", 'put', $data);
+//        return $this->call("checkout/payments/{$this->getQuoteToken()}", 'put', $data);
     }
 
     /**
