@@ -52,11 +52,11 @@ class OmniCheckout extends \Magento\Backend\Block\Template
     ) {
         $this->apiModel = $apiModel;
         $this->registry = $registry;
+        $this->checkoutHelper = $checkoutHelper;
 
         parent::__construct($context, $data);
 
         $this->setTemplate('Resursbank_OmniCheckout::sales/order/view/info/omnicheckout.phtml');
-        $this->checkoutHelper = $checkoutHelper;
     }
 
     /**

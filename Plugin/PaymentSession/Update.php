@@ -49,9 +49,7 @@ class Update
     public function afterAfterSave(\Magento\Quote\Model\Quote $subject, $result)
     {
         if ($this->apiModel->paymentSessionInitialized()) {
-            if (!$this->apiHelper->cartIsEmpty()) {
-                $this->apiModel->updatePaymentSession();
-            }
+            $this->apiModel->updatePaymentSession();
         }
 
         return $result;

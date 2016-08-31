@@ -1,0 +1,5 @@
+* If there are any cart rules which are applied in the background they are not listed on the checkout page. They should be since otherwise the total in the Iframe will not match the cart total, and that's confusing.
+* Mini Cart:en synac inte!
+* Errors when updating quantity (for example when attempting to add a quantity above stock level) should be displayed in a nicer way than through an alert window.
+* Errors when updating quantity should include the exception message from the response. That would have to be regex:ed though, or the response must be modified to include it. I believe we can use $this->messageManager from the controller for this purposes, and then reload the message section using JS.
+* Test that backorders function properly in relation to our quantity update:or in the cart.

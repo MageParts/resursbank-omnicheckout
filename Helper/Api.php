@@ -132,6 +132,7 @@ class Api extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function cartIsEmpty()
     {
+
         return ((float) $this->getQuote()->getItemsCount() < 1);
     }
 

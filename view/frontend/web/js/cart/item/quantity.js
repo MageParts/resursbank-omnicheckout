@@ -10,8 +10,10 @@ define([
     'Magento_Checkout/js/model/resource-url-manager',
     'Magento_Checkout/js/model/shipping-service',
     'Magento_Checkout/js/model/error-processor',
-    'Magento_Checkout/js/model/quote'
-], function ($, storage, mediator, ajaxQ, rateRegistry, resourceUrlManager, shippingService, errorProcessor, quote) {
+    'Magento_Checkout/js/model/quote',
+    'Magento_Checkout/js/view/minicart',
+    'Magento_Customer/js/customer-data'
+], function ($, storage, mediator, ajaxQ, rateRegistry, resourceUrlManager, shippingService, errorProcessor, quote, minicart, customerData) {
     /**
      * Creates QuantityInput instances.
      *
@@ -118,10 +120,12 @@ define([
                                 content: data.elements['header-cart']
                             });
                         }
+
+                        customerData.reload(['cart', 'messages'], true);
                     },
 
                     error: function (data) {
-                        alert("Sorry, but we can't update quantity of the product at this moment. Please refresh and try again.");
+                        alert("The requested quantity may not be available or something else went wrong.");
                     },
 
                     complete: function () {

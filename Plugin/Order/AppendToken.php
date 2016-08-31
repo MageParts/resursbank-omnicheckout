@@ -2,6 +2,13 @@
 
 namespace Resursbank\OmniCheckout\Plugin\Order;
 
+/**
+ * Append Resursbank payment id token on order before its saved. This allows us to identify the order when incoming
+ * calls from Resursbank are made.
+ *
+ * Class AppendToken
+ * @package Resursbank\OmniCheckout\Plugin\Order
+ */
 class AppendToken
 {
 
@@ -11,7 +18,6 @@ class AppendToken
     private $apiHelper;
 
     /**
-     * AppendToken constructor.
      * @param \Resursbank\OmniCheckout\Helper\Api $apiHelper
      */
     public function __construct(
