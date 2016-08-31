@@ -3,7 +3,7 @@
     "type": "magento2-module",
     "description": "Resursbank OmniCheckout module for Magwento 2.",
     "keywords": ["magento", "checkout", "resursbank"],
-    "minimum-stability": "dev",
+    "minimum-stability": "alpha",
     "license": [
         "OSL-3.0",
         "AFL-3.0"
