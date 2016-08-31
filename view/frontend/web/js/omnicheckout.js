@@ -12,7 +12,8 @@ define([
     'Resursbank_OmniCheckout/js/address',
     'Resursbank_OmniCheckout/js/view/shipping-service',
     'Resursbank_OmniCheckout/js/order/payment-method',
-    'Resursbank_OmniCheckout/js/order/place-order'
+    'Resursbank_OmniCheckout/js/order/place-order',
+    'Magento_Customer/js/customer-data'
 ], function (
     $,
     mediator,
@@ -24,7 +25,8 @@ define([
     address,
     shippingService,
     paymentMethod,
-    placeOrder
+    placeOrder,
+    customerData
 ) {
     var $this = {};
     var initialized = false;
@@ -258,6 +260,9 @@ define([
             initiateDeleteButtons();
             initiateQuantityInputs();
             initiateItemPrices();
+
+            // Reload mini cart.
+            // customerData.reload(['cart', 'messages'], true);
 
             initialized = true;
         }

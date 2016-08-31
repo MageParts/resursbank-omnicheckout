@@ -11,9 +11,8 @@ define([
     'Magento_Checkout/js/model/shipping-service',
     'Magento_Checkout/js/model/error-processor',
     'Magento_Checkout/js/model/quote',
-    'Magento_Checkout/js/view/minicart',
     'Magento_Customer/js/customer-data'
-], function ($, storage, mediator, ajaxQ, rateRegistry, resourceUrlManager, shippingService, errorProcessor, quote, minicart, customerData) {
+], function ($, storage, mediator, ajaxQ, rateRegistry, resourceUrlManager, shippingService, errorProcessor, quote, customerData) {
     /**
      * Creates QuantityInput instances.
      *

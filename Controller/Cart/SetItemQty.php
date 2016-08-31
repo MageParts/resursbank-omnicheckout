@@ -6,6 +6,7 @@ use Exception;
 
 /**
  * TODO: This could possibly be an API service instead.
+ * TODO: Get MessageManager working so we can get a proper error message when the requested quantity exceeds item stock.
  *
  * Class SetItemQty
  * @package Resursbank\OmniCheckout\Controller\Cart
@@ -91,7 +92,7 @@ class SetItemQty extends \Magento\Framework\App\Action\Action
 
         // Make sure the requested quantity is available before proceeding.
         if (!$this->stockStateProvider->checkQty($stockItem, $qty)) {
-            $this->messageManager->addErrorMessage('The requested item quantity is not available.');
+//            $this->messageManager->addErrorMessage('The requested item quantity is not available.');
             throw new Exception(__('The requested item quantity is not available.'));
         }
 

@@ -31,8 +31,12 @@ class Clear
      * @param \Magento\Sales\Model\Order $subject
      * @throws \Exception
      */
-    public function afterAfterSave(\Magento\Sales\Model\Order $subject)
+    public function beforeAfterSave(\Magento\Sales\Model\Order $subject)
     {
+        $test = $subject->isObjectNew();
+        $test2 = $subject->getOrigData();
+        $test3 = $subject->getData();
+
         if ($subject->isObjectNew()) {
             $this->apiHelper->clearPaymentSession();
         }
