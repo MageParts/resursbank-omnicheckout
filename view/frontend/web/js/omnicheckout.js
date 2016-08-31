@@ -28,9 +28,6 @@ define([
 ) {
     var $this = {};
     var initialized = false;
-    var deleteButtons = [];
-    var quantityInputs = [];
-    var itemPrices = [];
 
     /**
      * The Omnicheckout iframe element.
@@ -58,12 +55,12 @@ define([
      */
     var initiateDeleteButtons = function () {
         $.each($this.getDeleteButtons(), function (i, button) {
-            deleteButtons.push(itemDelete({
+            itemDelete({
                 element: button,
                 baseUrl: $this.baseUrl,
                 formKey: $this.formKey,
                 id: $this.getIdFromDeleteButton(button)
-            }));
+            });
         });
     };
 
@@ -72,12 +69,12 @@ define([
      */
     var initiateQuantityInputs = function () {
         $.each($this.getQuantityInputs(), function (i, input) {
-            quantityInputs.push(itemQuantity({
+            itemQuantity({
                 element: input,
                 baseUrl: $this.baseUrl,
                 formKey: $this.formKey,
                 id: $this.getIdFromQuantityInput(input)
-            }));
+            });
         });
     };
 
@@ -86,10 +83,10 @@ define([
      */
     var initiateItemPrices = function () {
         $.each($this.getQuantityInputs(), function (i, input) {
-            itemPrices.push(itemPrice({
+            itemPrice({
                 item: $this.getItemFromQuantityInput(input),
                 id: $this.getIdFromQuantityInput(input)
-            }));
+            });
         });
     };
 
@@ -226,17 +223,6 @@ define([
             });
 
             ajaxQ.createChain('omnicheckout');
-
-            // Remove everything.
-            window.addEventListener('beforeunload', function (event) {
-                $.each(deleteButtons, function (i, button) {
-                    button.destroy();
-                });
-
-                $.each(quantityInputs, function (i, input) {
-                    input.destroy();
-                });
-            }, false);
 
             // Add message listener.
             window.addEventListener('message', postMessageDelegator, false);
