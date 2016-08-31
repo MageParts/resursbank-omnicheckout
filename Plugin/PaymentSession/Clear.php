@@ -17,12 +17,20 @@ class Clear
     private $apiHelper;
 
     /**
+     * @var \Resursbank\OmniCheckout\Model\Api
+     */
+    private $apiModel;
+
+    /**
      * @param \Resursbank\OmniCheckout\Helper\Api $apiHelper
+     * @param \Resursbank\OmniCheckout\Model\Api $apiModel
      */
     public function __construct(
-        \Resursbank\OmniCheckout\Helper\Api $apiHelper
+        \Resursbank\OmniCheckout\Helper\Api $apiHelper,
+        \Resursbank\OmniCheckout\Model\Api $apiModel
     ) {
         $this->apiHelper = $apiHelper;
+        $this->apiModel = $apiModel;
     }
 
     /**
@@ -31,17 +39,11 @@ class Clear
      * @param \Magento\Sales\Model\Order $subject
      * @throws \Exception
      */
-    public function beforeAfterSave(\Magento\Sales\Model\Order $subject)
+    public function afterAfterSave(\Magento\Sales\Model\Order $subject)
     {
-        $test = $subject->isObjectNew();
-        $test2 = $subject->getOrigData();
-        $test3 = $subject->getData();
-
-//        if ($subject->isObjectNew()) {
-//            $this->apiHelper->clearPaymentSession();
-//        }
-
-        // $this->apiHelper->clearPaymentSession();
+        if ($this->apiModel->paymentSessionInitialized()) {
+            $this->apiHelper->clearPaymentSession();
+        }
     }
 
 }
