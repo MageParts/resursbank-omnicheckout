@@ -31,6 +31,10 @@ define(['jquery', 'Resursbank_OmniCheckout/js/mediator'], function ($, mediator)
                 $this.updateSubtotal(data.subtotal);
             }
 
+            if (data.id === $this.id && data.subtotalExcl) {
+                $this.updateSubtotalExcl(data.subtotalExcl);
+            }
+
             return $this;
         };
 
@@ -47,12 +51,33 @@ define(['jquery', 'Resursbank_OmniCheckout/js/mediator'], function ($, mediator)
         };
 
         /**
+         * Replaces the subtotal excluding tax element.
+         *
+         * @param {Element} element
+         * @return {Object} $this.
+         */
+        $this.updateSubtotalExcl = function (element) {
+            $($this.getSubtotalExclElement()).replaceWith(element);
+
+            return $this;
+        };
+
+        /**
          * Returns the subtotal element of the item.
          *
          * @return {Element}
          */
         $this.getSubtotalElement = function () {
-            return $($this.item).find('td[data-th="Subtotal"] span.price')[0];
+            return $($this.item).find('td[data-th="Subtotal"] span[data-label="Incl. Tax"] span.price')[0];
+        };
+
+        /**
+         * Returns the subtotal element of the item.
+         *
+         * @return {Element}
+         */
+        $this.getSubtotalExclElement = function () {
+            return $($this.item).find('td[data-th="Subtotal"] span[data-label="Excl. Tax"] span.price')[0];
         };
 
         for (i in config) {

@@ -4,8 +4,9 @@
 define([
     'jquery',
     'Resursbank_OmniCheckout/js/mediator',
-    'Resursbank_OmniCheckout/js/ajax-q'
-], function ($, mediator, ajaxQ) {
+    'Resursbank_OmniCheckout/js/ajax-q',
+    'Magento_Customer/js/customer-data'
+], function ($, mediator, ajaxQ, customerData) {
     /**
      * Creates deleteItemButton instances.
      *
@@ -80,6 +81,14 @@ define([
                     },
 
                     success: function (data) {
+                        var row = $this.getItemRow();
+
+                        customerData.reload();
+
+                        if (row) {
+                            row.remove();
+                        }
+
                         if (data.cart_qty === 0) {
                             location.href = $this.baseUrl;
                         }
@@ -100,6 +109,8 @@ define([
                                 id: $this.id
                             });
                         }
+
+                        $this.destroy();
                     },
 
                     error: function (data) {
@@ -180,6 +191,10 @@ define([
                     $this[i] = null;
                 }
             }
+        };
+
+        $this.getItemRow = function () {
+            return $($this.element).closest('tbody.cart.item')[0];
         };
 
         // Applying configuration.

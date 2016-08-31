@@ -102,6 +102,13 @@ define([
                             });
                         }
 
+                        if (data.item_total_excl_tax) {
+                            mediator.broadcast('checkout:item-price-update', {
+                                id: $this.id,
+                                subtotalExcl: data.item_total_excl_tax
+                            });
+                        }
+
                         if (data.hasOwnProperty('elements')) {
                             mediator.broadcast('shipping:update-content', {
                                 content: data.elements['omnicheckout-shipping-methods-list']
