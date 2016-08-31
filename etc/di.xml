@@ -21,7 +21,7 @@
         <plugin name="resursbank_omnicheckout_order_append_token" type="Resursbank\OmniCheckout\Plugin\Order\AppendToken" />
 
         <!-- After the order has been placed we clear any Resursbank information from the customers session -->
-        <!--<plugin name="resursbank_omnicheckout_order_clear_payment_session" type="Resursbank\OmniCheckout\Plugin\PaymentSession\Clear" />-->
+        <plugin name="resursbank_omnicheckout_order_clear_payment_session" type="Resursbank\OmniCheckout\Plugin\PaymentSession\Clear" />
     </type>
 
     <!-- Callback API interface -->

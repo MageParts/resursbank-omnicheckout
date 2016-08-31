@@ -28,16 +28,13 @@ define([
          * @returns {Object} $this.
          */
         placeOrder: function (data) {
-            console.log('Payment method: ' + quote.paymentMethod());
             placeOrderAction({
                 'method': quote.paymentMethod()
             }, new Messages())
                 .success(function () {
-                    console.log('test');
                     mediator.broadcast('omnicheckout:booking-order', {isOrderReady: true});
                 })
                 .fail(function () {
-                    console.log('test2');
                     mediator.broadcast('omnicheckout:booking-order', {isOrderReady: false});
                 });
 

@@ -12,8 +12,7 @@ define([
     'Resursbank_OmniCheckout/js/address',
     'Resursbank_OmniCheckout/js/view/shipping-service',
     'Resursbank_OmniCheckout/js/order/payment-method',
-    'Resursbank_OmniCheckout/js/order/place-order',
-    'Magento_Customer/js/customer-data'
+    'Resursbank_OmniCheckout/js/order/place-order'
 ], function (
     $,
     mediator,
@@ -25,8 +24,7 @@ define([
     address,
     shippingService,
     paymentMethod,
-    placeOrder,
-    customerData
+    placeOrder
 ) {
     var $this = {};
     var initialized = false;
