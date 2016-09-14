@@ -103,7 +103,6 @@ class Api extends DataObject
      * @param \Magento\Framework\UrlInterface $url
      * @param \Magento\Framework\Message\ManagerInterface $messages
      * @param \Magento\Checkout\Model\Session $checkoutSession
-     * @param \Zend\Http\Client $httpClient
      * @param array $data
      */
     public function __construct(
@@ -114,7 +113,6 @@ class Api extends DataObject
         \Magento\Framework\UrlInterface $url,
         \Magento\Framework\Message\ManagerInterface $messages,
         \Magento\Checkout\Model\Session $checkoutSession,
-//        \Zend\Http\Client $httpClient,
         array $data = []
     ) {
         $this->helper = $helper;
@@ -124,13 +122,8 @@ class Api extends DataObject
         $this->url = $url;
         $this->log = $log;
         $this->messages = $messages;
-//        $this->httpClient = $httpClient;
 
         parent::__construct($data);
-
-//        if ($this->hasCredentials()) {
-//            $this->prepareHttpClient();
-//        }
     }
 
     /**
