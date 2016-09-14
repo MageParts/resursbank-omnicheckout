@@ -114,7 +114,7 @@ class Api extends DataObject
         \Magento\Framework\UrlInterface $url,
         \Magento\Framework\Message\ManagerInterface $messages,
         \Magento\Checkout\Model\Session $checkoutSession,
-        \Zend\Http\Client $httpClient,
+//        \Zend\Http\Client $httpClient,
         array $data = []
     ) {
         $this->helper = $helper;
@@ -124,13 +124,13 @@ class Api extends DataObject
         $this->url = $url;
         $this->log = $log;
         $this->messages = $messages;
-        $this->httpClient = $httpClient;
+//        $this->httpClient = $httpClient;
 
         parent::__construct($data);
 
-        if ($this->hasCredentials()) {
-            $this->prepareHttpClient();
-        }
+//        if ($this->hasCredentials()) {
+//            $this->prepareHttpClient();
+//        }
     }
 
     /**
@@ -181,7 +181,7 @@ class Api extends DataObject
         $data = array(
             'orderLines' => $this->getOrderLines()
         );
-        
+
         // Perform API request.
         return $this->call("checkout/payments/{$this->getQuoteToken()}", 'put', $data);
     }
@@ -373,12 +373,16 @@ class Api extends DataObject
      */
     private function handleCall($method, $path, $data = null)
     {
+        if (is_null($this->httpClient)) {
+            $this->prepareHttpClient();
+        }
+
         $this->httpClient->getUri()->setPath($path);
 
         return $this->httpClient->setEncType('application/json')
-                ->setRawBody(json_encode($data))
-                ->setMethod($method)
-                ->send();
+            ->setRawBody(json_encode($data))
+            ->setMethod($method)
+            ->send();
     }
 
     /**
@@ -386,7 +390,7 @@ class Api extends DataObject
      */
     public function prepareHttpClient()
     {
-        $this->httpClient->setUri($this->getApiUrl());
+        $this->httpClient = new \Zend\Http\Client($this->getApiUrl());
         $this->httpClient->setAuth($this->getUsername(), $this->getPassword());
     }
 
@@ -514,7 +518,7 @@ class Api extends DataObject
     {
         return !$flag ? $this->scopeConfig->getValue("omnicheckout/callback/{$key}", \Magento\Store\Model\ScopeInterface::SCOPE_STORE) : $this->scopeConfig->isSetFlag("omnicheckout/callback/{$key}", \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
     }
-    
+
     /**
      * Check if API is in development/test mode.
      *

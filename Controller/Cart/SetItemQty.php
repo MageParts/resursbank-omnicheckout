@@ -30,6 +30,11 @@ class SetItemQty extends \Magento\Framework\App\Action\Action
 {
 
     /**
+     * @var \Magento\Framework\App\Action\Context
+     */
+    private $context;
+
+    /**
      * @var \Magento\Quote\Api\CartRepositoryInterface
      */
     private $quoteRepository;
@@ -59,7 +64,6 @@ class SetItemQty extends \Magento\Framework\App\Action\Action
      * @param \Magento\Quote\Api\CartRepositoryInterface $quoteRepository
      * @param \Resursbank\OmniCheckout\Helper\Api $apiHelper
      * @param \Magento\Checkout\Helper\Data $checkoutHelper
-     * @param \Magento\Framework\Controller\ResultFactory $resultFactory
      * @param \Magento\CatalogInventory\Model\Spi\StockStateProviderInterface $stockStateProvider
      * @param \Magento\CatalogInventory\Api\StockRegistryInterface $stockRegistry
      */
@@ -68,13 +72,12 @@ class SetItemQty extends \Magento\Framework\App\Action\Action
         \Magento\Quote\Api\CartRepositoryInterface $quoteRepository,
         \Resursbank\OmniCheckout\Helper\Api $apiHelper,
         \Magento\Checkout\Helper\Data $checkoutHelper,
-        \Magento\Framework\Controller\ResultFactory $resultFactory,
         \Magento\CatalogInventory\Model\Spi\StockStateProviderInterface $stockStateProvider,
         \Magento\CatalogInventory\Api\StockRegistryInterface $stockRegistry
     ) {
+        $this->context = $context;
         $this->quoteRepository = $quoteRepository;
         $this->apiHelper = $apiHelper;
-        $this->resultFactory = $resultFactory;
         $this->checkoutHelper = $checkoutHelper;
         $this->stockStateProvider = $stockStateProvider;
         $this->stockRegistry = $stockRegistry;
@@ -118,7 +121,7 @@ class SetItemQty extends \Magento\Framework\App\Action\Action
         $this->quoteRepository->save($this->apiHelper->getQuote());
 
         // Build response object.
-        $result = $this->resultFactory->create(\Magento\Framework\Controller\ResultFactory::TYPE_JSON);
+        $result = $this->context->getResultFactory()->create(\Magento\Framework\Controller\ResultFactory::TYPE_JSON);
         $result->setData([
             'item_total' => $this->checkoutHelper->formatPrice($item->getRowTotalInclTax()),
             'item_total_excl_tax' => $this->checkoutHelper->formatPrice($item->getRowTotal())
