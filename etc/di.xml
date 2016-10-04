@@ -40,6 +40,21 @@
         <plugin name="resursbank_omnicheckout_order_clear_payment_session" type="Resursbank\OmniCheckout\Plugin\PaymentSession\Clear" />
     </type>
 
+    <type name="Magento\Sales\Model\AdminOrder\Create">
+        <!-- Append payment token to revised order, and sync updates to Resursbank -->
+        <plugin name="resursbank_omnicheckout_order_update_payment" type="Resursbank\OmniCheckout\Plugin\Order\UpdatePayment" />
+    </type>
+
+    <type name="Magento\Sales\Model\Order">
+        <!-- Annul payment when canceling order -->
+        <plugin name="resursbank_omnicheckout_order_annul_payment" type="Resursbank\OmniCheckout\Plugin\Order\AnnulPayment" />
+    </type>
+
+    <type name="Magento\Sales\Model\Order\Creditmemo">
+        <!-- Annul payment when canceling order -->
+        <plugin name="resursbank_omnicheckout_order_credit_payment" type="Resursbank\OmniCheckout\Plugin\Order\CreditPayment" />
+    </type>
+
     <!-- Callback API interface -->
     <preference for="Resursbank\OmniCheckout\Api\CallbackInterface" type="Resursbank\OmniCheckout\Model\Callback" />
 </config>

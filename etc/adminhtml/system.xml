@@ -42,8 +42,8 @@
                     <label>Test Mode</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-                <field id="weight_unit" translate="label" type="text" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Weight Unit</label>
+                <field id="unit_measure" translate="label" type="text" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Unit Measure</label>
                 </field>
             </group>
             <group id="callback" translate="label" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">

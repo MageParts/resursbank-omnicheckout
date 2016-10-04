@@ -711,7 +711,7 @@ class Api extends DataObject
             'artNo'                 => $item->getSku(),
             'description'           => $item->getName(),
             'quantity'              => (float) $item->getQty(),
-            'unitMeasure'           => $this->getApiSetting('weight_unit'),
+            'unitMeasure'           => $this->getApiSetting('unit_measure'),
             'unitAmountWithoutVat'  => (float) $item->getPrice(),
             'vatPct'                => (float) $item->getTaxPercent()
         );

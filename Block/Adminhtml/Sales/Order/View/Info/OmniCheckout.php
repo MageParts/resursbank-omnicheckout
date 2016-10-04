@@ -87,6 +87,10 @@ class OmniCheckout extends \Magento\Backend\Block\Template
             $result = implode(', ', $result);
         }
 
+        if ($result === 'IS_ANNULLED') {
+            $result = __('Annulled');
+        }
+
         return (string) $result;
     }
 
