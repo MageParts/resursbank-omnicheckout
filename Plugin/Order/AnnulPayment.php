@@ -18,9 +18,9 @@
 namespace Resursbank\OmniCheckout\Plugin\Order;
 
 /**
- * Annul payment when order is canceled.
+ * Annul payment when order is cancelled.
  *
- * Class CancelPayment
+ * Class AnnulPayment
  * @package Resursbank\OmniCheckout\Plugin\Order
  */
 class AnnulPayment
@@ -49,7 +49,7 @@ class AnnulPayment
     }
 
     /**
-     * Before we save a revised order we need to append the original payment id to it.
+     * After an order has been cancelled we will cancel its payment session.
      *
      * @param \Magento\Sales\Model\Order $subject
      * @param \Magento\Sales\Model\Order\Interceptor $result

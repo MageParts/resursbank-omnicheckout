@@ -18,7 +18,7 @@
 namespace Resursbank\OmniCheckout\Plugin\Order;
 
 /**
- * Credit payment when order is canceled.
+ * Create credit payment when a credit memo is created in Magento.
  *
  * Class CancelPayment
  * @package Resursbank\OmniCheckout\Plugin\Order
@@ -49,7 +49,7 @@ class CreditPayment
     }
 
     /**
-     * Before we save a revised order we need to append the original payment id to it.
+     * When a credit memo is created in Magento we will create a credit payment matching its content.
      *
      * @param \Magento\Sales\Model\Order $subject
      * @param \Magento\Sales\Model\Order\Interceptor $result
