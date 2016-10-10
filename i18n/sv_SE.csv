@@ -58,3 +58,4 @@
 "Debited, creditable","Debiterad, kan krediteras"
 "Resursbank payment %1 has been credited.","Resursbank betalning %1 har krediterats."
 "Failed to credit Resursbank payment %1. Please use the payment administration to manually credit the payment.","Kunde inte kreditera Resursbank betalning %1. Vänligen använd Resursbanks administrationspanel för att manuellt kreditera betalningen."
+"Failed to locate order object. Cannot render Resursbank payment information.","Orderobjektet kunde inte lokaliseras. Betalinformationen från Resursbank kan inte renderas."

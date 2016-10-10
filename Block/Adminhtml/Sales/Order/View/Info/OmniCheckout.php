@@ -249,37 +249,94 @@ class OmniCheckout extends \Magento\Backend\Block\Template
     }
 
     /**
-     * Retrieve order model instance
+     * Retrieve order model instance. Method of retrieval varies depending on location.
      *
      * @return \Magento\Sales\Model\Order
+     * @throws \Exception
      */
     public function getOrder()
     {
         $result = $this->registry->registry('current_order');
 
         if (!$result) {
-            if ($this->_request->getControllerName() === 'order_invoice') {
-                /** @var \Magento\Sales\Model\Order\Invoice $invoice */
-                $invoice = $this->registry->registry('current_invoice');
+            $result = $this->getOrderByControllerName();
+        }
 
-                if ($invoice) {
-                    $result = $invoice->getOrder();
-                }
-            } else if ($this->_request->getControllerName() === 'order_creditmemo') {
-                /** @var \Magento\Sales\Model\Order\Creditmemo $creditmemo */
-                $creditmemo = $this->registry->registry('current_creditmemo');
+        if (!($result instanceof \Magento\Sales\Model\Order)) {
+            throw new \Exception(__('Failed to locate order object. Cannot render Resursbank payment information.'));
+        }
 
-                if ($creditmemo) {
-                    $result = $creditmemo->getOrder();
-                }
-            } else if ($this->_request->getControllerName() === 'order_shipment') {
-                /** @var \Magento\Sales\Model\Order\Shipment $shipment */
-                $shipment = $this->registry->registry('current_shipment');
+        return $result;
+    }
 
-                if ($shipment) {
-                    $result = $shipment->getOrder();
-                }
-            }
+    /**
+     * @return \Magento\Sales\Model\Order|null
+     */
+    public function getOrderByControllerName()
+    {
+        $result = null;
+
+        switch ($this->_request->getControllerName()) {
+            case 'order_invoice':
+                $result = $this->getOrderBycurrentInvoice();
+                break;
+            case 'order_creditmemo':
+                $result = $this->getOrderByCurrentCreditmemo();
+                break;
+            case 'order_shipment':
+                $result = $this->getOrderByCurrentShipment();
+                break;
+        }
+
+        return $result;
+    }
+
+    /**
+     * @return \Magento\Sales\Model\Order|null
+     */
+    public function getOrderByCurrentInvoice()
+    {
+        $result = null;
+
+        /** @var \Magento\Sales\Model\Order\Invoice $invoice */
+        $invoice = $this->registry->registry('current_invoice');
+
+        if ($invoice) {
+            $result = $invoice->getOrder();
+        }
+
+        return $result;
+    }
+
+    /**
+     * @return \Magento\Sales\Model\Order|null
+     */
+    public function getOrderByCurrentCreditmemo()
+    {
+        $result = null;
+
+        /** @var \Magento\Sales\Model\Order\Creditmemo $creditmemo */
+        $creditmemo = $this->registry->registry('current_creditmemo');
+
+        if ($creditmemo) {
+            $result = $creditmemo->getOrder();
+        }
+
+        return $result;
+    }
+
+    /**
+     * @return \Magento\Sales\Model\Order|null
+     */
+    public function getOrderByCurrentShipment()
+    {
+        $result = null;
+
+        /** @var \Magento\Sales\Model\Order\Shipment $shipment */
+        $shipment = $this->registry->registry('current_shipment');
+
+        if ($shipment) {
+            $result = $shipment->getOrder();
         }
 
         return $result;

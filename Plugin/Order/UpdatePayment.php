@@ -217,6 +217,7 @@ class UpdatePayment
      * @param array $item
      * @param \resurs_payment $payment
      * @return \resurs_specLine
+     * @todo disocunt, $item['totalAmount'] = 0;, should it actually be 0?
      */
     public function createSpecLine(\Magento\Quote\Model\Quote $quote, array $item, \resurs_payment $payment)
     {
