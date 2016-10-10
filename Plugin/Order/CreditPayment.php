@@ -37,39 +37,87 @@ class CreditPayment
     private $messageManager;
 
     /**
+     * @var \Psr\Log\LoggerInterface
+     */
+    private $log;
+
+    /**
      * @param \Resursbank\OmniCheckout\Helper\Ecom $ecomHelper
      * @param \Magento\Framework\Message\ManagerInterface $messageManager
+     * @param \Psr\Log\LoggerInterface $log
      */
     public function __construct(
         \Resursbank\OmniCheckout\Helper\Ecom $ecomHelper,
-        \Magento\Framework\Message\ManagerInterface $messageManager
+        \Magento\Framework\Message\ManagerInterface $messageManager,
+        \Psr\Log\LoggerInterface $log
     ) {
         $this->ecomHelper = $ecomHelper;
         $this->messageManager = $messageManager;
+        $this->log = $log;
     }
 
     /**
      * When a credit memo is created in Magento we will create a credit payment matching its content.
      *
-     * @param \Magento\Sales\Model\Order $subject
+     * @param \Magento\Sales\Model\Order\Creditmemo $subject
      * @param \Magento\Sales\Model\Order\Interceptor $result
      * @return \Magento\Sales\Model\Order\Interceptor
      * @throws \Exception
      */
-    public function afterCancel(\Magento\Sales\Model\Order $subject, $result)
+    public function afterAfterSave(\Magento\Sales\Model\Order\Creditmemo $subject, $result)
     {
-        /** @var \ResursBank $connection */
-        $connection = $this->ecomHelper->getConnection();
+        try {
+            /** @var \Magento\Sales\Model\Order $order */
+            $order = $subject->getOrder();
 
-        // Payment token (identifier).
-        $token = $subject->getData('resursbank_token');
+            if ($order) {
+                /** @var \ResursBank $connection */
+                $connection = $this->ecomHelper->getConnection();
 
-        $payment = $connection->getPayment($token);
+                // Payment token (identifier).
+                $token = $subject->getOrder()->getData('resursbank_token');
 
-        if ($connection->creditPayment($token)) {
-            $this->messageManager->addSuccessMessage(__('Resursbank payment %1 has been canceled.', $token));
-        } else {
-            $this->messageManager->addErrorMessage(__('Failed to cancel Resursbank payment %1. Please use the payment administration to manually cancel the payment.', $token));
+                /** @var \resurs_payment $payment */
+                $payment = $connection->getPayment($token);
+
+                if ($connection->creditPayment($token, $this->getCreditMemoItems($subject), array(), false, true)) {
+                    $this->messageManager->addSuccessMessage(__('Resursbank payment %1 has been credited.', $token));
+                } else {
+                    throw new \Exception('Something went wrong while communicating with the RBECom API.');
+                }
+            }
+        } catch (\Exception $e) {
+            $this->messageManager->addErrorMessage(__('Failed to credit Resursbank payment %1. Please use the payment administration to manually credit the payment.', $token));
+            $this->log->debug($e->getMessage());
+        }
+
+        return $result;
+    }
+
+    /**
+     * Retrieve creditmemo items as an array formatted to function with outgoing Resursbank calls.
+     *
+     * @param \Magento\Sales\Model\Order\Creditmemo $creditmemo
+     * @return array
+     */
+    private function getCreditMemoItems(\Magento\Sales\Model\Order\Creditmemo $creditmemo)
+    {
+        $result = array();
+
+        if (count($creditmemo->getAllItems())) {
+            foreach ($creditmemo->getAllItems() as $item) {
+                $result[] = array(
+                    'artNo' => $item->getSku(),
+                    'quantity' => $item->getQty()
+                );
+            }
+
+            if ((float) $creditmemo->getShippingAmount() > 0) {
+                $result[] = array(
+                    'artNo' => 'shipping',
+                    'quantity' => 1
+                );
+            }
         }
 
         return $result;

@@ -18,43 +18,43 @@
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <type name="Magento\Quote\Model\Quote">
-        <!-- Update payment session whenever quote is updated -->
+        <!-- Update payment session whenever quote is updated. -->
         <plugin name="resursbank_omnicheckout_payment_session_update" type="Resursbank\OmniCheckout\Plugin\PaymentSession\Update" />
     </type>
 
     <type name="Magento\Checkout\Controller\Index\Index">
-        <!-- Initialize payment session upon entering checkout -->
+        <!-- Initialize payment session upon entering checkout. -->
         <plugin name="resursbank_omnicheckout_payment_session_init" type="Resursbank\OmniCheckout\Plugin\PaymentSession\Init" />
     </type>
 
     <type name="Magento\Sales\Block\Adminhtml\Order\View\Info">
-        <!-- Prepend invoice information from Resursbank on order view information block -->
+        <!-- Prepend invoice information from Resursbank on order view information block. -->
         <plugin name="resursbank_omnicheckout_block_adminhtml_sales_order_view_info_after_to_html" type="Resursbank\OmniCheckout\Plugin\Block\Adminhtml\Sales\Order\View\AppendPaymentInfo" />
     </type>
 
     <type name="Magento\Sales\Model\Order">
-        <!-- Append Resursbank token to order when creating it -->
+        <!-- Append Resursbank token to order when creating it. -->
         <plugin name="resursbank_omnicheckout_order_append_token" type="Resursbank\OmniCheckout\Plugin\Order\AppendToken" />
 
-        <!-- After the order has been placed we clear any Resursbank information from the customers session -->
+        <!-- After the order has been placed we clear any Resursbank information from the customers session. -->
         <plugin name="resursbank_omnicheckout_order_clear_payment_session" type="Resursbank\OmniCheckout\Plugin\PaymentSession\Clear" />
     </type>
 
     <type name="Magento\Sales\Model\AdminOrder\Create">
-        <!-- Append payment token to revised order, and sync updates to Resursbank -->
+        <!-- Append payment token to revised order, and sync updates to Resursbank. -->
         <plugin name="resursbank_omnicheckout_order_update_payment" type="Resursbank\OmniCheckout\Plugin\Order\UpdatePayment" />
     </type>
 
     <type name="Magento\Sales\Model\Order">
-        <!-- Annul payment when canceling order -->
+        <!-- Annul payment when canceling order. -->
         <plugin name="resursbank_omnicheckout_order_annul_payment" type="Resursbank\OmniCheckout\Plugin\Order\AnnulPayment" />
     </type>
 
     <type name="Magento\Sales\Model\Order\Creditmemo">
-        <!-- Annul payment when canceling order -->
+        <!-- Annul payment when canceling order. -->
         <plugin name="resursbank_omnicheckout_order_credit_payment" type="Resursbank\OmniCheckout\Plugin\Order\CreditPayment" />
     </type>
 
-    <!-- Callback API interface -->
+    <!-- Callback API interface. -->
     <preference for="Resursbank\OmniCheckout\Api\CallbackInterface" type="Resursbank\OmniCheckout\Model\Callback" />
 </config>

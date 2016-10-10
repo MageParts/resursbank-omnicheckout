@@ -84,11 +84,13 @@ class OmniCheckout extends \Magento\Backend\Block\Template
         $result = $this->getPaymentInformation('status');
 
         if (is_array($result)) {
-            $result = implode(', ', $result);
-        }
+//            if (count($result)) {
+//                foreach ($result as &$word) {
+//                    $word = __($word);
+//                }
+//            }
 
-        if ($result === 'IS_ANNULLED') {
-            $result = __('Annulled');
+            $result = implode(', ', $result);
         }
 
         return (string) $result;
@@ -253,7 +255,34 @@ class OmniCheckout extends \Magento\Backend\Block\Template
      */
     public function getOrder()
     {
-        return $this->registry->registry('current_order');
+        $result = $this->registry->registry('current_order');
+
+        if (!$result) {
+            if ($this->_request->getControllerName() === 'order_invoice') {
+                /** @var \Magento\Sales\Model\Order\Invoice $invoice */
+                $invoice = $this->registry->registry('current_invoice');
+
+                if ($invoice) {
+                    $result = $invoice->getOrder();
+                }
+            } else if ($this->_request->getControllerName() === 'order_creditmemo') {
+                /** @var \Magento\Sales\Model\Order\Creditmemo $creditmemo */
+                $creditmemo = $this->registry->registry('current_creditmemo');
+
+                if ($creditmemo) {
+                    $result = $creditmemo->getOrder();
+                }
+            } else if ($this->_request->getControllerName() === 'order_shipment') {
+                /** @var \Magento\Sales\Model\Order\Shipment $shipment */
+                $shipment = $this->registry->registry('current_shipment');
+
+                if ($shipment) {
+                    $result = $shipment->getOrder();
+                }
+            }
+        }
+
+        return $result;
     }
 
 }

@@ -37,15 +37,31 @@ class AnnulPayment
     private $messageManager;
 
     /**
+     * @var \Magento\Framework\App\RequestInterface
+     */
+    private $request;
+
+    /**
+     * @var \Psr\Log\LoggerInterface
+     */
+    private $log;
+
+    /**
      * @param \Resursbank\OmniCheckout\Helper\Ecom $ecomHelper
      * @param \Magento\Framework\Message\ManagerInterface $messageManager
+     * @param \Magento\Framework\App\RequestInterface $request
+     * @param \Psr\Log\LoggerInterface $log
      */
     public function __construct(
         \Resursbank\OmniCheckout\Helper\Ecom $ecomHelper,
-        \Magento\Framework\Message\ManagerInterface $messageManager
+        \Magento\Framework\Message\ManagerInterface $messageManager,
+        \Magento\Framework\App\RequestInterface $request,
+        \Psr\Log\LoggerInterface $log
     ) {
         $this->ecomHelper = $ecomHelper;
         $this->messageManager = $messageManager;
+        $this->request = $request;
+        $this->log = $log;
     }
 
     /**
@@ -58,24 +74,42 @@ class AnnulPayment
      */
     public function afterCancel(\Magento\Sales\Model\Order $subject, $result)
     {
-        /** @var \ResursBank $connection */
-        $connection = $this->ecomHelper->getConnection();
+        try {
+            if (!$this->isOrderEditAction()) {
+                /** @var \ResursBank $connection */
+                $connection = $this->ecomHelper->getConnection();
 
-        // Payment token (identifier).
-        $token = $subject->getData('resursbank_token');
+                // Payment token (identifier).
+                $token = $subject->getData('resursbank_token');
 
-        /** @var \resurs_payment $payment */
-        $payment = $connection->getPayment($token);
+                /** @var \resurs_payment $payment */
+                $payment = $connection->getPayment($token);
 
-        if ($payment && ($payment instanceof \resurs_payment)) {
-            if ($connection->annulPayment($token)) {
-                $this->messageManager->addSuccessMessage(__('Resursbank payment %1 has been canceled.', $token));
-            } else {
-                $this->messageManager->addErrorMessage(__('Failed to cancel Resursbank payment %1. Please use the payment administration to manually cancel the payment.', $token));
+                if ($payment && ($payment instanceof \resurs_payment)) {
+                    if ($connection->annulPayment($token)) {
+                        $this->messageManager->addSuccessMessage(__('Resursbank payment %1 has been canceled.', $token));
+                    } else {
+                        throw new \Exception('Something went wrong while communicating with the RBECom API.');
+                    }
+                }
             }
+        } catch (\Exception $e) {
+            $this->messageManager->addErrorMessage(__('Failed to cancel Resursbank payment %1. Please use the payment administration to manually cancel the payment.', $token));
+            $this->log->debug($e->getMessage());
         }
 
         return $result;
+    }
+
+    /**
+     * Check whether or not we are currently editing an order.
+     *
+     * @return bool
+     */
+    public function isOrderEditAction()
+    {
+        return ($this->request->getModuleName() === 'sales' &&
+                $this->request->getControllerName() === 'order_edit');
     }
 
 }

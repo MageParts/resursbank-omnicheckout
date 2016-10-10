@@ -464,7 +464,7 @@ class Api extends DataObject
             throw new Exception(__('Missing quote object.'));
         }
 
-        return $this->helper->getQuoteToken($this->getQuote(), $refresh);
+        return $this->hasData('quote_token') ? $this->getData('quote_token') : $this->helper->getQuoteToken($this->getQuote(), $refresh);
     }
 
     /**
@@ -474,7 +474,7 @@ class Api extends DataObject
      */
     public function getQuote()
     {
-        return $this->helper->getQuote();
+        return $this->hasData('quote') ? $this->getData('quote') : $this->helper->getQuote();
     }
 
     /**
@@ -621,7 +621,7 @@ class Api extends DataObject
     {
         $result = array();
 
-        $amount = (float) $this->getQuote()->getShippingAddress()->getShippingInclTax();
+        $amount = (float) $this->getQuote()->getShippingAddress()->getShippingAmount();
 
         if ($amount > 0) {
             $result = array(
