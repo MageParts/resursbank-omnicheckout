@@ -93,27 +93,31 @@ class UpdatePayment
                     /** @var \ResursBank $connection */
                     $connection = $this->ecomHelper->getConnection();
 
+                    // This cannot be removed, otherwise creditPayment won't work as getPayment stores necessary
+                    // information on the helper.
                     /** @var \resurs_payment $payment */
                     $payment = $connection->getPayment($token);
 
-                    // Set quote on API model (this allows us to collect the cart information we will submit to the API to update the payment).
-                    $this->apiModel->setData('quote', $quote);
+                    if ($payment && ($payment instanceof \resurs_payment)) {
+                        // Set quote on API model (this allows us to collect the cart information we will submit to the API to update the payment).
+                        $this->apiModel->setData('quote', $quote);
 
-                    //                $data = $this->getPaymentSpec($quote, $payment);
-                    //                $paymentSpecLines = $connection->handleClientPaymentSpec($this->correctOrderLines($quote, $this->apiModel->getOrderLines(), $payment));
-                    //
-                    //                $connection->updateCart($paymentSpecLines);
-                    //                $connection->updatePaymentSpec($connection->_paymentSpeclines);
-                    //
-                    //                $test = $connection->_paymentOrderData;
-                    //
-                    //                $parameters = $connection->renderPaymentSpecContainer($token, \ResursAfterShopRenderTypes::UPDATE, $payment, $paymentSpecLines, array(), false, true);
-                    //
-                    //                if ($connection->afterShopFlowService->__soapCall('additionalDebitOfPayment', array($parameters))) {
-                    //                    $this->messageManager->addSuccessMessage(__('Resursbank payment %1 has been updated.', $token));
-                    //                } else {
-                    //                    $this->messageManager->addErrorMessage(__('Failed to update Resursbank payment %1. Please use the payment administration to manually update the payment.', $token));
-                    //                }
+                        //                $data = $this->getPaymentSpec($quote, $payment);
+                        //                $paymentSpecLines = $connection->handleClientPaymentSpec($this->correctOrderLines($quote, $this->apiModel->getOrderLines(), $payment));
+                        //
+                        //                $connection->updateCart($paymentSpecLines);
+                        //                $connection->updatePaymentSpec($connection->_paymentSpeclines);
+                        //
+                        //                $test = $connection->_paymentOrderData;
+                        //
+                        //                $parameters = $connection->renderPaymentSpecContainer($token, \ResursAfterShopRenderTypes::UPDATE, $payment, $paymentSpecLines, array(), false, true);
+                        //
+                        //                if ($connection->afterShopFlowService->__soapCall('additionalDebitOfPayment', array($parameters))) {
+                        //                    $this->messageManager->addSuccessMessage(__('Resursbank payment %1 has been updated.', $token));
+                        //                } else {
+                        //                    $this->messageManager->addErrorMessage(__('Failed to update Resursbank payment %1. Please use the payment administration to manually update the payment.', $token));
+                        //                }
+                    }
                 }
             } catch (\Exception $e) {
                 $this->messageManager->addErrorMessage(__('Failed to update Resursbank payment %1. Please use the payment administration to manually update the payment.', $token));
@@ -143,7 +147,6 @@ class UpdatePayment
      */
     public function getPaymentSpec(\Magento\Quote\Model\Quote $quote, \resurs_payment $payment)
     {
-
         $result = array(
             'paymentId' => $quote->getData('resursbank_token'),
             'paymentSpec' => $this->correctOrderLines($quote, $this->apiModel->getOrderLines(), $payment)

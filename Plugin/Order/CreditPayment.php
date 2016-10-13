@@ -78,13 +78,17 @@ class CreditPayment
                     /** @var \ResursBank $connection */
                     $connection = $this->ecomHelper->getConnection();
 
+                    // This cannot be removed, otherwise creditPayment won't work as getPayment stores necessary
+                    // information on the helper.
                     /** @var \resurs_payment $payment */
                     $payment = $connection->getPayment($token);
 
-                    if ($connection->creditPayment($token, $this->getCreditMemoItems($subject), array(), false, true)) {
-                        $this->messageManager->addSuccessMessage(__('Resursbank payment %1 has been credited.', $token));
-                    } else {
-                        throw new \Exception('Something went wrong while communicating with the RBECom API.');
+                    if ($payment && ($payment instanceof \resurs_payment)) {
+                        if ($connection->creditPayment($token, $this->getCreditMemoItems($subject), array(), false, true)) {
+                            $this->messageManager->addSuccessMessage(__('Resursbank payment %1 has been credited.', $token));
+                        } else {
+                            throw new \Exception('Something went wrong while communicating with the RBECom API.');
+                        }
                     }
                 }
             } catch (\Exception $e) {

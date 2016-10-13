@@ -61,3 +61,4 @@
 "Failed to locate order object. Cannot render Resursbank payment information.","Orderobjektet kunde inte lokaliseras. Betalinformationen från Resursbank kan inte renderas."
 "Please confirm all checkout agreements before proceeding.","Vänligen kontrollera att du accepterat samtliga kassavillkor."
 "Please select a shipping method.","Vänligen välj en fraktmetod."
+"ECom Integration Settings","ECom integrations inställningar"

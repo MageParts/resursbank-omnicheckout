@@ -20,7 +20,6 @@ define([
     'Magento_Checkout/js/action/place-order',
     'Magento_Checkout/js/model/quote',
     'Magento_Ui/js/model/messages',
-    'Magento_CheckoutAgreements/js/model/agreement-validator',
     'mage/translate'
 ], function (
     $,
@@ -28,7 +27,6 @@ define([
     placeOrderAction,
     quote,
     Messages,
-    agreementValidator,
     $t
 ) {
     var initialized = false;
