@@ -74,4 +74,26 @@ class Js extends \Magento\Framework\View\Element\Template
         return $this->apiModel;
     }
 
+    /**
+     * Retrieve <script> tag src.
+     *
+     * @param $scriptTag
+     * @return string
+     */
+    public function getJsSrc($scriptTag)
+    {
+        $result = '';
+
+        $doc = new \DOMDocument();
+        $doc->loadHTML($scriptTag);
+        $tags = $doc->getElementsByTagName('script');
+
+        foreach($tags as $tag) {
+            $result = $tag->getAttribute('src');
+            break;
+        }
+
+        return $result;
+    }
+
 }

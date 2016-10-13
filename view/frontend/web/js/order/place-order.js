@@ -15,11 +15,22 @@
  */
 
 define([
+    'jquery',
     'Resursbank_OmniCheckout/js/mediator',
     'Magento_Checkout/js/action/place-order',
     'Magento_Checkout/js/model/quote',
-    'Magento_Ui/js/model/messages'
-], function (mediator, placeOrderAction, quote, Messages) {
+    'Magento_Ui/js/model/messages',
+    'Magento_CheckoutAgreements/js/model/agreement-validator',
+    'mage/translate'
+], function (
+    $,
+    mediator,
+    placeOrderAction,
+    quote,
+    Messages,
+    agreementValidator,
+    $t
+) {
     var initialized = false;
 
     var $this = {
@@ -44,17 +55,62 @@ define([
          * @returns {Object} $this.
          */
         placeOrder: function (data) {
-            placeOrderAction({
-                'method': quote.paymentMethod()
-            }, new Messages())
-                .success(function () {
-                    mediator.broadcast('omnicheckout:booking-order', {isOrderReady: true});
-                })
-                .fail(function () {
-                    mediator.broadcast('omnicheckout:booking-order', {isOrderReady: false});
-                });
+            if ($this.validateCheckoutAgreements() && $this.validateShippingMethod()) {
+                placeOrderAction({
+                    'method': quote.paymentMethod()
+                }, new Messages())
+                    .success(function () {
+                        mediator.broadcast('omnicheckout:booking-order', {isOrderReady: true});
+                    })
+                    .fail(function () {
+                        mediator.broadcast('omnicheckout:booking-order', {isOrderReady: false});
+                    });
+            } else {
+                mediator.broadcast('omnicheckout:booking-order', {isOrderReady: false});
+            }
 
             return $this;
+        },
+
+        /**
+         * Confirm that all checkout agreements have been accepted by client before placing order.
+         *
+         * @returns {boolean}
+         */
+        validateCheckoutAgreements: function() {
+            var result = true;
+
+            $('.checkout-agreements input[type="checkbox"]').each(function (i, box) {
+                if (!box.checked) {
+                    alert($t('Please confirm all checkout agreements before proceeding.'));
+                    result = false;
+                }
+            });
+
+            return result;
+        },
+
+        /**
+         * Confirm that a shipping method has been selected.
+         *
+         * @returns {boolean}
+         */
+        validateShippingMethod: function() {
+            var result = false;
+
+            $('#co-shipping-method-form input[type="radio"]').each(function (i, box) {
+                result = box.checked;
+
+                if (result) {
+                    return false;
+                }
+            });
+
+            if (!result) {
+                alert($t('Please select a shipping method.'));
+            }
+
+            return result;
         },
 
         destroy: function () {

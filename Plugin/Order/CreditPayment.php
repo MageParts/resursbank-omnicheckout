@@ -66,29 +66,31 @@ class CreditPayment
      */
     public function afterAfterSave(\Magento\Sales\Model\Order\Creditmemo $subject, $result)
     {
-        try {
+        if ($this->ecomHelper->isEnabled()) {
             /** @var \Magento\Sales\Model\Order $order */
             $order = $subject->getOrder();
 
-            if ($order) {
-                /** @var \ResursBank $connection */
-                $connection = $this->ecomHelper->getConnection();
+            // Payment token (identifier).
+            $token = $subject->getOrder()->getData('resursbank_token');
 
-                // Payment token (identifier).
-                $token = $subject->getOrder()->getData('resursbank_token');
+            try {
+                if ($order) {
+                    /** @var \ResursBank $connection */
+                    $connection = $this->ecomHelper->getConnection();
 
-                /** @var \resurs_payment $payment */
-                $payment = $connection->getPayment($token);
+                    /** @var \resurs_payment $payment */
+                    $payment = $connection->getPayment($token);
 
-                if ($connection->creditPayment($token, $this->getCreditMemoItems($subject), array(), false, true)) {
-                    $this->messageManager->addSuccessMessage(__('Resursbank payment %1 has been credited.', $token));
-                } else {
-                    throw new \Exception('Something went wrong while communicating with the RBECom API.');
+                    if ($connection->creditPayment($token, $this->getCreditMemoItems($subject), array(), false, true)) {
+                        $this->messageManager->addSuccessMessage(__('Resursbank payment %1 has been credited.', $token));
+                    } else {
+                        throw new \Exception('Something went wrong while communicating with the RBECom API.');
+                    }
                 }
+            } catch (\Exception $e) {
+                $this->messageManager->addErrorMessage(__('Failed to credit Resursbank payment %1. Please use the payment administration to manually credit the payment.', $token));
+                $this->log->debug($e->getMessage());
             }
-        } catch (\Exception $e) {
-            $this->messageManager->addErrorMessage(__('Failed to credit Resursbank payment %1. Please use the payment administration to manually credit the payment.', $token));
-            $this->log->debug($e->getMessage());
         }
 
         return $result;

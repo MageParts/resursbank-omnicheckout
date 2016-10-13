@@ -116,6 +116,10 @@ class Standard extends \Magento\Payment\Model\Method\AbstractMethod
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
     ) {
+        $this->transactionBuilder = $transactionBuilder;
+        $this->messageManager = $messageManager;
+        $this->ecomHelper = $ecomHelper;
+
         parent::__construct(
             $context,
             $registry,
@@ -128,10 +132,6 @@ class Standard extends \Magento\Payment\Model\Method\AbstractMethod
             $resourceCollection,
             $data
         );
-
-        $this->transactionBuilder = $transactionBuilder;
-        $this->messageManager = $messageManager;
-        $this->ecomHelper = $ecomHelper;
     }
 
     /**
@@ -146,45 +146,47 @@ class Standard extends \Magento\Payment\Model\Method\AbstractMethod
     {
         parent::capture($payment, $amount);
 
-        /** @var \ResursBank $connection */
-        $connection = $this->ecomHelper->getConnection();
+        if ($this->ecomHelper->isEnabled()) {
+            /** @var \ResursBank $connection */
+            $connection = $this->ecomHelper->getConnection();
 
-        // Payment token (identifier).
-        $token = $payment->getOrder()->getData('resursbank_token');
+            // Payment token (identifier).
+            $token = $payment->getOrder()->getData('resursbank_token');
 
-        /** @var \resurs_payment $paymentSession */
-        $paymentSession = $connection->getPayment($token);
+            /** @var \resurs_payment $paymentSession */
+            $paymentSession = $connection->getPayment($token);
 
-        // Finalize Resursbank payment.
-        if (!$paymentSession->finalized && !$this->paymentSessionDebited($paymentSession)) {
-            if ($paymentSession->frozen) {
-                throw new \Magento\Framework\Exception\LocalizedException(__('Resursbank payment %1 is still frozen.', $token));
+            // Finalize Resursbank payment.
+            if (!$paymentSession->finalized && !$this->paymentSessionDebited($paymentSession)) {
+                if ($paymentSession->frozen) {
+                    throw new \Magento\Framework\Exception\LocalizedException(__('Resursbank payment %1 is still frozen.', $token));
+                }
+
+                if (strtoupper($paymentSession->status) !== 'DEBITABLE') {
+                    throw new \Magento\Framework\Exception\LocalizedException(__('Resursbank payment %1 is not debitable yet.', $token));
+                }
+
+                // Finalize payment session.
+                if (!$connection->finalizePayment($token)) {
+                    throw new \Magento\Framework\Exception\LocalizedException(__('Failed to finalize Resursbank payment %1.', $token));
+                }
             }
 
-            if (strtoupper($paymentSession->status) !== 'DEBITABLE') {
-                throw new \Magento\Framework\Exception\LocalizedException(__('Resursbank payment %1 is not debitable yet.', $token));
-            }
+            // Set token as transaction identifier.
+            $payment->setTransactionId($token);
 
-            // Finalize payment session.
-            if (!$connection->finalizePayment($token)) {
-                throw new \Magento\Framework\Exception\LocalizedException(__('Failed to finalize Resursbank payment %1.', $token));
-            }
+            /** @var \Magento\Sales\Model\Order\Payment\Transaction $transaction */
+            $transaction = $this->transactionBuilder->setPayment($payment)
+                ->setOrder($payment->getOrder())
+                ->setTransactionId($payment->getTransactionId())
+                ->build(\Magento\Sales\Model\Order\Payment\Transaction::TYPE_ORDER);
+
+            // Add history entry.
+            $payment->addTransactionCommentsToOrder($transaction, __('Finalized Resursbank payment.', $token));
+
+            // Close transaction to complete process.
+            $transaction->setIsClosed(true);
         }
-
-        // Set token as transaction identifier.
-        $payment->setTransactionId($token);
-
-        /** @var \Magento\Sales\Model\Order\Payment\Transaction $transaction */
-        $transaction = $this->transactionBuilder->setPayment($payment)
-            ->setOrder($payment->getOrder())
-            ->setTransactionId($payment->getTransactionId())
-            ->build(\Magento\Sales\Model\Order\Payment\Transaction::TYPE_ORDER);
-
-        // Add history entry.
-        $payment->addTransactionCommentsToOrder($transaction, __('Finalized Resursbank payment.', $token));
-
-        // Close transaction to complete process.
-        $transaction->setIsClosed(true);
 
         return $this;
     }

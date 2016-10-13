@@ -83,6 +83,9 @@
             <api>
                 <unit_measure>styck</unit_measure>
             </api>
+            <ecom>
+                <enabled>0</enabled>
+            </ecom>
         </omnicheckout>
     </default>
 </config>

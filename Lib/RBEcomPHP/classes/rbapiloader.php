@@ -189,12 +189,12 @@ class ResursBank
     /** @var null Payment data object */
     private $_paymentData = null;
     /** @var null Object for speclines/specrows */
-    private $_paymentSpeclines = null;
+    public $_paymentSpeclines = null;
     /** @var null Counter for a specline */
     private $_specLineID = null;
 
     /** @var null Order data for the payment */
-    private $_paymentOrderData = null;
+    public $_paymentOrderData = null;
     /** @var null Address data for the payment */
     private $_paymentAddress = null;
     /** @var null Normally used if billing and delivery differs (Sent to the gateway clientside) */
@@ -2638,7 +2638,7 @@ class ResursBank
         return $foundArt;
     }
 
-    private function handleClientPaymentSpec($clientPaymentSpec = array()) {
+    public function handleClientPaymentSpec($clientPaymentSpec = array()) {
         /**
          * Make sure we are pushing in this spec in the correct format, which is:
          * array(
@@ -2739,7 +2739,7 @@ class ResursBank
         $creditResult = false;
         if (null === $paymentId) { throw new \Exception("Payment ID must be ID"); }
         $paymentArray = $this->getPayment($paymentId);
-        $creditPaymentContainer = $this->renderPaymentSpecContainer($paymentId, ResursAfterShopRenderTypes::CREDIT, $paymentArray, $clientPaymentSpec, $creditParams, $quantityMatch);
+        $creditPaymentContainer = $this->renderPaymentSpecContainer($paymentId, ResursAfterShopRenderTypes::CREDIT, $paymentArray, $clientPaymentSpec, $creditParams, $quantityMatch, $useSpecifiedQuantity);
         if (isset($paymentArray->id)) {
             try {
                 $this->afterShopFlowService->creditPayment($creditPaymentContainer);
@@ -2963,7 +2963,7 @@ class ResursBank
      * @return array
      * @throws ResursException
      */
-    private function renderPaymentSpecContainer($paymentId, $renderType, $paymentArray = array(), $clientPaymentSpec = array(), $renderParams = array(), $quantityMatch = true, $useSpecifiedQuantity = false)
+    public function renderPaymentSpecContainer($paymentId, $renderType, $paymentArray = array(), $clientPaymentSpec = array(), $renderParams = array(), $quantityMatch = true, $useSpecifiedQuantity = false)
     {
         $paymentSpecLine = $this->renderSpecLine($paymentArray, $renderType, $renderParams);
         $totalAmount = 0;
@@ -3375,6 +3375,9 @@ class ResursBank
         if ($renderType == ResursAfterShopRenderTypes::CREDIT) { $returnSpecObject = $this->removeFromArray($currentSpecs['DEBIT'], array_merge($currentSpecs['ANNUL'], $currentSpecs['CREDIT'])); }
         /* Annul is being done on all authorized rows that is not already annulled, debited or credited */
         if ($renderType == ResursAfterShopRenderTypes::ANNUL) { $returnSpecObject = $this->removeFromArray($currentSpecs['AUTHORIZE'], array_merge($currentSpecs['DEBIT'], $currentSpecs['ANNUL'], $currentSpecs['CREDIT'])); }
+
+        if ($renderType == ResursAfterShopRenderTypes::UPDATE) { $returnSpecObject = $currentSpecs['AUTHORIZE']; }
+
         return $returnSpecObject;
     }
 
@@ -3457,6 +3460,7 @@ abstract class ResursAfterShopRenderTypes {
     const FINALIZE = 1;
     const CREDIT = 2;
     const ANNUL = 3;
+    const UPDATE = 4;
 }
 
 /**

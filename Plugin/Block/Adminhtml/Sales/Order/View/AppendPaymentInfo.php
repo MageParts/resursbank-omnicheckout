@@ -52,7 +52,7 @@ class AppendPaymentInfo
         /** @var \Resursbank\OmniCheckout\Block\Adminhtml\Sales\Order\View\Info\OmniCheckout $block */
         $block = $this->objectManager->create('\Resursbank\OmniCheckout\Block\Adminhtml\Sales\Order\View\Info\OmniCheckout');
 
-        return $block ? ($block->toHtml() . $result) : $result;
+        return ($block && substr($block->getOrder()->getPayment()->getMethod(), 0, 11) === 'resursbank_') ? ($block->toHtml() . $result) : $result;
     }
 
 }

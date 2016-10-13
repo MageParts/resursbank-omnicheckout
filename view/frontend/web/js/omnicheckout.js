@@ -50,6 +50,13 @@ define([
     var iframe = null;
 
     /**
+     * The Omnicheckout iframe resizer JavaScript src.
+     *
+     * @type {Element}
+     */
+    var iframeJs = null;
+
+    /**
      * The URL of the Omnicheckout iframe.
      *
      * @type {String}
@@ -138,7 +145,17 @@ define([
             return;
         }
 
-        data = JSON.parse(event.data);
+        // Calls made by the iFrameResizer are picked up by this function and needs to be parsed. Calls made by
+        // OmniCheckout however does not require parsing.
+        var jsonTest = {};
+
+        try {
+            jsonTest = JSON.parse(event.data);
+        } catch (e) {
+
+        }
+
+        data = jsonTest;
 
         if (data.hasOwnProperty('eventType') && typeof data.eventType === 'string') {
             switch (data.eventType) {
@@ -210,6 +227,7 @@ define([
                 }
                 else if (i === 'iframe') {
                     iframe = $(config[i])[0];
+                    iframeJs = $(config[i])[1];
                 }
             }
 
@@ -275,7 +293,7 @@ define([
     $this.placeIframe = function() {
         var run = setInterval(function() {
             if ($('#block-discount-heading').length > 0) {
-                $('#omnicheckout-iframe-container').prepend(iframe);
+                $('#omnicheckout-iframe-container').prepend(iframe/*, iframeJs*/);
 
                 clearInterval(run);
             }

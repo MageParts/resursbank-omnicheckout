@@ -74,42 +74,50 @@ class UpdatePayment
      */
     public function afterCreateOrder(\Magento\Sales\Model\AdminOrder\Create $subject, $order)
     {
-        try {
+        if ($this->ecomHelper->isEnabled()) {
             // Retrieve resursbank_token from old order.
             $token = $subject->getSession()->getOrder() ? (string)$subject->getSession()->getOrder()->getData('resursbank_token') : '';
 
-            if (!empty($token)) {
-                // Set resursbank_token on new order.
-                $order->setData('resursbank_token', $token)->save();
+            try {
+                if (!empty($token)) {
+                    // Set resursbank_token on new order.
+                    $order->setData('resursbank_token', $token)->save();
 
-                /** @var \Magento\Quote\Model\Quote $quote */
-                $quote = $this->getQuote($order);
+                    /** @var \Magento\Quote\Model\Quote $quote */
+                    $quote = $this->getQuote($order);
 
-                // Set resursbank_token on new quote.
-                $quote->setData('resursbank_token', $token);
-                $this->quoteRepository->save($quote);
+                    // Set resursbank_token on new quote.
+                    $quote->setData('resursbank_token', $token);
+                    $this->quoteRepository->save($quote);
 
-                /** @var \ResursBank $connection */
-                $connection = $this->ecomHelper->getConnection();
+                    /** @var \ResursBank $connection */
+                    $connection = $this->ecomHelper->getConnection();
 
-                /** @var \resurs_payment $payment */
-                $payment = $connection->getPayment($token);
+                    /** @var \resurs_payment $payment */
+                    $payment = $connection->getPayment($token);
 
-                // Set quote on API model (this allows us to collect the cart information we will submit to the API to update the payment).
-                $this->apiModel->setData('quote', $quote);
+                    // Set quote on API model (this allows us to collect the cart information we will submit to the API to update the payment).
+                    $this->apiModel->setData('quote', $quote);
 
-                $data = $this->getPaymentSpec($quote, $payment);
-
-                $test = $connection->__call('additionalDebitOfPayment', $this->getPaymentSpec($quote, $payment));
-
-                if ($connection->__call('additionalDebitOfPayment', $this->getPaymentSpec($quote, $payment))) {
-                    $this->messageManager->addSuccessMessage(__('Resursbank payment %1 has been updated.', $token));
-                } else {
-                    $this->messageManager->addErrorMessage(__('Failed to update Resursbank payment %1. Please use the payment administration to manually update the payment.', $token));
+                    //                $data = $this->getPaymentSpec($quote, $payment);
+                    //                $paymentSpecLines = $connection->handleClientPaymentSpec($this->correctOrderLines($quote, $this->apiModel->getOrderLines(), $payment));
+                    //
+                    //                $connection->updateCart($paymentSpecLines);
+                    //                $connection->updatePaymentSpec($connection->_paymentSpeclines);
+                    //
+                    //                $test = $connection->_paymentOrderData;
+                    //
+                    //                $parameters = $connection->renderPaymentSpecContainer($token, \ResursAfterShopRenderTypes::UPDATE, $payment, $paymentSpecLines, array(), false, true);
+                    //
+                    //                if ($connection->afterShopFlowService->__soapCall('additionalDebitOfPayment', array($parameters))) {
+                    //                    $this->messageManager->addSuccessMessage(__('Resursbank payment %1 has been updated.', $token));
+                    //                } else {
+                    //                    $this->messageManager->addErrorMessage(__('Failed to update Resursbank payment %1. Please use the payment administration to manually update the payment.', $token));
+                    //                }
                 }
+            } catch (\Exception $e) {
+                $this->messageManager->addErrorMessage(__('Failed to update Resursbank payment %1. Please use the payment administration to manually update the payment.', $token));
             }
-        } catch (\Exception $e) {
-            $this->messageManager->addErrorMessage(__('Failed to update Resursbank payment %1. Please use the payment administration to manually update the payment.', $token));
         }
 
         return $order;
@@ -135,6 +143,7 @@ class UpdatePayment
      */
     public function getPaymentSpec(\Magento\Quote\Model\Quote $quote, \resurs_payment $payment)
     {
+
         $result = array(
             'paymentId' => $quote->getData('resursbank_token'),
             'paymentSpec' => $this->correctOrderLines($quote, $this->apiModel->getOrderLines(), $payment)
@@ -187,7 +196,7 @@ class UpdatePayment
             }
         }
 
-        return new \resurs_paymentSpec($specLines, $this->getSpecTotalAmount($specLines), 0);
+        return $specLines;
     }
 
     /**
@@ -225,32 +234,44 @@ class UpdatePayment
 
         $item['id'] = ($specLine instanceof \resurs_specLine) ? $specLine->id : null;
 
-        if ($item['artNo'] === 'shipping') {
-            $item['totalVatAmount'] = $quote->getShippingAddress()->getTaxAmount();
-            $item['totalAmount'] = $quote->getShippingAddress()->getShippingInclTax();
-        } else if ($item['artNo'] === 'discount' || $item['artNo'] === $quote->getCouponCode()) {
-            $item['totalVatAmount'] = 0;
-            $item['totalAmount'] = 0;
-        } else {
-            $quoteItem = $this->getQuoteItemBySku($quote, $item['artNo']);
+        return [
+            'id' => $item['id'],
+            'artNo' => $item['artNo'],
+            'quantity' => $item['quantity']
+        ];
 
-            if ($quoteItem instanceof \Magento\Quote\Model\Quote\Item) {
-                $item['totalVatAmount'] = $quoteItem->getTaxAmount();
-                $item['totalAmount'] = $quoteItem->getRowTotalInclTax();
-            }
-        }
-
-        return new \resurs_specLine(
-            $item['id'],
-            $item['artNo'],
-            $item['description'],
-            $item['quantity'],
-            $item['unitMeasure'],
-            $item['unitAmountWithoutVat'],
-            $item['vatPct'],
-            $item['totalVatAmount'],
-            $item['totalAmount']
-        );
+//
+//
+//
+//
+//
+//
+//        if ($item['artNo'] === 'shipping') {
+//            $item['totalVatAmount'] = $quote->getShippingAddress()->getTaxAmount();
+//            $item['totalAmount'] = $quote->getShippingAddress()->getShippingInclTax();
+//        } else if ($item['artNo'] === 'discount' || $item['artNo'] === $quote->getCouponCode()) {
+//            $item['totalVatAmount'] = 0;
+//            $item['totalAmount'] = 0;
+//        } else {
+//            $quoteItem = $this->getQuoteItemBySku($quote, $item['artNo']);
+//
+//            if ($quoteItem instanceof \Magento\Quote\Model\Quote\Item) {
+//                $item['totalVatAmount'] = $quoteItem->getTaxAmount();
+//                $item['totalAmount'] = $quoteItem->getRowTotalInclTax();
+//            }
+//        }
+//
+//        return new \resurs_specLine(
+//            $item['id'],
+//            $item['artNo'],
+//            $item['description'],
+//            $item['quantity'],
+//            $item['unitMeasure'],
+//            $item['unitAmountWithoutVat'],
+//            $item['vatPct'],
+//            $item['totalVatAmount'],
+//            $item['totalAmount']
+//        );
     }
 
     /**
@@ -267,7 +288,7 @@ class UpdatePayment
         $sku = (string) $sku;
 
         if (isset($payment->paymentDiffs)) {
-            $info = is_array($payment->paymentDiffs) ? $payment->paymentDiffs[count($payment->paymentDiffs)-1] : $payment->paymentDiffs;
+            $info = is_array($payment->paymentDiffs) ? $payment->paymentDiffs[0] : $payment->paymentDiffs;
 
             if (($info instanceof \resurs_paymentDiff) &&
                 isset($info->paymentSpec) &&

@@ -74,28 +74,30 @@ class AnnulPayment
      */
     public function afterCancel(\Magento\Sales\Model\Order $subject, $result)
     {
-        try {
-            if (!$this->isOrderEditAction()) {
-                /** @var \ResursBank $connection */
-                $connection = $this->ecomHelper->getConnection();
+        if ($this->ecomHelper->isEnabled()) {
+            // Payment token (identifier).
+            $token = $subject->getData('resursbank_token');
 
-                // Payment token (identifier).
-                $token = $subject->getData('resursbank_token');
+            try {
+                if (!$this->isOrderEditAction()) {
+                    /** @var \ResursBank $connection */
+                    $connection = $this->ecomHelper->getConnection();
 
-                /** @var \resurs_payment $payment */
-                $payment = $connection->getPayment($token);
+                    /** @var \resurs_payment $payment */
+                    $payment = $connection->getPayment($token);
 
-                if ($payment && ($payment instanceof \resurs_payment)) {
-                    if ($connection->annulPayment($token)) {
-                        $this->messageManager->addSuccessMessage(__('Resursbank payment %1 has been canceled.', $token));
-                    } else {
-                        throw new \Exception('Something went wrong while communicating with the RBECom API.');
+                    if ($payment && ($payment instanceof \resurs_payment)) {
+                        if ($connection->annulPayment($token)) {
+                            $this->messageManager->addSuccessMessage(__('Resursbank payment %1 has been canceled.', $token));
+                        } else {
+                            throw new \Exception('Something went wrong while communicating with the RBECom API.');
+                        }
                     }
                 }
+            } catch (\Exception $e) {
+                $this->messageManager->addErrorMessage(__('Failed to cancel Resursbank payment %1. Please use the payment administration to manually cancel the payment.', $token));
+                $this->log->debug($e->getMessage());
             }
-        } catch (\Exception $e) {
-            $this->messageManager->addErrorMessage(__('Failed to cancel Resursbank payment %1. Please use the payment administration to manually cancel the payment.', $token));
-            $this->log->debug($e->getMessage());
         }
 
         return $result;

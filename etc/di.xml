@@ -40,10 +40,10 @@
         <plugin name="resursbank_omnicheckout_order_clear_payment_session" type="Resursbank\OmniCheckout\Plugin\PaymentSession\Clear" />
     </type>
 
-    <type name="Magento\Sales\Model\AdminOrder\Create">
-        <!-- Append payment token to revised order, and sync updates to Resursbank. -->
-        <plugin name="resursbank_omnicheckout_order_update_payment" type="Resursbank\OmniCheckout\Plugin\Order\UpdatePayment" />
-    </type>
+    <!--<type name="Magento\Sales\Model\AdminOrder\Create">-->
+        <!--&lt;!&ndash; Append payment token to revised order, and sync updates to Resursbank. &ndash;&gt;-->
+        <!--&lt;!&ndash;<plugin name="resursbank_omnicheckout_order_update_payment" type="Resursbank\OmniCheckout\Plugin\Order\UpdatePayment" />&ndash;&gt;-->
+    <!--</type>-->
 
     <type name="Magento\Sales\Model\Order">
         <!-- Annul payment when canceling order. -->

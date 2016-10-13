@@ -65,4 +65,14 @@ class Ecom extends \Magento\Framework\App\Helper\AbstractHelper
         return $this->connection;
     }
 
+    /**
+     * Check if ECom integration is enabled.
+     *
+     * @return bool
+     */
+    public function isEnabled()
+    {
+        return $this->scopeConfig->isSetFlag("omnicheckout/ecom/enabled", \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+    }
+
 }
