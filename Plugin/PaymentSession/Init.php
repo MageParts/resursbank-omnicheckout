@@ -37,15 +37,39 @@ class Init
     private $apiHelper;
 
     /**
+     * @var \Magento\Framework\UrlInterface
+     */
+    private $url;
+
+    /**
+     * @var \Magento\Framework\App\ResponseFactory
+     */
+    private $responseFactory;
+
+    /**
+     * @var \Magento\Framework\Message\ManagerInterface
+     */
+    private $messageManager;
+
+    /**
      * @param \Resursbank\OmniCheckout\Model\Api $apiModel
      * @param \Resursbank\OmniCheckout\Helper\Api $apiHelper
+     * @param \Magento\Framework\App\ResponseFactory $responseFactory
+     * @param \Magento\Framework\UrlInterface $url
+     * @param \Magento\Framework\Message\ManagerInterface $messageManager
      */
     public function __construct(
         \Resursbank\OmniCheckout\Model\Api $apiModel,
-        \Resursbank\OmniCheckout\Helper\Api $apiHelper
+        \Resursbank\OmniCheckout\Helper\Api $apiHelper,
+        \Magento\Framework\App\ResponseFactory $responseFactory,
+        \Magento\Framework\UrlInterface $url,
+        \Magento\Framework\Message\ManagerInterface $messageManager
     ) {
         $this->apiModel = $apiModel;
         $this->apiHelper = $apiHelper;
+        $this->url = $url;
+        $this->responseFactory = $responseFactory;
+        $this->messageManager = $messageManager;
     }
 
     /**
@@ -58,7 +82,13 @@ class Init
     public function beforeExecute(\Magento\Checkout\Controller\Index\Index $subject)
     {
         if (!$this->apiModel->paymentSessionInitialized()) {
-            $this->apiModel->initPaymentSession();
+            try {
+                $this->apiModel->initPaymentSession();
+            } catch (\Exception $e) {
+                $this->messageManager->addErrorMessage($e->getMessage());
+                $this->responseFactory->create()->setRedirect($this->url->getUrl('checkout/cart'))->sendResponse();
+                die();
+            }
         }
     }
 
