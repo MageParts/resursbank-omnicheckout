@@ -196,6 +196,7 @@ class Standard extends \Magento\Payment\Model\Method\AbstractMethod
      *
      * @param \resurs_payment $session
      * @return bool
+     * @todo we should check if $payment is an instance of resurs_payment and otherwise give an error message.
      */
     public function paymentSessionDebited($session)
     {

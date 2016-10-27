@@ -144,6 +144,7 @@ class UpdatePayment
      * @param \Magento\Quote\Model\Quote $quote
      * @param \resurs_payment $payment
      * @return array
+     * @todo we should check if $payment is an instance of resurs_payment and otherwise give an error message.
      */
     public function getPaymentSpec(\Magento\Quote\Model\Quote $quote, $payment)
     {
@@ -188,6 +189,7 @@ class UpdatePayment
      * @param array $orderLines
      * @param \resurs_payment $payment
      * @return \resurs_paymentSpec
+     * @todo we should check if $payment is an instance of resurs_payment and otherwise give an error message.
      */
     public function correctOrderLines(\Magento\Quote\Model\Quote $quote, array $orderLines, $payment)
     {
@@ -230,6 +232,7 @@ class UpdatePayment
      * @param \resurs_payment $payment
      * @return \resurs_specLine
      * @todo disocunt, $item['totalAmount'] = 0;, should it actually be 0?
+     * @todo we should check if $payment is an instance of resurs_payment and otherwise give an error message.
      */
     public function createSpecLine(\Magento\Quote\Model\Quote $quote, array $item, $payment)
     {
@@ -283,6 +286,7 @@ class UpdatePayment
      * @param \resurs_payment $payment
      * @param string $sku
      * @return null|\resurs_specLine
+     * @todo we should check if $payment is an instance of resurs_payment and otherwise give an error message.
      */
     public function getSpecLineBySku($payment, $sku)
     {
