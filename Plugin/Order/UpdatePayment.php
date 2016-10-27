@@ -145,7 +145,7 @@ class UpdatePayment
      * @param \resurs_payment $payment
      * @return array
      */
-    public function getPaymentSpec(\Magento\Quote\Model\Quote $quote, \resurs_payment $payment)
+    public function getPaymentSpec(\Magento\Quote\Model\Quote $quote, $payment)
     {
         $result = array(
             'paymentId' => $quote->getData('resursbank_token'),
@@ -189,7 +189,7 @@ class UpdatePayment
      * @param \resurs_payment $payment
      * @return \resurs_paymentSpec
      */
-    public function correctOrderLines(\Magento\Quote\Model\Quote $quote, array $orderLines, \resurs_payment $payment)
+    public function correctOrderLines(\Magento\Quote\Model\Quote $quote, array $orderLines, $payment)
     {
         $specLines = array();
 
@@ -231,7 +231,7 @@ class UpdatePayment
      * @return \resurs_specLine
      * @todo disocunt, $item['totalAmount'] = 0;, should it actually be 0?
      */
-    public function createSpecLine(\Magento\Quote\Model\Quote $quote, array $item, \resurs_payment $payment)
+    public function createSpecLine(\Magento\Quote\Model\Quote $quote, array $item, $payment)
     {
         $specLine = $this->getSpecLineBySku($payment, $item['artNo']);
 
@@ -284,7 +284,7 @@ class UpdatePayment
      * @param string $sku
      * @return null|\resurs_specLine
      */
-    public function getSpecLineBySku(\resurs_payment $payment, $sku)
+    public function getSpecLineBySku($payment, $sku)
     {
         $result = null;
 

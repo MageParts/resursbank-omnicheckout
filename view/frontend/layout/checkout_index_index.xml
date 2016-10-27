@@ -27,6 +27,7 @@
         <referenceBlock name="checkout.cart.coupon" remove="true"/>
         <referenceBlock name="cart.summary" remove="true"/>
         <referenceBlock name="checkout.cart.crosssell" remove="true"/>
+        <referenceBlock name="crosssell_products_impression" remove="true" />
 
         <!-- Global JavaScript variables -->
         <referenceContainer name="before.body.end">

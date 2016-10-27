@@ -197,7 +197,7 @@ class Standard extends \Magento\Payment\Model\Method\AbstractMethod
      * @param \resurs_payment $session
      * @return bool
      */
-    public function paymentSessionDebited(\resurs_payment $session)
+    public function paymentSessionDebited($session)
     {
         $result = false;
 
