@@ -241,7 +241,7 @@ define([
 
             // Listener for booking the order.
             mediator.listen({
-                event: 'omnicheckout:puchase-button-clicked',
+                event: 'omnicheckout:order-status',
                 identifier: $this,
                 callback: function (data) {
                     if (typeof data.orderReady === 'boolean') {
