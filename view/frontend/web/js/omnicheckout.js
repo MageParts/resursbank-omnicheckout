@@ -161,7 +161,7 @@ define([
             switch (data.eventType) {
                 case 'omnicheckout:user-info-change': mediator.broadcast('user-info:change', data); break;
                 case 'omnicheckout:payment-method-change': mediator.broadcast('payment-method:change', data); break;
-                case 'omnicheckout:booking-order': mediator.broadcast('book-order', data); break;
+                case 'omnicheckout:puchase-button-clicked': mediator.broadcast('book-order', data); break;
                 case 'omnicheckout:loaded': finalizeIframeSetup(); break;
                 default:;
             }
@@ -197,7 +197,7 @@ define([
             // Post the booking rule to Omnicheckout. This post basically says that when a user presses the button
             // to finalize the order, check with the server if the order is ready to be booked.
             postMessage({
-                eventType: 'omnicheckout:set-booking-rule',
+                eventType: 'omnicheckout:set-purchase-button-interceptor',
                 checkOrderBeforeBooking: true
             });
 
@@ -241,13 +241,13 @@ define([
 
             // Listener for booking the order.
             mediator.listen({
-                event: 'omnicheckout:booking-order',
+                event: 'omnicheckout:puchase-button-clicked',
                 identifier: $this,
                 callback: function (data) {
-                    if (typeof data.isOrderReady === 'boolean') {
+                    if (typeof data.orderReady === 'boolean') {
                         postMessage({
-                            eventType: 'omnicheckout:booking-order',
-                            isOrderReady: data.isOrderReady
+                            eventType: 'omnicheckout:order-status',
+                            orderReady: data.orderReady
                         });
                     }
                 }

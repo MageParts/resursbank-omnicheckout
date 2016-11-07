@@ -58,13 +58,13 @@ define([
                     'method': quote.paymentMethod()
                 }, new Messages())
                     .success(function () {
-                        mediator.broadcast('omnicheckout:booking-order', {isOrderReady: true});
+                        mediator.broadcast('omnicheckout:puchase-button-clicked', {orderReady: true});
                     })
                     .fail(function () {
-                        mediator.broadcast('omnicheckout:booking-order', {isOrderReady: false});
+                        mediator.broadcast('omnicheckout:puchase-button-clicked', {orderReady: false});
                     });
             } else {
-                mediator.broadcast('omnicheckout:booking-order', {isOrderReady: false});
+                mediator.broadcast('omnicheckout:puchase-button-clicked', {orderReady: false});
             }
 
             return $this;
