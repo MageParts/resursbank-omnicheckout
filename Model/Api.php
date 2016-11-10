@@ -707,14 +707,36 @@ class Api extends DataObject
      */
     public function getProductLine(\Magento\Quote\Model\Quote\Item $item)
     {
-        return array(
+        $result = array(
             'artNo'                 => $item->getSku(),
             'description'           => $item->getName(),
             'quantity'              => (float) $item->getQty(),
             'unitMeasure'           => $this->getApiSetting('unit_measure'),
             'unitAmountWithoutVat'  => (float) $item->getPrice(),
-            'vatPct'                => (float) $item->getTaxPercent()
+            'vatPct'                => $this->getItemTaxPercent($item)
         );
+
+        return $result;
+    }
+
+    /**
+     * Retrieve item tax percent. Certain product types will not include the tax_percent property, and in those cases
+     * we must calculate it manually ((tax_amount / price) * 100).
+     *
+     * @param \Magento\Quote\Model\Quote\Item $item
+     * @return float
+     */
+    public function getItemTaxPercent(\Magento\Quote\Model\Quote\Item $item)
+    {
+        $result = 0;
+
+        if ($item->hasTaxPercent()) {
+            $result = (float) $item->getTaxPercent();
+        } else if ($item->hasTaxAmount() && (float) $item->getTaxAmount() > 0) {
+            $result = ((float) $item->getTaxAmount() / (float) $item->getPrice()) * 100;
+        }
+
+        return (float) $result;
     }
 
     /**
