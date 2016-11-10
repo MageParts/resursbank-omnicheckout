@@ -707,7 +707,7 @@ class Api extends DataObject
      */
     public function getProductLine(\Magento\Quote\Model\Quote\Item $item)
     {
-        $result = array(
+        return array(
             'artNo'                 => $item->getSku(),
             'description'           => $item->getName(),
             'quantity'              => (float) $item->getQty(),
@@ -715,8 +715,6 @@ class Api extends DataObject
             'unitAmountWithoutVat'  => (float) $item->getPrice(),
             'vatPct'                => $this->getItemTaxPercent($item)
         );
-
-        return $result;
     }
 
     /**
