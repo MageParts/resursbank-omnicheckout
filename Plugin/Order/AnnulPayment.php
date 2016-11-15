@@ -98,7 +98,7 @@ class AnnulPayment
                 }
             } catch (\Exception $e) {
                 $this->messageManager->addErrorMessage(__('Failed to cancel Resursbank payment %1. Please use the payment administration to manually cancel the payment.', $token));
-                $this->log->error($e->getMessage());
+                $this->log->error("Failed to cancel order with Resursbank token {$token}: {$e->getMessage()}");
             }
         }
 

@@ -356,7 +356,7 @@ class Api extends DataObject
      *
      * @param string $method
      * @param string $path
-     * @param string|null $data
+     * @param string|array $data
      * @return \Zend\Http\Response
      */
     private function handleCall($method, $path, $data = null)
@@ -372,10 +372,15 @@ class Api extends DataObject
         // Log the call we are performing.
         $this->debug->info("Performing call to URL {$this->httpClient->getUri()}, path {$path}, method {$method}. Data submitted: {$data}");
 
-        return $this->httpClient->setEncType('application/json')
+        $result = $this->httpClient->setEncType('application/json')
             ->setRawBody($data)
             ->setMethod($method)
             ->send();
+
+        // Log result from performed call.
+        $this->debug->info("API responded with {$result->toString()}");
+
+        return $result;
     }
 
     /**

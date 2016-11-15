@@ -93,7 +93,7 @@ class CreditPayment
                 }
             } catch (\Exception $e) {
                 $this->messageManager->addErrorMessage(__('Failed to credit Resursbank payment %1. Please use the payment administration to manually credit the payment.', $token));
-                $this->log->error($e->getMessage());
+                $this->log->error("Failed to credit order with Resursbank token {$token}: {$e->getMessage()}");
             }
         }
 

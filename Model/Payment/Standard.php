@@ -156,7 +156,7 @@ class Standard extends \Magento\Payment\Model\Method\AbstractMethod
 
         if ($this->ecomHelper->isEnabled()) {
             // Log capturing event.
-            $this->debug->info("Attempting to capture payment of order {$payment->getOrder()->getId()} with amount {$amount}, using method {$this->_code}.");
+            $this->debug->info("Capturing payment of order {$payment->getOrder()->getId()} with amount {$amount}, using method {$this->_code}.");
 
             /** @var \ResursBank $connection */
             $connection = $this->ecomHelper->getConnection();
@@ -194,6 +194,9 @@ class Standard extends \Magento\Payment\Model\Method\AbstractMethod
 
             // Add history entry.
             $payment->addTransactionCommentsToOrder($transaction, __('Finalized Resursbank payment.', $token));
+
+            // Log capturing event.
+            $this->debug->info("Successfully captured payment of order {$payment->getOrder()->getId()}.");
 
             // Close transaction to complete process.
             $transaction->setIsClosed(true);
