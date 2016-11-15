@@ -62,3 +62,4 @@
 "Please confirm all checkout agreements before proceeding.","Vänligen kontrollera att du accepterat samtliga kassavillkor."
 "Please select a shipping method.","Vänligen välj en fraktmetod."
 "ECom Integration Settings","ECom integrations inställningar"
+"Log entries will be stored in var/log/resursbank_debug.log","Log data sparas i var/log/resursbank_debug.log"

@@ -47,21 +47,29 @@ class UpdatePayment
     private $messageManager;
 
     /**
+     * @var \Resursbank\OmniCheckout\Helper\Debug
+     */
+    private $log;
+
+    /**
      * @param \Resursbank\OmniCheckout\Helper\Ecom $ecomHelper
      * @param \Resursbank\OmniCheckout\Model\Api $apiModel
      * @param \Magento\Quote\Model\QuoteRepository $quoteRepository
      * @param \Magento\Framework\Message\ManagerInterface $messageManager
+     * @param \Resursbank\OmniCheckout\Helper\Debug $log
      */
     public function __construct(
         \Resursbank\OmniCheckout\Helper\Ecom $ecomHelper,
         \Resursbank\OmniCheckout\Model\Api $apiModel,
         \Magento\Quote\Model\QuoteRepository $quoteRepository,
-        \Magento\Framework\Message\ManagerInterface $messageManager
+        \Magento\Framework\Message\ManagerInterface $messageManager,
+        \Resursbank\OmniCheckout\Helper\Debug $log
     ) {
         $this->ecomHelper = $ecomHelper;
         $this->apiModel = $apiModel;
         $this->quoteRepository = $quoteRepository;
         $this->messageManager = $messageManager;
+        $this->log = $log;
     }
 
     /**
@@ -121,6 +129,7 @@ class UpdatePayment
                 }
             } catch (\Exception $e) {
                 $this->messageManager->addErrorMessage(__('Failed to update Resursbank payment %1. Please use the payment administration to manually update the payment.', $token));
+                $this->log->error($e->getMessage());
             }
         }
 

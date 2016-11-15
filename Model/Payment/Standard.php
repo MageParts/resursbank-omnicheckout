@@ -86,6 +86,11 @@ class Standard extends \Magento\Payment\Model\Method\AbstractMethod
     private $ecomHelper;
 
     /**
+     * @var \Resursbank\OmniCheckout\Helper\Debug
+     */
+    private $debug;
+
+    /**
      * @param \Magento\Framework\Model\Context $context
      * @param \Magento\Framework\Registry $registry
      * @param \Magento\Framework\Api\ExtensionAttributesFactory $extensionFactory
@@ -95,6 +100,7 @@ class Standard extends \Magento\Payment\Model\Method\AbstractMethod
      * @param \Magento\Payment\Model\Method\Logger $logger
      * @param \Magento\Sales\Model\Order\Payment\Transaction\BuilderInterface $transactionBuilder
      * @param \Resursbank\OmniCheckout\Helper\Ecom $ecomHelper
+     * @param \Resursbank\OmniCheckout\Helper\Debug $debug
      * @param \Magento\Framework\Message\ManagerInterface $messageManager
      * @param \Magento\Framework\Model\ResourceModel\AbstractResource $resource
      * @param \Magento\Framework\Data\Collection\AbstractDb $resourceCollection
@@ -111,6 +117,7 @@ class Standard extends \Magento\Payment\Model\Method\AbstractMethod
         \Magento\Payment\Model\Method\Logger $logger,
         \Magento\Sales\Model\Order\Payment\Transaction\BuilderInterface $transactionBuilder,
         \Resursbank\OmniCheckout\Helper\Ecom $ecomHelper,
+        \Resursbank\OmniCheckout\Helper\Debug $debug,
         \Magento\Framework\Message\ManagerInterface $messageManager,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
@@ -119,6 +126,7 @@ class Standard extends \Magento\Payment\Model\Method\AbstractMethod
         $this->transactionBuilder = $transactionBuilder;
         $this->messageManager = $messageManager;
         $this->ecomHelper = $ecomHelper;
+        $this->debug = $debug;
 
         parent::__construct(
             $context,
@@ -147,6 +155,9 @@ class Standard extends \Magento\Payment\Model\Method\AbstractMethod
         parent::capture($payment, $amount);
 
         if ($this->ecomHelper->isEnabled()) {
+            // Log capturing event.
+            $this->debug->info("Attempting to capture payment of order {$payment->getOrder()->getId()} with amount {$amount}, using method {$this->_code}.");
+
             /** @var \ResursBank $connection */
             $connection = $this->ecomHelper->getConnection();
 

@@ -33,15 +33,21 @@ class Callback implements \Resursbank\OmniCheckout\Api\CallbackInterface
      * @var \Resursbank\OmniCheckout\Helper\Callback
      */
     private $callbackHelper;
+    /**
+     * @var \Resursbank\OmniCheckout\Helper\Debug
+     */
+    private $debug;
 
     /**
      * @param \Resursbank\OmniCheckout\Helper\Callback $callbackHelper
+     * @param \Resursbank\OmniCheckout\Helper\Debug $debug
      */
     public function __construct(
-        \Resursbank\OmniCheckout\Helper\Callback $callbackHelper
-    )
-    {
+        \Resursbank\OmniCheckout\Helper\Callback $callbackHelper,
+        \Resursbank\OmniCheckout\Helper\Debug $debug
+    ) {
         $this->callbackHelper = $callbackHelper;
+        $this->debug = $debug;
     }
 
     /**
@@ -51,7 +57,8 @@ class Callback implements \Resursbank\OmniCheckout\Api\CallbackInterface
      */
     public function unfreeze()
     {
-        $this->_addOrderComment('Resursbank: payment was unfrozen.');
+        $this->_addLogEntry('unfreeze')
+            ->_addOrderComment('Resursbank: payment was unfrozen.');
 
         return true;
     }
@@ -64,7 +71,8 @@ class Callback implements \Resursbank\OmniCheckout\Api\CallbackInterface
      */
     public function booked()
     {
-        $this->_addOrderComment('Resursbank: payment was booked.');
+        $this->_addLogEntry('booked')
+            ->_addOrderComment('Resursbank: payment was booked.');
 
         return true;
     }
@@ -76,7 +84,8 @@ class Callback implements \Resursbank\OmniCheckout\Api\CallbackInterface
      */
     public function finalization()
     {
-        $this->_addOrderComment('Resursbank: payment was finalized.');
+        $this->_addLogEntry('finalization')
+            ->_addOrderComment('Resursbank: payment was finalized.');
 
         return true;
     }
@@ -88,7 +97,8 @@ class Callback implements \Resursbank\OmniCheckout\Api\CallbackInterface
      */
     public function automaticFraudControl()
     {
-        $this->_addOrderComment('Resursbank: payment passed automatic fraud screening.');
+        $this->_addLogEntry('automatic fraud control.')
+            ->_addOrderComment('Resursbank: payment passed automatic fraud screening.');
 
         return true;
     }
@@ -100,6 +110,7 @@ class Callback implements \Resursbank\OmniCheckout\Api\CallbackInterface
      */
     public function annulment()
     {
+        $this->_addLogEntry('annulment');
         $this->callbackHelper->annulOrder($this->_getOrder());
         $this->_addOrderComment('Resursbank: payment was annulled.');
 
@@ -113,7 +124,8 @@ class Callback implements \Resursbank\OmniCheckout\Api\CallbackInterface
      */
     public function update()
     {
-        $this->_addOrderComment('Resursbank: payment was updated.');
+        $this->_addLogEntry('update')
+            ->_addOrderComment('Resursbank: payment was updated.');
 
         return true;
     }
@@ -132,10 +144,26 @@ class Callback implements \Resursbank\OmniCheckout\Api\CallbackInterface
      * Add history comment to requested order.
      *
      * @param string $comment
+     * @return $this
      */
     protected function _addOrderComment($comment)
     {
         $this->callbackHelper->addOrderComment($this->_getOrder(), __($comment));
+
+        return $this;
+    }
+
+    /**
+     * Log that we received a callback.
+     *
+     * @param $text
+     * @return $this
+     */
+    public function _addLogEntry($text)
+    {
+        $this->debug->info("Received callback {$text}.");
+
+        return $this;
     }
 
 }

@@ -31,11 +31,6 @@ class Api extends DataObject
 {
 
     /**
-     * Name of error log file.
-     */
-    const ERROR_LOG = 'resurs_api.log';
-
-    /**
      * Test API URL.
      */
     const TEST_URL = 'https://omnitest.resurs.com/';
@@ -81,9 +76,9 @@ class Api extends DataObject
     private $url;
 
     /**
-     * @var \Psr\Log\LoggerInterface
+     * @var \Resursbank\OmniCheckout\Helper\Debug
      */
-    private $log;
+    private $debug;
 
     /**
      * @var \Magento\Framework\Message\ManagerInterface
@@ -99,7 +94,7 @@ class Api extends DataObject
      * @param \Magento\Customer\Model\Session $customerSession
      * @param \Resursbank\OmniCheckout\Helper\Api $helper
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
-     * @param \Psr\Log\LoggerInterface $log
+     * @param \Resursbank\OmniCheckout\Helper\Debug $debug
      * @param \Magento\Framework\UrlInterface $url
      * @param \Magento\Framework\Message\ManagerInterface $messages
      * @param \Magento\Checkout\Model\Session $checkoutSession
@@ -109,7 +104,7 @@ class Api extends DataObject
         \Magento\Customer\Model\Session $customerSession,
         \Resursbank\OmniCheckout\Helper\Api $helper,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
-        \Psr\Log\LoggerInterface $log,
+        \Resursbank\OmniCheckout\Helper\Debug $debug,
         \Magento\Framework\UrlInterface $url,
         \Magento\Framework\Message\ManagerInterface $messages,
         \Magento\Checkout\Model\Session $checkoutSession,
@@ -120,7 +115,7 @@ class Api extends DataObject
         $this->checkoutSession = $checkoutSession;
         $this->scopeConfig = $scopeConfig;
         $this->url = $url;
-        $this->log = $log;
+        $this->debug = $debug;
         $this->messages = $messages;
 
         parent::__construct($data);
@@ -250,9 +245,9 @@ class Api extends DataObject
         $type = strtolower((string) $type);
 
         return $this->call($this->getCallbackTypePath($type), 'post', array(
-            'uriTemplate' => $this->url->getBaseUrl() . "rest/V1/omnicheckout/order/{$type}",
-            'basicAuthUserName' => $this->getCallbackSetting('basic_username'),
-            'basicAuthPassword' => $this->getCallbackSetting('basic_password')
+            'uriTemplate' => $this->url->getBaseUrl() . "rest/V1/omnicheckout/order/{$type}"
+//            'basicAuthUserName' => $this->getCallbackSetting('basic_username'),
+//            'basicAuthPassword' => $this->getCallbackSetting('basic_password')
         ));
     }
 
@@ -366,14 +361,19 @@ class Api extends DataObject
      */
     private function handleCall($method, $path, $data = null)
     {
+        $data = json_encode($data);
+
         if (is_null($this->httpClient)) {
             $this->prepareHttpClient();
         }
 
         $this->httpClient->getUri()->setPath($path);
 
+        // Log the call we are performing.
+        $this->debug->info("Performing call to URL {$this->httpClient->getUri()}, path {$path}, method {$method}. Data submitted: {$data}");
+
         return $this->httpClient->setEncType('application/json')
-            ->setRawBody(json_encode($data))
+            ->setRawBody($data)
             ->setMethod($method)
             ->send();
     }
@@ -419,13 +419,12 @@ class Api extends DataObject
      * @param \Zend\Http\Response $response
      * @return $this
      * @throws Exception
-     * @todo Test that logging still works.
      */
     public function handleErrors(\Zend\Http\Response $response)
     {
-        if (($response->isClientError() || $response->isServerError()) && $this->getApiSetting('debug_enabled', true)) {
+        if (($response->isClientError() || $response->isServerError())) {
             // Log the error.
-            $this->log->debug($response->toString());
+            $this->debug->error($response->toString());
 
             // Get readable error message.
             $error = (string) __('We apologize, an error occurred while communicating with the payment gateway. Please contact us as soon as possible so we can review this problem.');

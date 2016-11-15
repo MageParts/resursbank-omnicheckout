@@ -26,12 +26,16 @@
             <label>OmniCheckout</label>
             <tab>resursbank</tab>
             <resource>Resursbank_OmniCheckout::config_omnicheckout</resource>
-            <group id="api" translate="label" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>API Settings</label>
-                <field id="debug_enabled" translate="label" type="select" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Debugger Enabled</label>
+            <group id="debug" translate="label" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Debug Settings</label>
+                <field id="enabled" translate="label, comment" type="select" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enabled</label>
+                    <comment>Log entries will be stored in var/log/resursbank_debug.log</comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
+            </group>
+            <group id="api" translate="label" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>API Settings</label>
                 <field id="username" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Username</label>
                 </field>
@@ -46,18 +50,14 @@
                     <label>Unit Measure</label>
                 </field>
             </group>
-            <group id="callback" translate="label" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+            <group id="callback" translate="label" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Callback Settings</label>
-                <field id="debug_enabled" translate="label" type="select" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Debugger Enabled</label>
-                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                </field>
-                <field id="basic_username" translate="label" type="text" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Basic Auth Username</label>
-                </field>
-                <field id="basic_password" translate="label" type="text" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Basic Auth Password</label>
-                </field>
+                <!--<field id="basic_username" translate="label" type="text" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">-->
+                    <!--<label>Basic Auth Username</label>-->
+                <!--</field>-->
+                <!--<field id="basic_password" translate="label" type="text" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">-->
+                    <!--<label>Basic Auth Password</label>-->
+                <!--</field>-->
                 <field id="url_registration" translate="label" type="button" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Callback Registration</label>
                     <frontend_model>Resursbank\OmniCheckout\Block\Adminhtml\System\Config\Callback\Registration</frontend_model>
@@ -66,7 +66,7 @@
                     <frontend_model>Resursbank\OmniCheckout\Block\Adminhtml\System\Config\Callback\Listing</frontend_model>
                 </field>
             </group>
-            <group id="ecom" translate="label" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+            <group id="ecom" translate="label" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>ECom Integration Settings</label>
                 <field id="enabled" translate="label" type="select" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Enabled</label>

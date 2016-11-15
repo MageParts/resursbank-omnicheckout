@@ -42,7 +42,7 @@ class AnnulPayment
     private $request;
 
     /**
-     * @var \Psr\Log\LoggerInterface
+     * @var \Resursbank\OmniCheckout\Helper\Debug
      */
     private $log;
 
@@ -50,13 +50,13 @@ class AnnulPayment
      * @param \Resursbank\OmniCheckout\Helper\Ecom $ecomHelper
      * @param \Magento\Framework\Message\ManagerInterface $messageManager
      * @param \Magento\Framework\App\RequestInterface $request
-     * @param \Psr\Log\LoggerInterface $log
+     * @param \Resursbank\OmniCheckout\Helper\Debug $log
      */
     public function __construct(
         \Resursbank\OmniCheckout\Helper\Ecom $ecomHelper,
         \Magento\Framework\Message\ManagerInterface $messageManager,
         \Magento\Framework\App\RequestInterface $request,
-        \Psr\Log\LoggerInterface $log
+        \Resursbank\OmniCheckout\Helper\Debug $log
     ) {
         $this->ecomHelper = $ecomHelper;
         $this->messageManager = $messageManager;
@@ -98,7 +98,7 @@ class AnnulPayment
                 }
             } catch (\Exception $e) {
                 $this->messageManager->addErrorMessage(__('Failed to cancel Resursbank payment %1. Please use the payment administration to manually cancel the payment.', $token));
-                $this->log->debug($e->getMessage());
+                $this->log->error($e->getMessage());
             }
         }
 
