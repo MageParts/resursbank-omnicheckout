@@ -73,20 +73,21 @@ class Callback extends \Magento\Framework\App\Helper\AbstractHelper
      * TODO: We should use the order repository instead, however that doesn't support loading entities by any column
      * TODO: except their prim key right now.
      *
+     * @param string $paymentId
      * @return \Magento\Sales\Model\Order
      * @throws Exception
      */
-    public function getOrderFromRequest()
+    public function getOrderFromRequest($paymentId)
     {
-        $token =  $this->_request->getParam('paymentId');
+        $paymentId = (string) $paymentId;
 
-        if (empty($token)) {
+        if (empty($paymentId)) {
             throw new Exception('No order token supplied.');
         }
 
         /** @var \Magento\Sales\Model\Order $order */
         $order = $this->orderFactory->create();
-        $order->loadByAttribute('resursbank_token', $token);
+        $order->loadByAttribute('resursbank_token', $paymentId);
 
         if (!$order->getId()) {
             throw new Exception('Failed to locate referenced order.');

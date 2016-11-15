@@ -53,12 +53,13 @@ class Callback implements \Resursbank\OmniCheckout\Api\CallbackInterface
     /**
      * Payment is unfrozen, which means it can be captured.
      *
-     * @return boolean
+     * @param string $paymentId
+     * @return bool
      */
-    public function unfreeze()
+    public function unfreeze($paymentId)
     {
-        $this->_addLogEntry('unfreeze')
-            ->_addOrderComment('Resursbank: payment was unfrozen.');
+        $this->_addLogEntry($paymentId, 'unfreeze')
+            ->_addOrderComment($paymentId, 'Resursbank: payment was unfrozen.');
 
         return true;
     }
@@ -67,12 +68,13 @@ class Callback implements \Resursbank\OmniCheckout\Api\CallbackInterface
      * Payment has been booked by Resursbank. This means the payment has been unfrozen and is preparing to be
      * finalized.
      *
-     * @return boolean
+     * @param string $paymentId
+     * @return bool
      */
-    public function booked()
+    public function booked($paymentId)
     {
-        $this->_addLogEntry('booked')
-            ->_addOrderComment('Resursbank: payment was booked.');
+        $this->_addLogEntry($paymentId, 'booked')
+            ->_addOrderComment($paymentId, 'Resursbank: payment was booked.');
 
         return true;
     }
@@ -80,12 +82,13 @@ class Callback implements \Resursbank\OmniCheckout\Api\CallbackInterface
     /**
      * Payment has been finalized by Resursbank. This means the client has been debited by Resursbank.
      *
-     * @return boolean
+     * @param string $paymentId
+     * @return bool
      */
-    public function finalization()
+    public function finalization($paymentId)
     {
-        $this->_addLogEntry('finalization')
-            ->_addOrderComment('Resursbank: payment was finalized.');
+        $this->_addLogEntry($paymentId, 'finalization')
+            ->_addOrderComment($paymentId, 'Resursbank: payment was finalized.');
 
         return true;
     }
@@ -93,12 +96,13 @@ class Callback implements \Resursbank\OmniCheckout\Api\CallbackInterface
     /**
      * Payment passed automatic fraud screening from Resursbank.
      *
-     * @return boolean
+     * @param string $paymentId
+     * @return bool
      */
-    public function automaticFraudControl()
+    public function automaticFraudControl($paymentId)
     {
-        $this->_addLogEntry('automatic fraud control.')
-            ->_addOrderComment('Resursbank: payment passed automatic fraud screening.');
+        $this->_addLogEntry($paymentId, 'automatic fraud control.')
+            ->_addOrderComment($paymentId, 'Resursbank: payment passed automatic fraud screening.');
 
         return true;
     }
@@ -108,11 +112,11 @@ class Callback implements \Resursbank\OmniCheckout\Api\CallbackInterface
      *
      * @return boolean
      */
-    public function annulment()
+    public function annulment($paymentId)
     {
-        $this->_addLogEntry('annulment');
-        $this->callbackHelper->annulOrder($this->_getOrder());
-        $this->_addOrderComment('Resursbank: payment was annulled.');
+        $this->_addLogEntry($paymentId, 'annulment');
+        $this->callbackHelper->annulOrder($this->_getOrder($paymentId));
+        $this->_addOrderComment($paymentId, 'Resursbank: payment was annulled.');
 
         return true;
     }
@@ -122,10 +126,10 @@ class Callback implements \Resursbank\OmniCheckout\Api\CallbackInterface
      *
      * @return boolean
      */
-    public function update()
+    public function update($paymentId)
     {
-        $this->_addLogEntry('update')
-            ->_addOrderComment('Resursbank: payment was updated.');
+        $this->_addLogEntry($paymentId, 'update')
+            ->_addOrderComment($paymentId, 'Resursbank: payment was updated.');
 
         return true;
     }
@@ -133,22 +137,25 @@ class Callback implements \Resursbank\OmniCheckout\Api\CallbackInterface
     /**
      * Retrieve request order.
      *
+     * @param string $paymentId
      * @return \Magento\Sales\Model\Order
+     * @throws \Exception
      */
-    protected function _getOrder()
+    protected function _getOrder($paymentId)
     {
-        return $this->callbackHelper->getOrderFromRequest();
+        return $this->callbackHelper->getOrderFromRequest($paymentId);
     }
 
     /**
      * Add history comment to requested order.
      *
+     * @param string $paymentId
      * @param string $comment
      * @return $this
      */
-    protected function _addOrderComment($comment)
+    protected function _addOrderComment($paymentId, $comment)
     {
-        $this->callbackHelper->addOrderComment($this->_getOrder(), __($comment));
+        $this->callbackHelper->addOrderComment($this->_getOrder($paymentId), __($comment));
 
         return $this;
     }
@@ -156,12 +163,17 @@ class Callback implements \Resursbank\OmniCheckout\Api\CallbackInterface
     /**
      * Log that we received a callback.
      *
+     * @param string $paymentId
      * @param $text
      * @return $this
      */
-    public function _addLogEntry($text)
+    public function _addLogEntry($paymentId, $text)
     {
-        $this->debug->info("Received callback {$text}.");
+        /** @var \Magento\Sales\Model\Order $order */
+        $order = $this->_getOrder($paymentId);
+        $orderId = $order ? $order->getId() : 'unknown';
+
+        $this->debug->info("Received callback {$text} for order {$orderId}.");
 
         return $this;
     }

@@ -244,8 +244,14 @@ class Api extends DataObject
     {
         $type = strtolower((string) $type);
 
+        $urlTemplate = $this->url->getBaseUrl() . "rest/V1/omnicheckout/order/{$type}";
+
+        if ($type !== 'test') {
+            $urlTemplate.= "/paymentId/{paymentId}";
+        }
+
         return $this->call($this->getCallbackTypePath($type), 'post', array(
-            'uriTemplate' => $this->url->getBaseUrl() . "rest/V1/omnicheckout/order/{$type}"
+            'uriTemplate' => $urlTemplate
 //            'basicAuthUserName' => $this->getCallbackSetting('basic_username'),
 //            'basicAuthPassword' => $this->getCallbackSetting('basic_password')
         ));

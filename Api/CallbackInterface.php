@@ -25,33 +25,39 @@ interface CallbackInterface
 {
 
     /**
-     * @return boolean
+     * @param string$paymentId
+     * @return bool
      */
-    public function unfreeze();
+    public function unfreeze($paymentId);
 
     /**
-     * @return boolean
+     * @param string $paymentId
+     * @return bool
      */
-    public function booked();
+    public function booked($paymentId);
 
     /**
-     * @return boolean
+     * @param string $paymentId
+     * @return bool
      */
-    public function finalization();
+    public function finalization($paymentId);
 
     /**
-     * @return boolean
+     * @param string $paymentId
+     * @return bool
      */
-    public function automaticFraudControl();
+    public function automaticFraudControl($paymentId);
 
     /**
-     * @return boolean
+     * @param string $paymentId
+     * @return bool
      */
-    public function annulment();
+    public function annulment($paymentId);
 
     /**
-     * @return boolean
+     * @param string $paymentId
+     * @return bool
      */
-    public function update();
+    public function update($paymentId);
 
 }

@@ -19,7 +19,7 @@
 <routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
 
     <!-- Payment is unfrozen, which means it can be captured. -->
-    <route url="/V1/omnicheckout/order/unfreeze" method="GET">
+    <route url="/V1/omnicheckout/order/unfreeze/paymentId/:paymentId" method="GET">
         <service class="Resursbank\OmniCheckout\Api\CallbackInterface" method="unfreeze"/>
         <resources>
             <resource ref="anonymous" />
@@ -27,7 +27,7 @@
     </route>
 
     <!-- Payment has been booked by Resursbank. This means the payment has been unfrozen and is preparing to be finalized. -->
-    <route url="/V1/omnicheckout/order/booked" method="GET">
+    <route url="/V1/omnicheckout/order/booked/paymentId/:paymentId" method="GET">
         <service class="Resursbank\OmniCheckout\Api\CallbackInterface" method="booked"/>
         <resources>
             <resource ref="anonymous" />
@@ -35,7 +35,7 @@
     </route>
 
     <!-- Payment has been finalized by Resursbank. This means the client has been debited by Resursbank. -->
-    <route url="/V1/omnicheckout/order/finalization" method="GET">
+    <route url="/V1/omnicheckout/order/finalization/paymentId/:paymentId" method="GET">
         <service class="Resursbank\OmniCheckout\Api\CallbackInterface" method="finalization"/>
         <resources>
             <resource ref="anonymous" />
@@ -43,7 +43,7 @@
     </route>
 
     <!-- Payment passed automatic fraud screening from Resursbank. -->
-    <route url="/V1/omnicheckout/order/automaticFraudControl" method="GET">
+    <route url="/V1/omnicheckout/order/automatic_fraud_control/paymentId/:paymentId" method="GET">
         <service class="Resursbank\OmniCheckout\Api\CallbackInterface" method="automaticFraudControl"/>
         <resources>
             <resource ref="anonymous" />
@@ -51,7 +51,7 @@
     </route>
 
     <!-- Payment has been fully annulled by Resursbank. This can for example occur if a fraud screening fails. -->
-    <route url="/V1/omnicheckout/order/annulment" method="GET">
+    <route url="/V1/omnicheckout/order/annulment/paymentId/:paymentId" method="GET">
         <service class="Resursbank\OmniCheckout\Api\CallbackInterface" method="annulment"/>
         <resources>
             <resource ref="anonymous" />
@@ -59,7 +59,7 @@
     </route>
 
     <!-- Payment has been updated at Resursbank. -->
-    <route url="/V1/omnicheckout/order/update" method="GET">
+    <route url="/V1/omnicheckout/order/update/paymentId/:paymentId" method="GET">
         <service class="Resursbank\OmniCheckout\Api\CallbackInterface" method="update"/>
         <resources>
             <resource ref="anonymous" />
