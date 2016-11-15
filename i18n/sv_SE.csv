@@ -29,6 +29,7 @@
 "Resursbank: payment was annulled.","Resursbank: betalningen blev annullerad."
 "Resursbank: payment was finalized.","Resursbank: betalningen har mottagits."
 "Resursbank: payment passed automatic fraud screening.","Resursbank: betalningen har passerat automatiska bedrägerikontroller."
+"Resursbank: payment failed automatic fraud screening.","Resursbank: betalningen kunde inte passera automatiska bedrägerikontroller."
 "The connection to the payment gateway failed and thus you cannot proceed to our checkout. Please try again in a few minutes.","Betaltjänsten är tyvärr otillgänglig för tillfället, vänligen försök igen lite senare."
 "The connection to the payment gateway failed and thus we could not register your callback URLs. Please try again in a few minutes.","Kontakten med betaltjänsten misslyckades och därmed kunde inte callback URL:erna registreras. Vänligen försök igen om några minuter."
 "The connection to the payment gateway failed and thus we could not retrieve a list of your callback URLs. Please try again in a few minutes.","Kontakten med betaltjänsten misslyckades och därmed kunde inte callback URL:erna hämtas. Vänligen försök igen om några minuter."
@@ -63,3 +64,4 @@
 "Please select a shipping method.","Vänligen välj en fraktmetod."
 "ECom Integration Settings","ECom integrations inställningar"
 "Log entries will be stored in var/log/resursbank_debug.log","Log data sparas i var/log/resursbank_debug.log"
+"Callback URLs were successfully registered.","Callback URL:er har registrerats."

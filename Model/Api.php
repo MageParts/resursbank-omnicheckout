@@ -250,6 +250,10 @@ class Api extends DataObject
             $urlTemplate.= "/paymentId/{paymentId}";
         }
 
+        if ($type === 'automatic_fraud_control') {
+            $urlTemplate.= "/result/{result}";
+        }
+
         return $this->call($this->getCallbackTypePath($type), 'post', array(
             'uriTemplate' => $urlTemplate
 //            'basicAuthUserName' => $this->getCallbackSetting('basic_username'),

@@ -44,9 +44,10 @@ interface CallbackInterface
 
     /**
      * @param string $paymentId
+     * @param string $result (FROZEN = failed, THAWED = passed)
      * @return bool
      */
-    public function automaticFraudControl($paymentId);
+    public function automaticFraudControl($paymentId, $result);
 
     /**
      * @param string $paymentId

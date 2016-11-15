@@ -67,8 +67,11 @@ class Registration extends \Magento\Backend\App\Action
         // Register callback URLs.
         $this->apiModel->registerCallbacks();
 
+        // Add success message.
+        $this->getMessageManager()->addSuccessMessage('Callback URLs were successfully registered.');
+
         // Redirect back to the config section.
-        $this->_redirect($this->_redirect->getRefererUrl());
+        $this->_redirect('adminhtml/system_config/edit/section/omnicheckout');
     }
 
 }

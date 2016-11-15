@@ -43,7 +43,7 @@
     </route>
 
     <!-- Payment passed automatic fraud screening from Resursbank. -->
-    <route url="/V1/omnicheckout/order/automatic_fraud_control/paymentId/:paymentId" method="GET">
+    <route url="/V1/omnicheckout/order/automatic_fraud_control/paymentId/:paymentId/result/:result" method="GET">
         <service class="Resursbank\OmniCheckout\Api\CallbackInterface" method="automaticFraudControl"/>
         <resources>
             <resource ref="anonymous" />

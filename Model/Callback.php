@@ -97,12 +97,16 @@ class Callback implements \Resursbank\OmniCheckout\Api\CallbackInterface
      * Payment passed automatic fraud screening from Resursbank.
      *
      * @param string $paymentId
+     * @param string $result (FROZEN = failed, THAWED = passed)
      * @return bool
      */
-    public function automaticFraudControl($paymentId)
+    public function automaticFraudControl($paymentId, $result)
     {
+        // Resolve screening result.
+        $result = (strtolower($result) === 'thawed');
+
         $this->_addLogEntry($paymentId, 'automatic fraud control.')
-            ->_addOrderComment($paymentId, 'Resursbank: payment passed automatic fraud screening.');
+            ->_addOrderComment($paymentId, ($result ? 'Resursbank: payment passed automatic fraud screening.' : 'Resursbank: payment failed automatic fraud screening.'));
 
         return true;
     }
