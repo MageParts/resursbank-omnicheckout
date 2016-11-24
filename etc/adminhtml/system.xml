@@ -58,6 +58,26 @@
                 <!--<field id="basic_password" translate="label" type="text" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">-->
                     <!--<label>Basic Auth Password</label>-->
                 <!--</field>-->
+                <field id="order_status_unfreeze" type="select" translate="label, comment" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Order Status - Unfreeze</label>
+                    <comment>The status an order will receive after its payment has been unfrozen.</comment>
+                    <source_model>Magento\Sales\Model\Config\Source\Order\Status</source_model>
+                </field>
+                <field id="order_status_booked" type="select" translate="label, comment" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Order Status - Booked</label>
+                    <comment>The status an order will receive after its payment has been booked.</comment>
+                    <source_model>Magento\Sales\Model\Config\Source\Order\Status</source_model>
+                </field>
+                <field id="order_status_finalization" type="select" translate="label, comment" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Order Status - Finalization</label>
+                    <comment>The status an order will receive after its payment has been finalized.</comment>
+                    <source_model>Magento\Sales\Model\Config\Source\Order\Status</source_model>
+                </field>
+                <field id="order_status_failed_automatic_fraud_control" type="select" translate="label, comment" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Order Status - Suspected Fraud</label>
+                    <comment>The status an order will receive if its payment fails the automatic fraud control.</comment>
+                    <source_model>Magento\Sales\Model\Config\Source\Order\Status</source_model>
+                </field>
                 <field id="url_registration" translate="label" type="button" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Callback Registration</label>
                     <frontend_model>Resursbank\OmniCheckout\Block\Adminhtml\System\Config\Callback\Registration</frontend_model>

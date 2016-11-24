@@ -33,6 +33,7 @@ class Callback extends \Magento\Framework\App\Helper\AbstractHelper
      * @var \Magento\Sales\Model\OrderRepository
      */
     private $orderRepository;
+
     /**
      * @var \Magento\Sales\Model\OrderFactory
      */
@@ -123,6 +124,20 @@ class Callback extends \Magento\Framework\App\Helper\AbstractHelper
 
         // Save order.
         $this->orderRepository->save($order);
+
+        return $this;
+    }
+
+    /**
+     * Set order status.
+     *
+     * @param string $status
+     * @param \Magento\Sales\Model\Order $order
+     * @return $this
+     */
+    public function setOrderStatus($status, \Magento\Sales\Model\Order $order)
+    {
+        $this->orderRepository->save($order->setStatus((string) $status));
 
         return $this;
     }

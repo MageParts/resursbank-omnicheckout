@@ -33,21 +33,30 @@ class Callback implements \Resursbank\OmniCheckout\Api\CallbackInterface
      * @var \Resursbank\OmniCheckout\Helper\Callback
      */
     private $callbackHelper;
+
     /**
      * @var \Resursbank\OmniCheckout\Helper\Debug
      */
     private $debug;
 
     /**
+     * @var \Magento\Framework\App\Config\ScopeConfigInterface
+     */
+    private $scopeConfig;
+
+    /**
      * @param \Resursbank\OmniCheckout\Helper\Callback $callbackHelper
      * @param \Resursbank\OmniCheckout\Helper\Debug $debug
+     * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      */
     public function __construct(
         \Resursbank\OmniCheckout\Helper\Callback $callbackHelper,
-        \Resursbank\OmniCheckout\Helper\Debug $debug
+        \Resursbank\OmniCheckout\Helper\Debug $debug,
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
     ) {
         $this->callbackHelper = $callbackHelper;
         $this->debug = $debug;
+        $this->scopeConfig = $scopeConfig;
     }
 
     /**
@@ -60,6 +69,8 @@ class Callback implements \Resursbank\OmniCheckout\Api\CallbackInterface
     {
         $this->_addLogEntry($paymentId, 'unfreeze')
             ->_addOrderComment($paymentId, 'Resursbank: payment was unfrozen.');
+
+        $this->setOrderStatus($paymentId, 'unfreeze');
 
         return true;
     }
@@ -76,6 +87,8 @@ class Callback implements \Resursbank\OmniCheckout\Api\CallbackInterface
         $this->_addLogEntry($paymentId, 'booked')
             ->_addOrderComment($paymentId, 'Resursbank: payment was booked.');
 
+        $this->setOrderStatus($paymentId, 'booked');
+
         return true;
     }
 
@@ -89,6 +102,8 @@ class Callback implements \Resursbank\OmniCheckout\Api\CallbackInterface
     {
         $this->_addLogEntry($paymentId, 'finalization')
             ->_addOrderComment($paymentId, 'Resursbank: payment was finalized.');
+
+        $this->setOrderStatus($paymentId, 'finalization');
 
         return true;
     }
@@ -107,6 +122,10 @@ class Callback implements \Resursbank\OmniCheckout\Api\CallbackInterface
 
         $this->_addLogEntry($paymentId, 'automatic fraud control.')
             ->_addOrderComment($paymentId, ($result ? 'Resursbank: payment passed automatic fraud screening.' : 'Resursbank: payment failed automatic fraud screening.'));
+
+        if (!$result) {
+            $this->setOrderStatus($paymentId, 'failed_automatic_fraud_control');
+        }
 
         return true;
     }
@@ -178,6 +197,24 @@ class Callback implements \Resursbank\OmniCheckout\Api\CallbackInterface
         $orderId = $order ? $order->getId() : 'unknown';
 
         $this->debug->info("Received callback {$text} for order {$orderId}.");
+
+        return $this;
+    }
+
+    /**
+     * Set order status.
+     *
+     * @param string $paymentId
+     * @param string $type
+     * @return $this
+     */
+    public function setOrderStatus($paymentId, $type)
+    {
+        $status = $this->scopeConfig->getValue("omnicheckout/callback/order_status_{$type}", \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+
+        if ($status) {
+            $this->callbackHelper->setOrderStatus($status, $this->_getOrder($paymentId));
+        }
 
         return $this;
     }
