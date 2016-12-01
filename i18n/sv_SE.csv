@@ -73,3 +73,4 @@
 "The status an order will receive after its payment has been finalized.","Status som order erhåller efter dess betalning avslutats."
 "Order Status - Suspected Fraud","Orderstatus - Misstänkt bedrägeri"
 "The status an order will receive if its payment fails the automatic fraud control.","Status som order erhåller om dess betalning inte passerade automatiska bedrägerikontroller."
+"An error has occurred, the payment information could not be retrieved from Resursbank.","Ett fel uppstod, information om betalningen kunde inte hämtas från Resursbank."

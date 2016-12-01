@@ -91,6 +91,13 @@ class Api extends DataObject
     private $httpClient;
 
     /**
+     * Whether or not to utilise the message bag when handling errors.
+     *
+     * @var bool
+     */
+    private $useMessageBagForErrors = true;
+
+    /**
      * @param \Magento\Customer\Model\Session $customerSession
      * @param \Resursbank\OmniCheckout\Helper\Api $helper
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
@@ -339,6 +346,7 @@ class Api extends DataObject
      * @param string|array $data
      * @return \Zend\Http\Response
      * @throws Exception
+     * @todo check on this return value.
      */
     public function call($action, $method, $data = null)
     {
@@ -437,7 +445,7 @@ class Api extends DataObject
      */
     public function handleErrors(\Zend\Http\Response $response)
     {
-        if (($response->isClientError() || $response->isServerError())) {
+//        if (($response->isClientError() || $response->isServerError())) {
             // Log the error.
             $this->debug->error($response->toString());
 
@@ -445,13 +453,35 @@ class Api extends DataObject
             $error = (string) __('We apologize, an error occurred while communicating with the payment gateway. Please contact us as soon as possible so we can review this problem.');
 
             // Add error to message stack.
-            $this->messages->addErrorMessage($error);
+            if ($this->getUseMessageBagForErrors()) {
+                $this->messages->addErrorMessage($error);
+            }
 
             // Stop script.
             throw new Exception($error);
-        }
+//        }
 
         return $this;
+    }
+
+    /**
+     * Set whether or not to utilise the message bag when handling errors.
+     *
+     * @param bool $val
+     */
+    public function setUseMessageBagForErrors($val)
+    {
+        $this->useMessageBagForErrors = (bool) $val;
+    }
+
+    /**
+     * Check whether or not to utilise the message bag when handling errors.
+     *
+     * @return bool
+     */
+    public function getUseMessageBagForErrors()
+    {
+        return $this->useMessageBagForErrors;
     }
 
     /**
@@ -603,9 +633,9 @@ class Api extends DataObject
     {
         $result = array();
 
-        $amount = (float) ($this->getQuote()->getSubtotal() - $this->getQuote()->getSubtotalWithDiscount());
+        $amount = (float) $this->getQuote()->getShippingAddress()->getDiscountAmount();
 
-        if ($amount > 0) {
+        if ($amount < 0) {
             $name = 'Discount';
             $code = (string) $this->getQuote()->getCouponCode();
 
@@ -618,9 +648,32 @@ class Api extends DataObject
                 'description'           => (string) __($name, array($code)),
                 'quantity'              => 1,
                 'unitMeasure'           => 'pcs',
-                'unitAmountWithoutVat'  => -$amount,
-                'vatPct'                => 0
+                'unitAmountWithoutVat'  => $amount,
+                'vatPct'                => $this->getDiscountTax()
             );
+        }
+
+        return $result;
+    }
+
+    /**
+     * Retrieve discount tax percentage from quote.
+     *
+     * @return float|int
+     */
+    public function getDiscountTax()
+    {
+        $result = 0;
+
+        if ($this->scopeConfig->getValue('tax/calculation/apply_after_discount') === '1') {
+            if ($this->getQuote()->getShippingAddress()->getSubtotalInclTax() > $this->getQuote()->getShippingAddress()->getSubtotal()) {
+                // We are expecting a value like 1.25 - 1 (0.25) here.
+                $percent = ($this->getQuote()->getShippingAddress()->getSubtotalInclTax() / $this->getQuote()->getShippingAddress()->getSubtotal()) - 1;
+
+                if ($percent > 0 && $percent < 1) {
+                    $result = ($percent * 100);
+                }
+            }
         }
 
         return $result;

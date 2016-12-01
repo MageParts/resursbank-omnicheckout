@@ -69,6 +69,12 @@ class OmniCheckout extends \Magento\Backend\Block\Template
         $this->registry = $registry;
         $this->checkoutHelper = $checkoutHelper;
 
+        // We want to avoid the conventional message bag when receiving API errors, otherwise the errors will be
+        // trailing one page load behind since they will occur during rendering. So it's better to avoid the message bag
+        // and instead use our own way of rendering a general error message on for example the order view when fetching
+        // payment information through the API.
+        $this->apiModel->setUseMessageBagForErrors(false);
+
         parent::__construct($context, $data);
 
         $this->setTemplate('Resursbank_OmniCheckout::sales/order/view/info/omnicheckout.phtml');
@@ -227,7 +233,7 @@ class OmniCheckout extends \Magento\Backend\Block\Template
      * Retrieve payment information from Resursbank.
      *
      * @param string $key
-     * @return mixed|null|stdClass
+     * @return mixed|null|\stdClass
      */
     public function getPaymentInformation($key = '')
     {
@@ -236,7 +242,13 @@ class OmniCheckout extends \Magento\Backend\Block\Template
         $key = (string) $key;
 
         if (is_null($this->paymentInfo)) {
-            $this->paymentInfo = (array) $this->apiModel->getPayment($this->getOrder()->getData('resursbank_token'));
+            try {
+                $this->paymentInfo = (array) $this->apiModel->getPayment($this->getOrder()->getData('resursbank_token'));
+            } catch (\Exception $e) {
+                // Something went wrong while getting the payment information from Resursbank. This should not prevent
+                // the order page from rendering though.
+                $this->paymentInfo = [];
+            }
         }
 
         if (empty($key)) {

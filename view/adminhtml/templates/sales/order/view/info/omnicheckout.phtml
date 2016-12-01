@@ -27,104 +27,110 @@
 
         <?php // Payment information. ?>
         <h3><?php echo __('Payment Information') ?></h3>
-        <div class="field-group">
-            <ul class="fields">
-                <?php // Payment ID. ?>
-                <li class="field">
-                    <div class="field-label">
-                        <?php echo __('Payment ID') ?>
-                    </div><div class="field-value">
-                        <?php echo $block->getPaymentId() ?>
-                    </div>
-                </li>
+        <?php if (!count($this->getPaymentInformation())): ?>
+            <div class="field-group">
+                <p class="error-message"><?php echo __('An error has occurred, the payment information could not be retrieved from Resursbank.') ?></p>
+            </div>
+        <?php else: ?>
+            <div class="field-group">
+                <ul class="fields">
+                    <?php // Payment ID. ?>
+                    <li class="field">
+                        <div class="field-label">
+                            <?php echo __('Payment ID') ?>
+                        </div><div class="field-value">
+                            <?php echo $block->getPaymentId() ?>
+                        </div>
+                    </li>
 
-                <?php // Payment sum. ?>
-                <li class="field">
-                    <div class="field-label">
-                        <?php echo __('Order Total') ?>
-                    </div><div class="field-value">
-                        <?php echo $block->getPaymentTotal() ?>
-                    </div>
-                </li>
+                    <?php // Payment sum. ?>
+                    <li class="field">
+                        <div class="field-label">
+                            <?php echo __('Order Total') ?>
+                        </div><div class="field-value">
+                            <?php echo $block->getPaymentTotal() ?>
+                        </div>
+                    </li>
 
-                <?php // Payment limit. ?>
-                <li class="field">
-                    <div class="field-label">
-                        <?php echo __('Limit') ?>
-                    </div><div class="field-value">
-                        <?php echo $block->getPaymentLimit() ?>
-                    </div>
-                </li>
+                    <?php // Payment limit. ?>
+                    <li class="field">
+                        <div class="field-label">
+                            <?php echo __('Limit') ?>
+                        </div><div class="field-value">
+                            <?php echo $block->getPaymentLimit() ?>
+                        </div>
+                    </li>
 
-                <?php // Status. ?>
-                <li class="field">
-                    <div class="field-label">
-                        <?php echo __('Status') ?>
-                    </div><div class="field-value">
-                        <?php echo $block->getStatus() ?>
-                    </div>
-                </li>
+                    <?php // Status. ?>
+                    <li class="field">
+                        <div class="field-label">
+                            <?php echo __('Status') ?>
+                        </div><div class="field-value">
+                            <?php echo $block->getStatus() ?>
+                        </div>
+                    </li>
 
-                <?php // Whether or not its frozen. ?>
-                <li class="field">
-                    <div class="field-label">
-                        <?php echo __('Frozen?') ?>
-                    </div><div class="field-value">
-                        <?php echo __(($block->isFrozen() ? 'Yes' : 'No')) ?>
-                    </div>
-                </li>
+                    <?php // Whether or not its frozen. ?>
+                    <li class="field">
+                        <div class="field-label">
+                            <?php echo __('Frozen?') ?>
+                        </div><div class="field-value">
+                            <?php echo __(($block->isFrozen() ? 'Yes' : 'No')) ?>
+                        </div>
+                    </li>
 
-                <?php // Whether or not its fraud marked. ?>
-                <li class="field">
-                    <div class="field-label">
-                        <?php echo __('Fraud?') ?>
-                    </div><div class="field-value">
-                        <?php echo __(($block->isFraud() ? 'Yes' : 'No')) ?>
-                    </div>
-                </li>
-            </ul>
-        </div>
+                    <?php // Whether or not its fraud marked. ?>
+                    <li class="field">
+                        <div class="field-label">
+                            <?php echo __('Fraud?') ?>
+                        </div><div class="field-value">
+                            <?php echo __(($block->isFraud() ? 'Yes' : 'No')) ?>
+                        </div>
+                    </li>
+                </ul>
+            </div>
 
-        <?php // Customer information. ?>
-        <div class="field-group field-group-customer">
-            <h3><?php echo __('Customer Information') ?></h3>
-            <ul class="fields">
-                <!-- Customer name. -->
-                <li class="field">
-                    <div class="field-label">
-                        <?php echo __('Name') ?>
-                    </div><div class="field-value">
-                        <?php echo $block->getCustomerName() ?>
-                    </div>
-                </li>
+            <?php // Customer information. ?>
+            <div class="field-group field-group-customer">
+                <h3><?php echo __('Customer Information') ?></h3>
+                <ul class="fields">
+                    <!-- Customer name. -->
+                    <li class="field">
+                        <div class="field-label">
+                            <?php echo __('Name') ?>
+                        </div><div class="field-value">
+                            <?php echo $block->getCustomerName() ?>
+                        </div>
+                    </li>
 
-                <!-- Customer address. -->
-                <li class="field">
-                    <div class="field-label">
-                        <?php echo __('Address') ?>
-                    </div><div class="field-value">
-                        <?php echo $block->getCustomerAddress() ?>
-                    </div>
-                </li>
+                    <!-- Customer address. -->
+                    <li class="field">
+                        <div class="field-label">
+                            <?php echo __('Address') ?>
+                        </div><div class="field-value">
+                            <?php echo $block->getCustomerAddress() ?>
+                        </div>
+                    </li>
 
-                <!-- Customer telephone. -->
-                <li class="field">
-                    <div class="field-label">
-                        <?php echo __('Telephone') ?>
-                    </div><div class="field-value">
-                        <?php echo $block->getCustomerTelephone() ?>
-                    </div>
-                </li>
+                    <!-- Customer telephone. -->
+                    <li class="field">
+                        <div class="field-label">
+                            <?php echo __('Telephone') ?>
+                        </div><div class="field-value">
+                            <?php echo $block->getCustomerTelephone() ?>
+                        </div>
+                    </li>
 
-                <!-- Customer email. -->
-                <li class="field">
-                    <div class="field-label">
-                        <?php echo __('Email') ?>
-                    </div><div class="field-value">
-                        <?php echo $block->getCustomerEmail() ?>
-                    </div>
-                </li>
-            </ul>
-        </div>
+                    <!-- Customer email. -->
+                    <li class="field">
+                        <div class="field-label">
+                            <?php echo __('Email') ?>
+                        </div><div class="field-value">
+                            <?php echo $block->getCustomerEmail() ?>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        <?php endif; ?>
     </div>
 </div>
