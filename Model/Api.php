@@ -445,7 +445,7 @@ class Api extends DataObject
      */
     public function handleErrors(\Zend\Http\Response $response)
     {
-//        if (($response->isClientError() || $response->isServerError())) {
+        if (($response->isClientError() || $response->isServerError())) {
             // Log the error.
             $this->debug->error($response->toString());
 
@@ -459,7 +459,7 @@ class Api extends DataObject
 
             // Stop script.
             throw new Exception($error);
-//        }
+        }
 
         return $this;
     }
